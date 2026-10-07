@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "max_title_length": 300,
+  "max_snippet_length": 1500,
+  "max_meta_description_length": 500,
+  "max_headings": 20,
+  "max_visible_excerpt_bytes": 4096,
+  "url_domain_normalization": true,
+  "strip_url_query_and_fragments": true,
+  "lowercase": true,
+  "seed": 42,
+  "split_ratios": {
+    "train": 0.8,
+    "valid": 0.1,
+    "test": 0.1
+  },
+  "protected_code_tokens": [
+    "python", "react", "github", "api", "sql", "tensorflow", "kubernetes",
+    "docker", "typescript", "javascript", "html", "css", "linux", "git",
+    "nodejs", "vite", "webpack", "npm", "pip", "pypi", "huggingface",
+    "pytorch", "arxiv", "stackoverflow", "medium", "devto", "rust", "go"
+  ]
+}

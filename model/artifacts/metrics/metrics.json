@@ -1,0 +1,188 @@
+{
+  "timestamp": "2026-09-28 15:06:55 UTC",
+  "dataset": "tshasan/multi-label-web-categorization",
+  "test_samples": 4710,
+  "raw_model": {
+    "path": "model/artifacts/trained/atentiv-page-category.bin",
+    "size_mb": 37.59,
+    "metrics": {
+      "macro_precision": 0.7303,
+      "macro_recall": 0.5427,
+      "macro_f1": 0.6071,
+      "micro_precision": 0.7343,
+      "micro_recall": 0.614,
+      "micro_f1": 0.6688,
+      "p_at_1": 0.7461,
+      "p_at_3": 0.4638,
+      "r_at_3": 0.7897,
+      "latency_ms": {
+        "mean": 0.06,
+        "median": 0.031,
+        "p95": 0.124,
+        "p99": 0.522,
+        "std": 0.319
+      },
+      "per_label": {
+        "Chat": {
+          "precision": 0.8997,
+          "recall": 0.8325,
+          "f1": 0.8648,
+          "support": 388
+        },
+        "Education": {
+          "precision": 0.7672,
+          "recall": 0.7035,
+          "f1": 0.734,
+          "support": 1504
+        },
+        "Entertainment": {
+          "precision": 0.7531,
+          "recall": 0.7489,
+          "f1": 0.751,
+          "support": 1609
+        },
+        "Government": {
+          "precision": 0.7262,
+          "recall": 0.4547,
+          "f1": 0.5592,
+          "support": 519
+        },
+        "Health": {
+          "precision": 0.726,
+          "recall": 0.2768,
+          "f1": 0.4008,
+          "support": 383
+        },
+        "News": {
+          "precision": 0.6844,
+          "recall": 0.4231,
+          "f1": 0.5229,
+          "support": 364
+        },
+        "Shop": {
+          "precision": 0.7553,
+          "recall": 0.6137,
+          "f1": 0.6772,
+          "support": 981
+        },
+        "Technology": {
+          "precision": 0.7302,
+          "recall": 0.5762,
+          "f1": 0.6441,
+          "support": 1057
+        },
+        "Travel": {
+          "precision": 0.7099,
+          "recall": 0.3153,
+          "f1": 0.4366,
+          "support": 295
+        },
+        "Uncategorized": {
+          "precision": 0.6123,
+          "recall": 0.7082,
+          "f1": 0.6568,
+          "support": 843
+        },
+        "Work": {
+          "precision": 0.6686,
+          "recall": 0.3174,
+          "f1": 0.4305,
+          "support": 356
+        }
+      },
+      "sample_count": 4710
+    }
+  },
+  "quantized_model": {
+    "path": "model/artifacts/quantized/atentiv-page-category.ftz",
+    "size_mb": 1.8,
+    "size_reduction_ratio": 20.9,
+    "metrics": {
+      "macro_precision": 0.6702,
+      "macro_recall": 0.5763,
+      "macro_f1": 0.6144,
+      "micro_precision": 0.6952,
+      "micro_recall": 0.6351,
+      "micro_f1": 0.6638,
+      "p_at_1": 0.7301,
+      "p_at_3": 0.457,
+      "r_at_3": 0.7782,
+      "latency_ms": {
+        "mean": 0.042,
+        "median": 0.03,
+        "p95": 0.083,
+        "p99": 0.197,
+        "std": 0.101
+      },
+      "per_label": {
+        "Chat": {
+          "precision": 0.8817,
+          "recall": 0.8067,
+          "f1": 0.8425,
+          "support": 388
+        },
+        "Education": {
+          "precision": 0.7465,
+          "recall": 0.7148,
+          "f1": 0.7303,
+          "support": 1504
+        },
+        "Entertainment": {
+          "precision": 0.7423,
+          "recall": 0.7359,
+          "f1": 0.7391,
+          "support": 1609
+        },
+        "Government": {
+          "precision": 0.6599,
+          "recall": 0.501,
+          "f1": 0.5696,
+          "support": 519
+        },
+        "Health": {
+          "precision": 0.6045,
+          "recall": 0.3473,
+          "f1": 0.4411,
+          "support": 383
+        },
+        "News": {
+          "precision": 0.5993,
+          "recall": 0.4643,
+          "f1": 0.5232,
+          "support": 364
+        },
+        "Shop": {
+          "precision": 0.6978,
+          "recall": 0.6402,
+          "f1": 0.6677,
+          "support": 981
+        },
+        "Technology": {
+          "precision": 0.6886,
+          "recall": 0.6045,
+          "f1": 0.6438,
+          "support": 1057
+        },
+        "Travel": {
+          "precision": 0.5949,
+          "recall": 0.3932,
+          "f1": 0.4735,
+          "support": 295
+        },
+        "Uncategorized": {
+          "precision": 0.602,
+          "recall": 0.7212,
+          "f1": 0.6562,
+          "support": 843
+        },
+        "Work": {
+          "precision": 0.5551,
+          "recall": 0.4101,
+          "f1": 0.4717,
+          "support": 356
+        }
+      },
+      "sample_count": 4710
+    }
+  }
+}

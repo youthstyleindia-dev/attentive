@@ -1,0 +1,40 @@
+{
+  "model_name": "atentiv-page-category",
+  "version": "1.0.0",
+  "training_time_seconds": 4.73,
+  "raw_size_bytes": 39417658,
+  "raw_size_mb": 37.59,
+  "num_words": 89229,
+  "num_labels": 11,
+  "labels": [
+    "__label__Entertainment",
+    "__label__Education",
+    "__label__Technology",
+    "__label__Shop",
+    "__label__Uncategorized",
+    "__label__Government",
+    "__label__Chat",
+    "__label__News",
+    "__label__Health",
+    "__label__Work",
+    "__label__Travel"
+  ],
+  "config": {
+    "model_name": "atentiv-page-category",
+    "version": "1.0.0",
+    "framework": "fastText",
+    "loss": "ova",
+    "dim": 50,
+    "ws": 5,
+    "epoch": 25,
+    "lr": 0.5,
+    "minCount": 2,
+    "wordNgrams": 2,
+    "minn": 3,
+    "maxn": 6,
+    "bucket": 100000,
+    "thread": 4,
+    "target_quantized_size_mb": 8.0,
+    "retrain_seed": 42
+  }
+}

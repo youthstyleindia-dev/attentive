@@ -1,0 +1,125 @@
+{
+  "model_id": "atentiv-page-category-v1",
+  "model_name": "atentiv-page-category",
+  "version": "1.0.0",
+  "framework": "fastText",
+  "loss": "ova",
+  "dimension": 50,
+  "wordNgrams": 2,
+  "quantized": true,
+  "size_bytes": 1887125,
+  "size_mb": 1.8,
+  "checksum_sha256": "bd3a8c9224670b1d02de2b6e48704307995503dc179f7475d83eed3d53089331",
+  "public_path": "models/atentiv-page-category.ftz",
+  "training_dataset": "tshasan/multi-label-web-categorization",
+  "training_rows": 49399,
+  "cleaned_unique_rows": 47093,
+  "taxonomy_version": "1.0.0",
+  "preprocessing_version": "1.0.0",
+  "feature_schema_version": "1.0.0",
+  "labels": [
+    "Technology",
+    "Education",
+    "Work",
+    "Research",
+    "Communication",
+    "Chat",
+    "News",
+    "Entertainment",
+    "Shop",
+    "Government",
+    "Health",
+    "Travel",
+    "Uncategorized"
+  ],
+  "created_at": "2026-09-28T15:07:38Z",
+  "validation_metrics": {
+    "macro_precision": 0.6702,
+    "macro_recall": 0.5763,
+    "macro_f1": 0.6144,
+    "micro_precision": 0.6952,
+    "micro_recall": 0.6351,
+    "micro_f1": 0.6638,
+    "p_at_1": 0.7301,
+    "p_at_3": 0.457,
+    "r_at_3": 0.7782,
+    "latency_ms": {
+      "mean": 0.042,
+      "median": 0.03,
+      "p95": 0.083,
+      "p99": 0.197,
+      "std": 0.101
+    },
+    "per_label": {
+      "Chat": {
+        "precision": 0.8817,
+        "recall": 0.8067,
+        "f1": 0.8425,
+        "support": 388
+      },
+      "Education": {
+        "precision": 0.7465,
+        "recall": 0.7148,
+        "f1": 0.7303,
+        "support": 1504
+      },
+      "Entertainment": {
+        "precision": 0.7423,
+        "recall": 0.7359,
+        "f1": 0.7391,
+        "support": 1609
+      },
+      "Government": {
+        "precision": 0.6599,
+        "recall": 0.501,
+        "f1": 0.5696,
+        "support": 519
+      },
+      "Health": {
+        "precision": 0.6045,
+        "recall": 0.3473,
+        "f1": 0.4411,
+        "support": 383
+      },
+      "News": {
+        "precision": 0.5993,
+        "recall": 0.4643,
+        "f1": 0.5232,
+        "support": 364
+      },
+      "Shop": {
+        "precision": 0.6978,
+        "recall": 0.6402,
+        "f1": 0.6677,
+        "support": 981
+      },
+      "Technology": {
+        "precision": 0.6886,
+        "recall": 0.6045,
+        "f1": 0.6438,
+        "support": 1057
+      },
+      "Travel": {
+        "precision": 0.5949,
+        "recall": 0.3932,
+        "f1": 0.4735,
+        "support": 295
+      },
+      "Uncategorized": {
+        "precision": 0.602,
+        "recall": 0.7212,
+        "f1": 0.6562,
+        "support": 843
+      },
+      "Work": {
+        "precision": 0.5551,
+        "recall": 0.4101,
+        "f1": 0.4717,
+        "support": 356
+      }
+    },
+    "sample_count": 4710
+  },
+  "active": true,
+  "notes": "FastText supervised multi-label classifier with one-vs-all loss and 2x word n-grams, quantized for ultra-low-latency on-device WebAssembly execution in Atentiv browser extension."
+}

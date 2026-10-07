@@ -1,0 +1,18 @@
+{
+  "model_name": "atentiv-page-category",
+  "version": "1.0.0",
+  "framework": "fastText",
+  "loss": "ova",
+  "dim": 50,
+  "ws": 5,
+  "epoch": 25,
+  "lr": 0.5,
+  "minCount": 2,
+  "wordNgrams": 2,
+  "minn": 3,
+  "maxn": 6,
+  "bucket": 100000,
+  "thread": 4,
+  "target_quantized_size_mb": 8.0,
+  "retrain_seed": 42
+}

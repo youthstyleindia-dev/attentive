@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "name": "atentiv-web-page-taxonomy",
+  "num_categories": 11,
+  "categories": [
+    {
+      "id": "Technology",
+      "name": "Technology & Engineering",
+      "description": "Software, developer tools, computer systems, tech documentation, and technical forums.",
+      "default_activity": "Development"
+    },
+    {
+      "id": "Education",
+      "name": "Education & Academic",
+      "description": "Courses, universities, textbooks, tutorials, scientific papers, and lectures.",
+      "default_activity": "Learning"
+    },
+    {
+      "id": "Work",
+      "name": "Work & Professional",
+      "description": "Project management, business operations, corporate tools, and professional tasks.",
+      "default_activity": "Productivity"
+    },
+    {
+      "id": "Research",
+      "name": "Research & Academic Inquiry",
+      "description": "Scholarly publications, data exploration, literature reviews, and preprints.",
+      "default_activity": "Research"
+    },
+    {
+      "id": "Communication",
+      "name": "Communication & Collaboration",
+      "description": "Email, messaging, real-time collaboration, and video calls.",
+      "default_activity": "Communication"
+    },
+    {
+      "id": "Chat",
+      "name": "Instant Messaging & Chat",
+      "description": "Chat channels, direct messages, and team chat rooms.",
+      "default_activity": "Communication"
+    },
+    {
+      "id": "News",
+      "name": "News & Current Events",
+      "description": "News publications, journalism, editorials, and weather updates.",
+      "default_activity": "General Browsing"
+    },
+    {
+      "id": "Entertainment",
+      "name": "Entertainment & Media",
+      "description": "Gaming, streaming movies, humor, comics, and pop culture.",
+      "default_activity": "Entertainment"
+    },
+    {
+      "id": "Shop",
+      "name": "Shopping & Commerce",
+      "description": "E-commerce platforms, retail, product reviews, and payment portals.",
+      "default_activity": "Shopping"
+    },
+    {
+      "id": "Government",
+      "name": "Government & Civic",
+      "description": "Public administration, legal registers, tax services, and government portals.",
+      "default_activity": "Reference Lookup"
+    },
+    {
+      "id": "Health",
+      "name": "Health & Medical",
+      "description": "Medical reference, wellness, pharmaceutical, and health advice.",
+      "default_activity": "Reference Lookup"
+    },
+    {
+      "id": "Travel",
+      "name": "Travel & Geography",
+      "description": "Flight booking, hotel reservations, maps, and travel guides.",
+      "default_activity": "General Browsing"
+    },
+    {
+      "id": "Uncategorized",
+      "name": "Uncategorized",
+      "description": "General or uncategorized web pages falling outside defined clusters.",
+      "default_activity": "General Browsing"
+    }
+  ]
+}
