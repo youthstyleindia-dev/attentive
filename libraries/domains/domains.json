@@ -1,0 +1,240 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-09-28T00:00:00Z",
+  "domains": [
+    {
+      "domain": "github.com",
+      "category": "Technology",
+      "activity": "Coding",
+      "defaultProductivity": "productive",
+      "keywords": ["repository", "pull request", "commit", "issue", "branch", "code", "merge"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "gitlab.com",
+      "category": "Technology",
+      "activity": "Coding",
+      "defaultProductivity": "productive",
+      "keywords": ["repository", "merge request", "pipeline", "ci/cd"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "stackoverflow.com",
+      "category": "Technology",
+      "activity": "Debugging",
+      "defaultProductivity": "productive",
+      "keywords": ["question", "answer", "error", "exception", "solution", "debug"],
+      "source": "curated",
+      "confidence": 0.98
+    },
+    {
+      "domain": "stackexchange.com",
+      "category": "Technology",
+      "activity": "Debugging",
+      "defaultProductivity": "productive",
+      "keywords": ["question", "answer", "solution"],
+      "source": "curated",
+      "confidence": 0.95
+    },
+    {
+      "domain": "arxiv.org",
+      "category": "Education",
+      "activity": "Paper Reading",
+      "defaultProductivity": "productive",
+      "keywords": ["preprint", "paper", "abstract", "pdf", "neural", "quantum", "computation"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "scholar.google.com",
+      "category": "Education",
+      "activity": "Technical Research",
+      "defaultProductivity": "productive",
+      "keywords": ["citations", "articles", "peer review", "journal", "author"],
+      "source": "curated",
+      "confidence": 0.98
+    },
+    {
+      "domain": "wikipedia.org",
+      "category": "Education",
+      "activity": "Reference Lookup",
+      "defaultProductivity": "productive",
+      "keywords": ["encyclopedia", "history", "definition", "overview"],
+      "source": "curated",
+      "confidence": 0.90
+    },
+    {
+      "domain": "docs.python.org",
+      "category": "Technology",
+      "activity": "Documentation",
+      "defaultProductivity": "productive",
+      "keywords": ["python", "standard library", "module", "function", "tutorial"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "developer.mozilla.org",
+      "category": "Technology",
+      "activity": "Documentation",
+      "defaultProductivity": "productive",
+      "keywords": ["mdn", "javascript", "css", "html", "web api", "dom"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "react.dev",
+      "category": "Technology",
+      "activity": "Documentation",
+      "defaultProductivity": "productive",
+      "keywords": ["react", "hooks", "component", "state", "props", "virtual dom"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "typescriptlang.org",
+      "category": "Technology",
+      "activity": "Documentation",
+      "defaultProductivity": "productive",
+      "keywords": ["typescript", "type system", "interface", "generics", "tsconfig"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "mail.google.com",
+      "category": "Chat",
+      "activity": "Email",
+      "defaultProductivity": "productive",
+      "keywords": ["inbox", "mail", "thread", "message", "compose"],
+      "source": "curated",
+      "confidence": 0.95
+    },
+    {
+      "domain": "slack.com",
+      "category": "Chat",
+      "activity": "Messaging",
+      "defaultProductivity": "productive",
+      "keywords": ["channel", "thread", "workspace", "direct message", "slack"],
+      "source": "curated",
+      "confidence": 0.95
+    },
+    {
+      "domain": "notion.so",
+      "category": "Work",
+      "activity": "Project Management",
+      "defaultProductivity": "productive",
+      "keywords": ["workspace", "notes", "database", "kanban", "roadmap", "wiki"],
+      "source": "curated",
+      "confidence": 0.95
+    },
+    {
+      "domain": "linear.app",
+      "category": "Work",
+      "activity": "Task Management",
+      "defaultProductivity": "productive",
+      "keywords": ["issue", "cycle", "project", "backlog", "triage"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "figma.com",
+      "category": "Work",
+      "activity": "Planning",
+      "defaultProductivity": "productive",
+      "keywords": ["design", "prototype", "canvas", "wireframe", "vector", "component"],
+      "source": "curated",
+      "confidence": 0.95
+    },
+    {
+      "domain": "youtube.com",
+      "category": "Entertainment",
+      "activity": "Video",
+      "defaultProductivity": "neutral",
+      "keywords": ["watch", "video", "channel", "playlist", "stream"],
+      "source": "curated",
+      "confidence": 0.85
+    },
+    {
+      "domain": "netflix.com",
+      "category": "Entertainment",
+      "activity": "Streaming",
+      "defaultProductivity": "distracting",
+      "keywords": ["watch", "movie", "series", "episode"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "reddit.com",
+      "category": "Entertainment",
+      "activity": "Community",
+      "defaultProductivity": "neutral",
+      "keywords": ["post", "subreddit", "comments", "thread", "upvote"],
+      "source": "curated",
+      "confidence": 0.80
+    },
+    {
+      "domain": "instagram.com",
+      "category": "Entertainment",
+      "activity": "Social Media",
+      "defaultProductivity": "distracting",
+      "keywords": ["reels", "feed", "stories", "photo", "explore"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "twitter.com",
+      "category": "News",
+      "activity": "Feed Browsing",
+      "defaultProductivity": "distracting",
+      "keywords": ["tweet", "timeline", "trending", "retweet"],
+      "source": "curated",
+      "confidence": 0.90
+    },
+    {
+      "domain": "x.com",
+      "category": "News",
+      "activity": "Feed Browsing",
+      "defaultProductivity": "distracting",
+      "keywords": ["post", "timeline", "trending", "status"],
+      "source": "curated",
+      "confidence": 0.90
+    },
+    {
+      "domain": "amazon.com",
+      "category": "Shop",
+      "activity": "Shopping",
+      "defaultProductivity": "distracting",
+      "keywords": ["cart", "order", "product", "delivery", "price"],
+      "source": "curated",
+      "confidence": 0.95
+    },
+    {
+      "domain": "amazon.in",
+      "category": "Shop",
+      "activity": "Shopping",
+      "defaultProductivity": "distracting",
+      "keywords": ["cart", "order", "product", "delivery", "rupees"],
+      "source": "curated",
+      "confidence": 0.95
+    },
+    {
+      "domain": "coursera.org",
+      "category": "Education",
+      "activity": "Course",
+      "defaultProductivity": "productive",
+      "keywords": ["course", "specialization", "assignment", "quiz", "lecture", "certificate"],
+      "source": "curated",
+      "confidence": 1.0
+    },
+    {
+      "domain": "edx.org",
+      "category": "Education",
+      "activity": "Course",
+      "defaultProductivity": "productive",
+      "keywords": ["course", "university", "syllabus", "lecture"],
+      "source": "curated",
+      "confidence": 1.0
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "version": "1.0.0",
+  "name": "atentiv-activity-taxonomy",
+  "groups": {
+    "Development": [
+      {"id": "Coding", "description": "Writing code, repositories, commit diffs, and pull requests"},
+      {"id": "Debugging", "description": "Analyzing stack traces, bugs, errors, and troubleshooting logs"},
+      {"id": "Documentation", "description": "Reading and writing API references, SDK guides, and tech manuals"},
+      {"id": "Code Review", "description": "Inspecting diffs, reviewing pull requests, and discussing architectures"}
+    ],
+    "Research": [
+      {"id": "Search", "description": "Formulating queries, search engine exploration, exploring results"},
+      {"id": "Paper Reading", "description": "Reading academic preprints, scientific journals, and whitepapers"},
+      {"id": "Technical Research", "description": "Investigating technical approaches, benchmarks, and architectures"},
+      {"id": "Reference Lookup", "description": "Querying encyclopedias, definitions, standards, and manuals"}
+    ],
+    "Learning": [
+      {"id": "Lecture", "description": "Watching or listening to educational lectures and presentations"},
+      {"id": "Tutorial", "description": "Step-by-step hands-on guides and walk-throughs"},
+      {"id": "Course", "description": "Structured curriculum, assignments, quizzes, and modules"},
+      {"id": "Practice", "description": "Coding exercises, interactive problems, and sandbox testing"}
+    ],
+    "Communication": [
+      {"id": "Email", "description": "Composing, reading, and triaging email inboxes"},
+      {"id": "Messaging", "description": "Direct chat, team channels, and asynchronous discussions"},
+      {"id": "Meeting", "description": "Video conferences, calendar scheduling, and syncs"},
+      {"id": "Collaboration", "description": "Shared document editing and real-time whiteboard brainstorming"}
+    ],
+    "Productivity": [
+      {"id": "Planning", "description": "Roadmaps, wireframes, design mockups, and milestone planning"},
+      {"id": "Task Management", "description": "Kanban boards, backlog grooming, issue tracking, and ticket updates"},
+      {"id": "Project Management", "description": "Sprint tracking, deliverables, and resource scheduling"}
+    ],
+    "Entertainment": [
+      {"id": "Video", "description": "Watching recreational clips, vlogs, and media"},
+      {"id": "Music", "description": "Audio streaming, playlists, and background tunes"},
+      {"id": "Streaming", "description": "Long-form movies, TV episodes, and anime"},
+      {"id": "Gaming", "description": "Browser games, game reviews, and gaming forums"}
+    ],
+    "Social": [
+      {"id": "Social Media", "description": "Browsing profiles, posts, reels, and stories"},
+      {"id": "Feed Browsing", "description": "Infinite scrolling on news feeds, microblogs, and timelines"},
+      {"id": "Community", "description": "Participating in forums, comment sections, and community boards"}
+    ],
+    "Shopping": [
+      {"id": "Product Search", "description": "Browsing catalogs, comparing specs, and price-hunting"},
+      {"id": "Shopping", "description": "Adding to carts, checkout, and purchasing"},
+      {"id": "Reviews", "description": "Reading customer impressions and unboxing opinions"}
+    ],
+    "Other": [
+      {"id": "General Browsing", "description": "Casual miscellaneous surfing without focused intent"},
+      {"id": "Unknown", "description": "Unclassified or internal browser pages"}
+    ]
+  }
+}

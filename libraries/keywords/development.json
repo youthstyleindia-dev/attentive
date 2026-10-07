@@ -1,0 +1,12 @@
+{
+  "category": "Technology",
+  "activity_group": "Development",
+  "keywords": [
+    "python", "javascript", "typescript", "react", "node", "api", "git", "github",
+    "repository", "debugging", "compiler", "database", "sql", "postgres", "mongodb",
+    "docker", "kubernetes", "vue", "angular", "nextjs", "vite", "webpack", "rust",
+    "golang", "c++", "java", "css", "html", "tailwind", "pull request", "commit",
+    "branch", "merge", "syntaxerror", "modulenotfounderror", "nullpointerexception",
+    "stack trace", "refactor", "unit test", "pytest", "jest", "backend", "frontend"
+  ]
+}

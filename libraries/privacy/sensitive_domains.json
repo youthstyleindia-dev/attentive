@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "description": "Sensitive domains automatically excluded or protected by Atentiv",
+  "sensitive_categories": {
+    "banking": [
+      "chase.com", "bankofamerica.com", "wellsfargo.com", "citi.com",
+      "hdfcbank.com", "icicibank.com", "sbi.co.in", "paypal.com",
+      "stripe.com", "wise.com", "revolut.com"
+    ],
+    "password_managers": [
+      "1password.com", "bitwarden.com", "lastpass.com", "dashlane.com", "keepersecurity.com"
+    ],
+    "authentication_oauth": [
+      "accounts.google.com", "login.microsoftonline.com", "auth0.com", "okta.com", "id.apple.com"
+    ],
+    "healthcare_private": [
+      "mychart.org", "epic.com", "cerner.com", "labcorp.com", "questdiagnostics.com"
+    ],
+    "tax_government_secure": [
+      "irs.gov", "incometax.gov.in", "hmrc.gov.uk"
+    ]
+  },
+  "default_excluded_domains": [
+    "accounts.google.com",
+    "login.microsoftonline.com",
+    "1password.com",
+    "bitwarden.com",
+    "paypal.com"
+  ],
+  "sensitive_url_patterns": [
+    "/login", "/signin", "/auth", "/checkout", "/password", "/token", "/reset-password", "/verify"
+  ]
+}

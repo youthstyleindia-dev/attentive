@@ -1,0 +1,56 @@
+{
+  "version": "1.0.1",
+  "similarity_weights": {
+    "semantic_similarity": 0.35,
+    "category_similarity": 0.20,
+    "activity_similarity": 0.15,
+    "domain_relationship": 0.10,
+    "temporal_proximity": 0.10,
+    "navigation_relationship": 0.10
+  },
+  "clustering_thresholds": {
+    "attach_to_existing_workstream": 0.68,
+    "cosine_similarity_threshold": 0.68,
+    "enter_threshold": 0.70,
+    "keep_threshold": 0.55,
+    "hysteresis_margin": 0.05,
+    "high_confidence_match": 0.75,
+    "max_temporal_gap_seconds": 1200,
+    "temporal_window_seconds": 1200,
+    "rapid_switch_window_seconds": 45,
+    "max_active_workstreams_in_cache": 20
+  },
+  "merge_rules": {
+    "min_shared_tabs": 3,
+    "centroid_similarity_threshold": 0.85
+  },
+  "split_rules": {
+    "unrelated_duration_seconds": 900
+  },
+  "seed_workstreams": [
+    {
+      "id": "ws-dev",
+      "name": "Software Engineering & Development",
+      "category": "Technology",
+      "default_activities": ["Coding", "Debugging", "Documentation"]
+    },
+    {
+      "id": "ws-research",
+      "name": "Academic & Scientific Research",
+      "category": "Education",
+      "default_activities": ["Paper Reading", "Technical Research", "Search"]
+    },
+    {
+      "id": "ws-learning",
+      "name": "Technical Learning & Courses",
+      "category": "Education",
+      "default_activities": ["Lecture", "Tutorial", "Course"]
+    },
+    {
+      "id": "ws-communication",
+      "name": "Team Sync & Communications",
+      "category": "Chat",
+      "default_activities": ["Email", "Messaging", "Meeting"]
+    }
+  ]
+}

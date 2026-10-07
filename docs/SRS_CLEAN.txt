@@ -1,0 +1,67 @@
+=== PAGE 1 === Software Requirements Specification (SRS) Atentiv: A Privacy-Preserving Browser Extension for Context-Aware Browsing Analytics and Productivity Enhancement Document Version: 
+2.0 (Conceptual & Technical Guide) Status: Approved for Project Development Prepared by: Krrish Sonavane, Aditya Gode, Yash Fangal Organization: Department of Computer Science & Engineering, Sardar Patel Institute of Technology Academic Year: 2026–27 (Odd Semester) 
+1. Introduction 
+1.1 Purpose & Problem Statement Modern web browsing often leads to digital distraction and tab overload . Users frequently open dozens of tabs across research, work, communication, and leisure, causing constant task-switching (known as context switching ). Existing productivity tools either record raw time spent on sites without understanding what task you are working on, or they upload your personal browsing history to remote servers, compromising privacy. Atentiv solves this problem by acting as an intelligent, privacy-first companion built into the browser. It automatically groups related tabs into cohesive tasks ("Workstreams"), calculates how focused your browsing habits are, and lets you save and restore entire work environments with a single click—all without your data ever leaving your computer. 
+1.2 Core Terminology Made Simple Term What It Means in Plain English Manifest V3 (MV3) The standard framework modern browsers (like Chrome) use to run extension features safely and securely. 
+=== PAGE 2 === Service Worker A lightweight, background engine within the extension that listens for browser events (like opening or closing tabs) without slowing down web pages. Dwell Time The actual duration (in seconds or minutes) you spend actively looking at and interacting with a specific tab. Context Switch Jumping from one task to an unrelated one (for example, switching from writing a research paper to browsing social media). Workstream A web of related pages connected to a single task (e.g., a Google Search, a research PDF, and a coding forum all belonging to "Computer Science Project"). IndexedDB A fast, private database built directly into your web browser that stores your activity logs locally on your machine. 
+2. Overall System Architecture Atentiv operates under a Zero-Server, Local-First Architecture . No external servers or cloud services are involved. 
+
+=== PAGE 3 === 
+1. Browser Event Monitor: Detects when you open, close, or switch tabs. 
+2. Background Engine: Processes dwell time, groups related pages, and calculates focus scores. 
+3. Local Database: Safely stores your encrypted logs inside your browser storage. 
+4. User Dashboard & Side Panel: Visualizes your productivity habits and lets you manage saved tab environments. 
+3. External Interface & User Experience 
+3.1 Side Panel View ( sidepanel.html ) An accessible panel pinned to the side of your browser showing: 
+● Live Focus Score: A dynamic meter (0 to 100) reflecting your current productivity. 
+● Active Workstream: The current task name (e.g., "Mini-Project Research" ). 
+● Quick Resume: A list of previously saved workspace sessions ready to be restored. 
+3.2 Main Visual Dashboard ( dashboard.html ) A full-page visual center providing: 
+● Activity Time Charts: Graphs showing time spent across work categories (e.g., Engineering, Reading, Entertainment). 
+● Workstream Maps: Visual "constellations" showing how tabs and websites connected during research. 
+● Switch Penalty Reports: Highlights times when frequent context switching hurt your productivity flow. 
+3.3 Options & Settings ( options.html ) 
+● Category Customization: Assign productivity values to specific sites (e.g., mark github.com as high productivity, youtube.com as low productivity). 
+● Blacklist / Exclusions: Specify private domains (e.g., online banking) that Atentiv should ignore completely. 
+● Data Control: One-click options to export your data or delete everything permanently. 
+4. System Features & Conceptual Requirements 
+4.1 Real-Time Activity Tracking 
+● Active Dwell Time Measurement: Tracks time only on the tab you are actively viewing. If you leave a tab open in the background, it does not accumulate time. 
+● Smart Inactivity Detection: Pauses timers automatically if you step away from your keyboard or mouse for more than a few minutes. 
+● Media Awareness: Recognizes when a background tab is playing audio or video (such as a lecture or podcast) so educational media isn't miscounted as idle time. 
+=== PAGE 4 ===
+4.2 Smart Workstream Grouping (The Connected Tab Map) Instead of treating tabs as isolated websites, Atentiv tracks how pages link together. How it works conceptually: Imagine searching for "How to fix Python error" on Google, clicking a link to StackOverflow , and then jumping to GitHub . Atentiv recognizes this sequence as a single connected thread of work and automatically tags those tabs into a unified "Python Debugging" Workstream . 
+4.3 Productivity & Focus Metrics 
+1. Context Switch Penalty ($CSP$) Frequent tab-jumping causes mental fatigue. Atentiv quantifies this cost through a Context Switch Penalty . 
+● Low Penalty: Switching between related pages (e.g., jumping between a research paper and your lecture notes). 
+● High Penalty: Rapidly switching between completely unrelated categories (e.g., jumping from writing code to checking social media, then back every 30 seconds). 
+2. Focus Score ($F$) Your Focus Score is calculated on a scale of 0 to 100 for any given work period: 
+● If you stay on task with minimal jarring context switches, your score stays close to 100 . 
+● If you constantly switch between unrelated distraction sites, your score drops. 
+4.4 Automated Workstream Categorization 
+1. Domain Matching: Uses pre-set categories for well-known websites (e.g., arxiv.org $\rightarrow$ Research, figma.com $\rightarrow$ Design). 
+
+=== PAGE 5 ===
+2. Page Keyword Scanning: Reads page titles and top headings locally to understand the subject matter (e.g., identifying a web page with headings like "Machine Learning Model Training" ). 
+3. User Overrides: Custom user rules always take top priority over automated rules. 
+4.5 Context Snapshot & Workspace Resume When switching from one major project to another, closing dozens of tabs can cause anxiety about losing your place. 
+● Automatic Snapshot: Saves the state, tab links, and layout of a work session when you close or leave a group of tabs. 
+● One-Click Restore: Selecting a saved workstream opens all associated tabs in a clean browser window exactly where you left off. 
+5. Human-Readable Data Architecture All data is stored inside your browser using IndexedDB . Below is a clear overview of what information is kept locally. 
+5.1 Visited Domains ( domains ) Stores rules and classifications for web domains you visit. Field Name Description Example Value domain The address of the website "github.com" category High-level topic grouping "Software Development" productivity_type How productive the domain is +1 (Productive) or -1 (Distracting) keywords Common themes found on the site ["code", "repository", "pull request"] 
+5.2 Activity Session Logs ( tab_sessions ) 
+=== PAGE 6 === Records individual blocks of time spent on pages. Field Name Description Example Value session_id Unique ID for the log entry 1024 url Complete webpage address "[https://react.dev/learn](ht tps://react.dev/learn)" start_time Timestamp when you opened/focused the tab 10:15:00 AM end_time Timestamp when you left the tab 10:25:00 AM dwell_time Total active interaction time 10 minutes workstream_name Connected task group "Frontend Development" 
+5.3 Workspace Snapshots ( snapshots ) Saves groups of tabs so you can close them and restore them later. Field Name Description Example Value 
+=== PAGE 7 === snapshot_i d Unique ID for the saved workspace "snap_9872" title User-friendly workspace name "Database Assignment Research" saved_tabs List of web addresses and page titles ["Google Doc Link", "PostgreSQL Guide"] timestamp Date and time saved July 29, 2026 
+6. Non-Functional & Quality Standards 
+6.1 Privacy & Security Guarantee 
+● 100% On-Device Execution: No analytics, tab titles, browsing history, or personal data leave your browser. 
+● No Third-Party Trackers: Zero reliance on external analytics services or external network requests. 
+● Complete Data Ownership: Users can clear all stored logs or export their data to a local file at any time. 
+6.2 Browser Performance & Efficiency 
+● Low Memory Footprint: Background processing stays under 60 MB of RAM to ensure your browser remains fast. 
+● Zero Lag: Tab tracking executes in under 15 milliseconds , ensuring no visible delay when opening or switching tabs. 
+● Battery-Friendly: Idle timers automatically freeze calculations when your laptop goes to sleep or stays inactive. 
+6.3 Reliability & Persistence 
+● Crash Prevention: If your browser suddenly closes or updates, active timer states are saved continuously to prevent data loss. 
+● Fast Recovery: Restores saved workspace contexts within 50 milliseconds upon launching the extension. 

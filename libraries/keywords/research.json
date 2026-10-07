@@ -1,0 +1,10 @@
+{
+  "category": "Education",
+  "activity_group": "Research",
+  "keywords": [
+    "research", "paper", "arxiv", "survey", "experiment", "benchmark", "reference",
+    "methodology", "dataset", "literature", "abstract", "proceedings", "citation",
+    "ieee", "acm", "springer", "pubmed", "doi", "hypothesis", "empirical", "evaluation",
+    "neural", "transformer", "deep learning", "statistical", "peer review"
+  ]
+}

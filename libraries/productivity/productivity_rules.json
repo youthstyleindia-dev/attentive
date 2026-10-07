@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "description": "Baseline contextual productivity inference rules",
+  "activity_defaults": {
+    "Coding": "productive",
+    "Debugging": "productive",
+    "Documentation": "productive",
+    "Code Review": "productive",
+    "Paper Reading": "productive",
+    "Technical Research": "productive",
+    "Search": "neutral",
+    "Reference Lookup": "productive",
+    "Lecture": "productive",
+    "Tutorial": "productive",
+    "Course": "productive",
+    "Practice": "productive",
+    "Email": "neutral",
+    "Messaging": "neutral",
+    "Meeting": "productive",
+    "Collaboration": "productive",
+    "Planning": "productive",
+    "Task Management": "productive",
+    "Project Management": "productive",
+    "Video": "neutral",
+    "Music": "neutral",
+    "Streaming": "distracting",
+    "Gaming": "distracting",
+    "Social Media": "distracting",
+    "Feed Browsing": "distracting",
+    "Community": "neutral",
+    "Product Search": "neutral",
+    "Shopping": "distracting",
+    "Reviews": "neutral",
+    "General Browsing": "neutral",
+    "Unknown": "neutral"
+  },
+  "contextual_overrides": [
+    {
+      "condition": "domain == 'youtube.com' and (contains_keyword('tutorial') or contains_keyword('lecture') or contains_keyword('course') or contains_keyword('programming') or contains_keyword('explained'))",
+      "activity": "Tutorial",
+      "productivity": "productive"
+    },
+    {
+      "condition": "domain == 'youtube.com' and (contains_keyword('meme') or contains_keyword('funny') or contains_keyword('music') or contains_keyword('trailer') or contains_keyword('compilation'))",
+      "activity": "Video",
+      "productivity": "distracting"
+    },
+    {
+      "condition": "domain == 'reddit.com' and (contains_keyword('learnprogramming') or contains_keyword('machinelearning') or contains_keyword('reactjs') or contains_keyword('datascience'))",
+      "activity": "Technical Research",
+      "productivity": "productive"
+    },
+    {
+      "condition": "domain == 'reddit.com' and (contains_keyword('funny') or contains_keyword('memes') or contains_keyword('gaming') or contains_keyword('aww'))",
+      "activity": "Community",
+      "productivity": "distracting"
+    }
+  ]
+}
