@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Atentiv Audio Classification Test Bench</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 28px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      font-size: 20px;
+      margin-top: 0;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .btn-edu {
+      background: #065f46;
+      color: #a7f3d0;
+      border: 1px solid #059669;
+    }
+    .btn-edu:hover { background: #047857; }
+    .btn-lofi {
+      background: #4c1d95;
+      color: #ddd6fe;
+      border: 1px solid #7c3aed;
+    }
+    .btn-lofi:hover { background: #5b21b6; }
+    .btn-ent {
+      background: #831843;
+      color: #fbcfe8;
+      border: 1px solid #db2777;
+    }
+    .btn-ent:hover { background: #9d174d; }
+    .btn-stop {
+      background: #334155;
+      color: #f1f5f9;
+      border: 1px solid #475569;
+      margin-top: 10px;
+    }
+    .btn-stop:hover { background: #475569; }
+    .status-box {
+      margin-top: 24px;
+      background: #090d16;
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid #1e293b;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .status-label { color: #64748b; }
+    .status-val { font-weight: 600; color: #f1f5f9; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎧 Audio Classification Test Bench</h1>
+    <p>
+      This tab simulates live audio streaming across different platforms and content genres.
+      Clicking a stream activates synthetic Web Audio tones, triggering Chrome's <code>tab.audible = true</code>.
+      Atentiv's background engine detects the audible stream, identifies the platform, runs fastText ML inference, and scores distraction.
+    </p>
+
+    <div class="btn-group">
+      <button class="btn-edu" id="play-edu">
+        <span>🎓 MIT 6.S191 Deep Learning & Neural Networks Lecture</span>
+        <span>Expected: Focus Aid (~15/100)</span>
+      </button>
+
+      <button class="btn-lofi" id="play-lofi">
+        <span>☕ Spotify Lo-Fi Instrumental Study Beats for Coding</span>
+        <span>Expected: Focus Aid (~20/100)</span>
+      </button>
+
+      <button class="btn-ent" id="play-ent">
+        <span>🎮 Twitch GTA V Funny Moments & Comedy Highlights</span>
+        <span>Expected: Distracting (~95/100)</span>
+      </button>
+
+      <button class="btn-stop" id="stop-audio">
+        <span>⏹ Stop All Audio</span>
+        <span>(Pause Session)</span>
+      </button>
+    </div>
+
+    <div class="status-box">
+      <div class="status-row">
+        <span class="status-label">Playback State:</span>
+        <span class="status-val" id="state-disp" style="color: #ef4444;">Stopped</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Current Simulated Title:</span>
+        <span class="status-val" id="title-disp">—</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Audible Indicator:</span>
+        <span class="status-val" id="audible-disp">False (Silent)</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let audioCtx = null;
+    let osc = null;
+
+    function startTone(frequency = 220) {
+      if (audioCtx) {
+        try { audioCtx.close(); } catch {}
+      }
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime); // Very quiet, unobtrusive volume
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+
+      document.getElementById("audible-disp").textContent = "True (Playing)";
+      document.getElementById("audible-disp").style.color = "#10b981";
+      document.getElementById("state-disp").textContent = "Active Stream";
+      document.getElementById("state-disp").style.color = "#10b981";
+    }
+
+    function stopTone() {
+      if (osc) {
+        try { osc.stop(); } catch {}
+        osc = null;
+      }
+      if (audioCtx) {
+        try { audioCtx.close(); } catch {}
+        audioCtx = null;
+      }
+      document.getElementById("audible-disp").textContent = "False (Silent)";
+      document.getElementById("audible-disp").style.color = "#ef4444";
+      document.getElementById("state-disp").textContent = "Stopped";
+      document.getElementById("state-disp").style.color = "#ef4444";
+      document.getElementById("title-disp").textContent = "Stopped";
+      document.title = "Atentiv Audio Test Bench (Stopped)";
+    }
+
+    document.getElementById("play-edu").addEventListener("click", () => {
+      const title = "MIT 6.S191 Deep Learning & Neural Networks Lecture (YouTube)";
+      document.title = title;
+      document.getElementById("title-disp").textContent = title;
+      startTone(330);
+    });
+
+    document.getElementById("play-lofi").addEventListener("click", () => {
+      const title = "Lo-Fi Instrumental Beats for Coding & Deep Focus (Spotify)";
+      document.title = title;
+      document.getElementById("title-disp").textContent = title;
+      startTone(260);
+    });
+
+    document.getElementById("play-ent").addEventListener("click", () => {
+      const title = "Twitch GTA V Funny Moments & Reaction Comedy Stream";
+      document.title = title;
+      document.getElementById("title-disp").textContent = title;
+      startTone(440);
+    });
+
+    document.getElementById("stop-audio").addEventListener("click", () => {
+      stopTone();
+    });
+  </script>
+</body>
+</html>

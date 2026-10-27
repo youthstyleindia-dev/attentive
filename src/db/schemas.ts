@@ -40,6 +40,11 @@ export interface TabSessionRecord {
   classification_confidence: number;
   classification_latency_ms: number;
   model_version: string;
+  is_audio_session?: boolean;
+  audio_platform?: string;
+  distraction_score?: number; // 0 (focus) to 100 (distracting)
+  is_distracting?: boolean;
+  distraction_reason?: string;
   created_at: number;
 }
 
@@ -208,7 +213,8 @@ export interface FeatureSnapshotRecord {
 
 // ─── ATLAS Event-Driven Engine Schemas ──────────────────────────────────────
 
-export type AtlasTrackingState = "STOPPED" | "RECORDING" | "IDLE_CANDIDATE" | "IDLE" | "PAUSED";
+export type AtlasTrackingState =
+  "STOPPED" | "RECORDING" | "IDLE_CANDIDATE" | "IDLE" | "PAUSED";
 
 export type BrowserEventType =
   | "TAB_ACTIVATED"
@@ -267,4 +273,3 @@ export interface TabSwitchEventRecord {
   switch_burden_score: number; // 0 to 100
   workstream_switched: boolean;
 }
-
