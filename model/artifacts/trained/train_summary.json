@@ -1,7 +1,7 @@
 {
   "model_name": "atentiv-page-category",
   "version": "1.0.0",
-  "training_time_seconds": 4.73,
+  "training_time_seconds": 2.14,
   "raw_size_bytes": 39417658,
   "raw_size_mb": 37.59,
   "num_words": 89229,

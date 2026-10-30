@@ -14,7 +14,9 @@ export class RuleRepository {
     return await db.rules.orderBy("priority").reverse().toArray();
   }
 
-  static async add(rule: Omit<UserRuleRecord, "created_at" | "updated_at">): Promise<void> {
+  static async add(
+    rule: Omit<UserRuleRecord, "created_at" | "updated_at">,
+  ): Promise<void> {
     const now = Date.now();
     await db.rules.put({
       ...rule,
@@ -23,7 +25,10 @@ export class RuleRepository {
     });
   }
 
-  static async update(ruleId: string, changes: Partial<UserRuleRecord>): Promise<void> {
+  static async update(
+    ruleId: string,
+    changes: Partial<UserRuleRecord>,
+  ): Promise<void> {
     await db.rules.update(ruleId, {
       ...changes,
       updated_at: Date.now(),

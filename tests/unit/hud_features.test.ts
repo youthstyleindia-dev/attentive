@@ -40,7 +40,11 @@ test("Tier 1 (R4): HUD Appearance controls persist to atentiv_hud_prefs with liv
       accentColor: preset.hex,
     };
     const css = HUDAppearanceEngine.computeCSSVariables(updatedPrefs);
-    assert.equal(css["--at-purple"], preset.hex, `CSS var must update to preset ${preset.name}`);
+    assert.equal(
+      css["--at-purple"],
+      preset.hex,
+      `CSS var must update to preset ${preset.name}`,
+    );
   }
 
   // 4. User drags transparency and blur sliders
@@ -57,7 +61,10 @@ test("Tier 1 (R4): HUD Appearance controls persist to atentiv_hud_prefs with liv
   await HUDAppearanceEngine.save(storageApi, customizedPrefs);
 
   // Verify stored payload in atentiv_hud_prefs
-  assert.deepEqual(mockStorage[HUDAppearanceEngine.STORAGE_KEY], customizedPrefs);
+  assert.deepEqual(
+    mockStorage[HUDAppearanceEngine.STORAGE_KEY],
+    customizedPrefs,
+  );
 
   // Re-load and verify complete rehydration
   const loadedPrefs = await HUDAppearanceEngine.load(storageApi);
@@ -113,8 +120,16 @@ test("Tier 1 (R6): Auto-Activate New Tabs broadcasts NEW_TAB_CREATED to HUDs", a
   // Trigger event for tab creation
   await onTabCreatedHandler({ id: 12, url: "https://arxiv.org/abs/2301.0001" });
 
-  assert.equal(reconcileCount, 1, "Session state must reconcile immediately on tab creation");
-  assert.equal(broadcastMessages.length, 2, "Must broadcast NEW_TAB_CREATED to all open tabs");
+  assert.equal(
+    reconcileCount,
+    1,
+    "Session state must reconcile immediately on tab creation",
+  );
+  assert.equal(
+    broadcastMessages.length,
+    2,
+    "Must broadcast NEW_TAB_CREATED to all open tabs",
+  );
   assert.equal(broadcastMessages[0].message.type, "NEW_TAB_CREATED");
   assert.equal(broadcastMessages[0].message.newTabId, 12);
   assert.equal(broadcastMessages[1].message.type, "NEW_TAB_CREATED");
@@ -124,11 +139,46 @@ test("Tier 1 (R7a): Focus Mode closes non-pinned background tabs and confirms wi
   const removedTabIds: number[][] = [];
 
   const tabStrip: TabInfo[] = [
-    { id: 101, windowId: 1, url: "https://github.com/active", title: "Active Work", active: true, pinned: false },
-    { id: 102, windowId: 1, url: "https://mail.google.com", title: "Pinned Mail", active: false, pinned: true },
-    { id: 103, windowId: 1, url: "https://slack.com", title: "Pinned Slack", active: false, pinned: true },
-    { id: 104, windowId: 1, url: "https://twitter.com", title: "Distraction 1", active: false, pinned: false },
-    { id: 105, windowId: 1, url: "https://reddit.com", title: "Distraction 2", active: false, pinned: false },
+    {
+      id: 101,
+      windowId: 1,
+      url: "https://github.com/active",
+      title: "Active Work",
+      active: true,
+      pinned: false,
+    },
+    {
+      id: 102,
+      windowId: 1,
+      url: "https://mail.google.com",
+      title: "Pinned Mail",
+      active: false,
+      pinned: true,
+    },
+    {
+      id: 103,
+      windowId: 1,
+      url: "https://slack.com",
+      title: "Pinned Slack",
+      active: false,
+      pinned: true,
+    },
+    {
+      id: 104,
+      windowId: 1,
+      url: "https://twitter.com",
+      title: "Distraction 1",
+      active: false,
+      pinned: false,
+    },
+    {
+      id: 105,
+      windowId: 1,
+      url: "https://reddit.com",
+      title: "Distraction 2",
+      active: false,
+      pinned: false,
+    },
   ];
 
   const fakeTabsApi = {
@@ -144,10 +194,16 @@ test("Tier 1 (R7a): Focus Mode closes non-pinned background tabs and confirms wi
   assert.equal(result.closedCount, 2);
   assert.equal(result.message, "Closed 2 background tabs");
   assert.equal(removedTabIds.length, 1);
-  assert.deepEqual(removedTabIds[0], [104, 105], "Must remove only unpinned background tabs 104 and 105");
+  assert.deepEqual(
+    removedTabIds[0],
+    [104, 105],
+    "Must remove only unpinned background tabs 104 and 105",
+  );
 
   // Edge case: All remaining tabs are pinned or active
-  const cleanTabStrip = tabStrip.filter((t) => !removedTabIds[0].includes(t.id));
+  const cleanTabStrip = tabStrip.filter(
+    (t) => !removedTabIds[0].includes(t.id),
+  );
   const cleanTabsApi = {
     query: async () => cleanTabStrip,
     remove: async (ids: number[]) => {
@@ -162,11 +218,36 @@ test("Tier 1 (R7a): Focus Mode closes non-pinned background tabs and confirms wi
 
 test("Tier 1 (R7b): Real-time Search in Full HUD filters Open Tabs and Recent Activity", () => {
   const sampleTabs: SearchItem[] = [
-    { id: 1, title: "Atentiv: Project Dashboard & Code", domain: "github.com", category: "Technology" },
-    { id: 2, title: "Attention Interleaving in Deep Work", domain: "arxiv.org", category: "Research" },
-    { id: 3, title: "TypeScript Handbook: Generics", domain: "typescriptlang.org", category: "Technology" },
-    { id: 4, title: "Funny Cat Videos Compilation", domain: "youtube.com", category: "Entertainment" },
-    { id: 5, title: "Reddit: Ask Science", domain: "reddit.com", category: "Education" },
+    {
+      id: 1,
+      title: "Atentiv: Project Dashboard & Code",
+      domain: "github.com",
+      category: "Technology",
+    },
+    {
+      id: 2,
+      title: "Attention Interleaving in Deep Work",
+      domain: "arxiv.org",
+      category: "Research",
+    },
+    {
+      id: 3,
+      title: "TypeScript Handbook: Generics",
+      domain: "typescriptlang.org",
+      category: "Technology",
+    },
+    {
+      id: 4,
+      title: "Funny Cat Videos Compilation",
+      domain: "youtube.com",
+      category: "Entertainment",
+    },
+    {
+      id: 5,
+      title: "Reddit: Ask Science",
+      domain: "reddit.com",
+      category: "Education",
+    },
   ];
 
   // 1. Query matching single keyword in title
@@ -189,7 +270,10 @@ test("Tier 1 (R7b): Real-time Search in Full HUD filters Open Tabs and Recent Ac
   assert.equal(resEmpty.length, 5);
 
   // 5. Query matching no items returns empty array
-  const resNone = HUDSearchEngine.filterItems(sampleTabs, "nonexistent-query-xyz");
+  const resNone = HUDSearchEngine.filterItems(
+    sampleTabs,
+    "nonexistent-query-xyz",
+  );
   assert.equal(resNone.length, 0);
 
   // 6. Adversarial search characters (Regex meta-characters must not throw)
@@ -199,10 +283,26 @@ test("Tier 1 (R7b): Real-time Search in Full HUD filters Open Tabs and Recent Ac
   });
 
   // 7. Shortcut detection: Cmd+K and Ctrl+K
-  assert.equal(HUDSearchEngine.isSearchShortcut({ key: "k", metaKey: true }), true);
-  assert.equal(HUDSearchEngine.isSearchShortcut({ key: "K", ctrlKey: true }), true);
-  assert.equal(HUDSearchEngine.isSearchShortcut({ key: "a", metaKey: true }), false);
-  assert.equal(HUDSearchEngine.isSearchShortcut({ key: "k", metaKey: false, ctrlKey: false }), false);
+  assert.equal(
+    HUDSearchEngine.isSearchShortcut({ key: "k", metaKey: true }),
+    true,
+  );
+  assert.equal(
+    HUDSearchEngine.isSearchShortcut({ key: "K", ctrlKey: true }),
+    true,
+  );
+  assert.equal(
+    HUDSearchEngine.isSearchShortcut({ key: "a", metaKey: true }),
+    false,
+  );
+  assert.equal(
+    HUDSearchEngine.isSearchShortcut({
+      key: "k",
+      metaKey: false,
+      ctrlKey: false,
+    }),
+    false,
+  );
 });
 
 test("Tier 1 (R7c, R7d, R7e): HUD navigation hooks and 1-second Pill Timer synchronization", () => {
@@ -222,7 +322,11 @@ test("Tier 1 (R7c, R7d, R7e): HUD navigation hooks and 1-second Pill Timer synch
     activeNavSection = "workstreams";
   };
   onViewAllWorkstreamsClick();
-  assert.equal(activeNavSection, "workstreams", "'View all ->' must set nav section to workstreams");
+  assert.equal(
+    activeNavSection,
+    "workstreams",
+    "'View all ->' must set nav section to workstreams",
+  );
 
   // Action R7e: Header tracking pill timer format and tick updates
   assert.equal(formatHeaderTimer(0), "00:00:00");

@@ -17,7 +17,10 @@ export class ExclusionEngine {
   private static init() {
     if (this.sensitiveSet) return;
     this.sensitiveSet = new Set();
-    const categories = sensitiveDomainsJson.sensitive_categories as Record<string, string[]>;
+    const categories = sensitiveDomainsJson.sensitive_categories as Record<
+      string,
+      string[]
+    >;
     for (const list of Object.values(categories)) {
       for (const d of list) {
         this.sensitiveSet.add(d.toLowerCase());
@@ -26,7 +29,11 @@ export class ExclusionEngine {
     this.sensitivePatterns = sensitiveDomainsJson.sensitive_url_patterns || [];
   }
 
-  static check(domain: string, fullUrl = "", userExclusions: string[] = []): ExclusionCheckResult {
+  static check(
+    domain: string,
+    fullUrl = "",
+    userExclusions: string[] = [],
+  ): ExclusionCheckResult {
     this.init();
     const cleanDomain = domain.toLowerCase().trim();
 
@@ -35,25 +42,38 @@ export class ExclusionEngine {
       const e = excl.toLowerCase().trim();
       if (!e) continue;
       if (cleanDomain === e || cleanDomain.endsWith("." + e)) {
-        return { isExcluded: true, reason: `User exclusion rule matched: ${excl}` };
+        return {
+          isExcluded: true,
+          reason: `User exclusion rule matched: ${excl}`,
+        };
       }
       if (e.includes("*")) {
-        const regexStr = "^" + e.replace(/\./g, "\\.").replace(/\*/g, ".*") + "$";
+        const regexStr =
+          "^" + e.replace(/\./g, "\\.").replace(/\*/g, ".*") + "$";
         if (new RegExp(regexStr).test(cleanDomain)) {
-          return { isExcluded: true, reason: `User wildcard exclusion matched: ${excl}` };
+          return {
+            isExcluded: true,
+            reason: `User wildcard exclusion matched: ${excl}`,
+          };
         }
       }
     }
 
     // 2. Built-in sensitive domain library
     if (this.sensitiveSet!.has(cleanDomain)) {
-      return { isExcluded: true, reason: "Built-in sensitive domain protection" };
+      return {
+        isExcluded: true,
+        reason: "Built-in sensitive domain protection",
+      };
     }
     const parts = cleanDomain.split(".");
     for (let i = 1; i < parts.length - 1; i++) {
       const parent = parts.slice(i).join(".");
       if (this.sensitiveSet!.has(parent)) {
-        return { isExcluded: true, reason: "Built-in sensitive domain protection (subdomain)" };
+        return {
+          isExcluded: true,
+          reason: "Built-in sensitive domain protection (subdomain)",
+        };
       }
     }
 
@@ -63,7 +83,10 @@ export class ExclusionEngine {
         const path = new URL(fullUrl).pathname.toLowerCase();
         for (const pattern of this.sensitivePatterns) {
           if (path.includes(pattern)) {
-            return { isExcluded: true, reason: `Sensitive URL pattern detected: ${pattern}` };
+            return {
+              isExcluded: true,
+              reason: `Sensitive URL pattern detected: ${pattern}`,
+            };
           }
         }
       } catch {
@@ -74,7 +97,11 @@ export class ExclusionEngine {
     return { isExcluded: false };
   }
 
-  static isExcluded(domain: string, userExclusions: string[] = [], fullUrl = ""): boolean {
+  static isExcluded(
+    domain: string,
+    userExclusions: string[] = [],
+    fullUrl = "",
+  ): boolean {
     return this.check(domain, fullUrl, userExclusions).isExcluded;
   }
 
@@ -91,4 +118,3 @@ export class ExclusionEngine {
     }
   }
 }
-

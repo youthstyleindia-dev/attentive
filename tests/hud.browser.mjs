@@ -18,7 +18,7 @@ try {
     context.serviceWorkers()[0] ||
     (await context.waitForEvent("serviceworker"));
   const id = new URL(worker.url()).host;
-  
+
   // 1. Open an external web page to test in-page HUD injection
   const page = await context.newPage();
   await page.route("https://github.com/**", (r) =>
@@ -34,7 +34,7 @@ try {
         </html>
       `,
       contentType: "text/html",
-    })
+    }),
   );
 
   await page.goto("https://github.com/atentiv/project-dashboard");
@@ -47,26 +47,42 @@ try {
 
   // 2. Compact View (Always Visible)
   console.log("2. Verifying Tier 1: Compact View & Focus Score...");
-  const compactBadge = page.locator("#atentiv-sidebar-container").locator("#atentiv-badge");
+  const compactBadge = page
+    .locator("#atentiv-sidebar-container")
+    .locator("#atentiv-badge");
   await compactBadge.waitFor({ state: "visible", timeout: 5000 });
-  const scoreText = await compactBadge.locator("#atentiv-score-text").textContent();
+  const scoreText = await compactBadge
+    .locator("#atentiv-score-text")
+    .textContent();
   console.log(`Compact Badge live score: ${scoreText}`);
-  assert.ok(scoreText && parseInt(scoreText) >= 0, "Focus score must be numeric");
+  assert.ok(
+    scoreText && parseInt(scoreText) >= 0,
+    "Focus score must be numeric",
+  );
 
   // 3. Hover Preview (Instant)
   console.log("3. Verifying Tier 2: Hover Preview...");
   await compactBadge.hover();
   await new Promise((r) => setTimeout(r, 300));
-  const hoverCard = page.locator("#atentiv-sidebar-container").locator("#atentiv-hover-card");
+  const hoverCard = page
+    .locator("#atentiv-sidebar-container")
+    .locator("#atentiv-hover-card");
   await hoverCard.waitFor({ state: "attached", timeout: 3000 });
-  const hoverScore = await hoverCard.locator("#atentiv-hover-score").textContent();
+  const hoverScore = await hoverCard
+    .locator("#atentiv-hover-score")
+    .textContent();
   console.log(`Hover preview score text: ${hoverScore}`);
-  assert.ok(hoverScore.includes("Focus Score"), "Hover card must show focus score");
+  assert.ok(
+    hoverScore.includes("Focus Score"),
+    "Hover card must show focus score",
+  );
 
   // 4. Expanded Panel (On Click)
   console.log("4. Verifying Tier 3: Expanded Panel...");
   await compactBadge.click();
-  const panel = page.locator("#atentiv-sidebar-container").locator("#atentiv-expanded-panel");
+  const panel = page
+    .locator("#atentiv-sidebar-container")
+    .locator("#atentiv-expanded-panel");
   await panel.waitFor({ state: "visible", timeout: 3000 });
 
   // Verify Current Tab Card in Expanded Panel
@@ -75,7 +91,10 @@ try {
   assert.equal(currDomain, "github.com", "Current domain must match page");
 
   const prodBadge = panel.locator("#atentiv-prod-text");
-  assert.ok((await prodBadge.textContent()).includes("Productive"), "Should show productivity badge");
+  assert.ok(
+    (await prodBadge.textContent()).includes("Productive"),
+    "Should show productivity badge",
+  );
 
   // Verify Smart Navigation Cards
   console.log("5. Verifying Tier 4: Smart Navigation & Group Flyout...");
@@ -84,7 +103,9 @@ try {
   const continueGrp = smartNav.locator(".nav-group-pill").first();
   await continueGrp.click();
 
-  const flyout = panel.locator("#atentiv-flyout-container .smart-nav-tabs-flyout");
+  const flyout = panel.locator(
+    "#atentiv-flyout-container .smart-nav-tabs-flyout",
+  );
   await flyout.waitFor({ state: "visible" });
   const openAllBtn = flyout.locator("#atentiv-open-all-grp");
   await openAllBtn.waitFor({ state: "visible" });
@@ -104,9 +125,13 @@ try {
   await dashPage.goto(`chrome-extension://${id}/index.html?page=Home`);
 
   // Bypass login if presented
-  const signInBtn = dashPage.getByRole("button", { name: "Sign In to Atentiv" });
+  const signInBtn = dashPage.getByRole("button", {
+    name: "Sign In to Atentiv",
+  });
   if (await signInBtn.isVisible()) {
-    await dashPage.getByRole("button", { name: "1-Click Continue as Divya (Personal)" }).click();
+    await dashPage
+      .getByRole("button", { name: "1-Click Continue as Divya (Personal)" })
+      .click();
   }
   const welcomeModal = dashPage.getByText("Welcome back, Divya!");
   if (await welcomeModal.isVisible()) {
@@ -114,12 +139,18 @@ try {
   }
 
   // Verify Scenic Home Elements
-  await dashPage.locator(".scenic-home-container").waitFor({ state: "visible", timeout: 5000 });
+  await dashPage
+    .locator(".scenic-home-container")
+    .waitFor({ state: "visible", timeout: 5000 });
   await dashPage.locator(".scenic-clock").waitFor({ state: "visible" });
   await dashPage.locator(".scenic-greeting", { hasText: "Good" }).waitFor();
-  await dashPage.locator(".scenic-focus-card", { hasText: "Today's Focus" }).waitFor();
+  await dashPage
+    .locator(".scenic-focus-card", { hasText: "Today's Focus" })
+    .waitFor();
   await dashPage.locator(".scenic-dock").waitFor({ state: "visible" });
-  console.log("Verified Scenic New Tab Home layout, clock, focus ring, and dock.");
+  console.log(
+    "Verified Scenic New Tab Home layout, clock, focus ring, and dock.",
+  );
 
   console.log("ALL IN-PAGE HUD AND NEW TAB EXPERIENCE TESTS PASSED!");
 } finally {

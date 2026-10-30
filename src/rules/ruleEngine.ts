@@ -2,7 +2,11 @@
  * Rule Engine & Matcher — Atentiv
  * Implements strict hierarchical decision matching where user rules strictly take precedence.
  */
-import type { UserRuleRecord, UserRuleCondition, UserRuleAction } from "../db/schemas";
+import type {
+  UserRuleRecord,
+  UserRuleCondition,
+  UserRuleAction,
+} from "../db/schemas";
 
 export interface PageContext {
   domain: string;
@@ -22,7 +26,10 @@ export interface RuleMatchResult {
 }
 
 export class RuleEngine {
-  static match(rules: UserRuleRecord[], ctx: PageContext): RuleMatchResult | null {
+  static match(
+    rules: UserRuleRecord[],
+    ctx: PageContext,
+  ): RuleMatchResult | null {
     // Sort active rules by priority descending
     const activeRules = rules
       .filter((r) => r.enabled)
@@ -40,17 +47,26 @@ export class RuleEngine {
     return null;
   }
 
-  private static evalCondition(cond: UserRuleCondition, ctx: PageContext): boolean {
+  private static evalCondition(
+    cond: UserRuleCondition,
+    ctx: PageContext,
+  ): boolean {
     const cleanDomain = ctx.domain.toLowerCase().trim();
 
     // Domain exact
-    if (cond.domain_exact && cleanDomain !== cond.domain_exact.toLowerCase().trim()) {
+    if (
+      cond.domain_exact &&
+      cleanDomain !== cond.domain_exact.toLowerCase().trim()
+    ) {
       return false;
     }
 
     // Domain wildcard
     if (cond.domain_wildcard) {
-      const pattern = "^" + cond.domain_wildcard.replace(/\./g, "\\.").replace(/\*/g, ".*") + "$";
+      const pattern =
+        "^" +
+        cond.domain_wildcard.replace(/\./g, "\\.").replace(/\*/g, ".*") +
+        "$";
       if (!new RegExp(pattern, "i").test(cleanDomain)) {
         return false;
       }
@@ -73,7 +89,7 @@ export class RuleEngine {
       const titleLower = ctx.title.toLowerCase();
       if (Array.isArray(cond.title_contains)) {
         const matchesAny = cond.title_contains.some((term) =>
-          titleLower.includes(String(term).toLowerCase())
+          titleLower.includes(String(term).toLowerCase()),
         );
         if (!matchesAny) return false;
       } else {
@@ -99,7 +115,7 @@ export class RuleEngine {
       const combined = ctx.headings.join(" ").toLowerCase();
       if (Array.isArray(cond.heading_contains)) {
         const matchesAny = cond.heading_contains.some((term) =>
-          combined.includes(String(term).toLowerCase())
+          combined.includes(String(term).toLowerCase()),
         );
         if (!matchesAny) return false;
       } else {
@@ -119,7 +135,10 @@ export class RuleEngine {
     // Time of day & Day of week
     if (cond.time_of_day_start !== undefined || cond.day_of_week) {
       const now = new Date(ctx.timestamp || Date.now());
-      if (cond.time_of_day_start !== undefined && cond.time_of_day_end !== undefined) {
+      if (
+        cond.time_of_day_start !== undefined &&
+        cond.time_of_day_end !== undefined
+      ) {
         const hour = now.getHours();
         if (hour < cond.time_of_day_start || hour > cond.time_of_day_end) {
           return false;

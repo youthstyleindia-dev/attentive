@@ -1,0 +1,115 @@
+{
+  "model_id": "atentiv-classifier-v2",
+  "model_name": "atentiv-classifier",
+  "version": "2.0.0",
+  "framework": "fastText",
+  "loss": "ova",
+  "dimension": 50,
+  "wordNgrams": 2,
+  "quantized": true,
+  "size_bytes": 3758218,
+  "size_mb": 3.58,
+  "checksum_sha256": "e053aedb40cf7c1301252955a5353b586e74c49a8ef235b4d688d31fb1f6dd7a",
+  "public_path": "models/atentiv-classifier.ftz",
+  "training_date": "2026-10-22T03:17:46Z",
+  "taxonomy_version": "1.0.0",
+  "preprocessing_version": "2.0.0",
+  "labels": [
+    "Technology",
+    "Education",
+    "Work",
+    "Research",
+    "Communication",
+    "Chat",
+    "News",
+    "Entertainment",
+    "Shop",
+    "Government",
+    "Health",
+    "Travel",
+    "Uncategorized"
+  ],
+  "validation_metrics": {
+    "test_samples": 4493,
+    "accuracy": 0.5591,
+    "macro_precision": 0.5237,
+    "macro_recall": 0.4537,
+    "macro_f1": 0.477,
+    "weighted_f1": 0.5501,
+    "title_only_noisy_accuracy": 0.4369,
+    "latency_ms": {
+      "mean": 0.015,
+      "p50": 0.012,
+      "p95": 0.033,
+      "p99": 0.048
+    },
+    "per_label": {
+      "Chat": {
+        "precision": 0.5372,
+        "recall": 0.4676,
+        "f1": 0.5,
+        "support": 216.0
+      },
+      "Education": {
+        "precision": 0.5707,
+        "recall": 0.5608,
+        "f1": 0.5657,
+        "support": 576.0
+      },
+      "Entertainment": {
+        "precision": 0.6097,
+        "recall": 0.7092,
+        "f1": 0.6557,
+        "support": 1121.0
+      },
+      "Government": {
+        "precision": 0.4923,
+        "recall": 0.2581,
+        "f1": 0.3386,
+        "support": 248.0
+      },
+      "Health": {
+        "precision": 0.4786,
+        "recall": 0.3256,
+        "f1": 0.3875,
+        "support": 172.0
+      },
+      "News": {
+        "precision": 0.4029,
+        "recall": 0.3218,
+        "f1": 0.3578,
+        "support": 174.0
+      },
+      "Shop": {
+        "precision": 0.5557,
+        "recall": 0.5624,
+        "f1": 0.559,
+        "support": 665.0
+      },
+      "Technology": {
+        "precision": 0.6302,
+        "recall": 0.6035,
+        "f1": 0.6166,
+        "support": 401.0
+      },
+      "Travel": {
+        "precision": 0.4615,
+        "recall": 0.2222,
+        "f1": 0.3,
+        "support": 108.0
+      },
+      "Uncategorized": {
+        "precision": 0.5069,
+        "recall": 0.6231,
+        "f1": 0.559,
+        "support": 711.0
+      },
+      "Work": {
+        "precision": 0.5152,
+        "recall": 0.3366,
+        "f1": 0.4072,
+        "support": 101.0
+      }
+    }
+  }
+}

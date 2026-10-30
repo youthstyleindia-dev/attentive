@@ -30,24 +30,57 @@ export function FeedbackModal({
 }: FeedbackModalProps) {
   const [category, setCategory] = useState(currentCategory);
   const [activity, setActivity] = useState(currentActivity);
-  const [productivity, setProductivity] = useState<ProductivityType>(currentProductivity);
+  const [productivity, setProductivity] =
+    useState<ProductivityType>(currentProductivity);
   const [reason, setReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const categories = [
-    "Technology", "Education", "Work", "Research", "Communication",
-    "Chat", "News", "Entertainment", "Shop", "Government", "Health", "Travel", "Uncategorized"
+    "Technology",
+    "Education",
+    "Work",
+    "Research",
+    "Communication",
+    "Chat",
+    "News",
+    "Entertainment",
+    "Shop",
+    "Government",
+    "Health",
+    "Travel",
+    "Uncategorized",
   ];
 
   const activities = [
-    "Coding", "Debugging", "Documentation", "Code Review",
-    "Search", "Paper Reading", "Technical Research", "Reference Lookup",
-    "Lecture", "Tutorial", "Course", "Practice",
-    "Email", "Messaging", "Meeting", "Collaboration",
-    "Planning", "Task Management", "Project Management",
-    "Video", "Music", "Streaming", "Gaming",
-    "Social Media", "Feed Browsing", "Community",
-    "Shopping", "Product Search", "General Browsing"
+    "Coding",
+    "Debugging",
+    "Documentation",
+    "Code Review",
+    "Search",
+    "Paper Reading",
+    "Technical Research",
+    "Reference Lookup",
+    "Lecture",
+    "Tutorial",
+    "Course",
+    "Practice",
+    "Email",
+    "Messaging",
+    "Meeting",
+    "Collaboration",
+    "Planning",
+    "Task Management",
+    "Project Management",
+    "Video",
+    "Music",
+    "Streaming",
+    "Gaming",
+    "Social Media",
+    "Feed Browsing",
+    "Community",
+    "Shopping",
+    "Product Search",
+    "General Browsing",
   ];
 
   async function handleSubmit(e: React.FormEvent) {
@@ -74,22 +107,32 @@ export function FeedbackModal({
             <Edit3 size={18} />
             <div>
               <h2>Customize Classification</h2>
-              <small>Domain: <b>{domain}</b></small>
+              <small>
+                Domain: <b>{domain}</b>
+              </small>
             </div>
           </div>
-          <button className="quiet icon-btn" onClick={onClose} aria-label="Close">
+          <button
+            className="quiet icon-btn"
+            onClick={onClose}
+            aria-label="Close"
+          >
             <X size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal-body">
           <p className="modal-intro">
-            Your corrections immediately update future classification and generate high-priority personal rules for <b>{domain}</b>.
+            Your corrections immediately update future classification and
+            generate high-priority personal rules for <b>{domain}</b>.
           </p>
 
           <div className="form-group">
             <label>Category</label>
-            <select value={category} onChange={(e) => setCategory(e.target.value)}>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
               {categories.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -100,7 +143,10 @@ export function FeedbackModal({
 
           <div className="form-group">
             <label>Activity Type</label>
-            <select value={activity} onChange={(e) => setActivity(e.target.value)}>
+            <select
+              value={activity}
+              onChange={(e) => setActivity(e.target.value)}
+            >
               {activities.map((a) => (
                 <option key={a} value={a}>
                   {a}
@@ -112,7 +158,9 @@ export function FeedbackModal({
           <div className="form-group">
             <label>Productivity Classification</label>
             <div className="pill-selector">
-              {(["productive", "neutral", "distracting"] as ProductivityType[]).map((p) => (
+              {(
+                ["productive", "neutral", "distracting"] as ProductivityType[]
+              ).map((p) => (
                 <button
                   type="button"
                   key={p}

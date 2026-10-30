@@ -23,7 +23,10 @@ export class DomainRepository {
   }
 
   static async upsert(record: Omit<DomainRecord, "id">): Promise<void> {
-    const existing = await db.domains.where("domain").equals(record.domain).first();
+    const existing = await db.domains
+      .where("domain")
+      .equals(record.domain)
+      .first();
     if (existing && existing.id) {
       await db.domains.update(existing.id, {
         ...record,
@@ -48,7 +51,9 @@ export class DomainRepository {
       domain: d.domain,
       category: d.category,
       default_activity: d.activity || d.default_activity || "General Browsing",
-      productivity_type: (d.defaultProductivity || d.productivity_type || "neutral") as ProductivityType,
+      productivity_type: (d.defaultProductivity ||
+        d.productivity_type ||
+        "neutral") as ProductivityType,
       keywords: d.keywords || [],
       source: (d.source || "curated") as "curated" | "user" | "learned",
       confidence: d.confidence ?? 1.0,

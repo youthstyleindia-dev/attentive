@@ -52,7 +52,8 @@ export class AudioClassifier {
 
       if (host === "music.youtube.com") return "YouTube Music";
       if (host === "youtube.com" || host === "youtu.be") return "YouTube";
-      if (host === "open.spotify.com" || host === "spotify.com") return "Spotify";
+      if (host === "open.spotify.com" || host === "spotify.com")
+        return "Spotify";
       if (host === "soundcloud.com") return "SoundCloud";
       if (host === "music.apple.com") return "Apple Music";
       if (host === "podcasts.apple.com") return "Apple Podcasts";
@@ -62,7 +63,8 @@ export class AudioClassifier {
       if (host.includes("deezer.com")) return "Deezer";
       if (host.includes("mixcloud.com")) return "Mixcloud";
       if (host.includes("audible.com")) return "Audible";
-      if (host.includes("bbc.co.uk") && parsed.pathname.includes("sounds")) return "BBC Sounds";
+      if (host.includes("bbc.co.uk") && parsed.pathname.includes("sounds"))
+        return "BBC Sounds";
       if (host === "music.amazon.com") return "Amazon Music";
       if (host.includes("pandora.com")) return "Pandora";
       if (
@@ -190,7 +192,9 @@ export class AudioClassifier {
       /\b(lo-?fi|lofi|ambient|instrumental|classical|binaural|white\s*noise|pink\s*noise|nature|rain|synthwave|meditation|chillhop|piano|sleep|study\s*(beats|music)?|deep\s*focus|concentration|soundtrack|bgm)\b/i;
     if (focusPattern.test(t)) {
       modifier -= 35;
-      reasons.push("Acoustic profile indicates ambient/instrumental focus aid (-35)");
+      reasons.push(
+        "Acoustic profile indicates ambient/instrumental focus aid (-35)",
+      );
     }
 
     // 2. Educational & Informational Modifiers (Lecture, Tutorial, Course, Keynote)
@@ -221,7 +225,10 @@ export class AudioClassifier {
       reasons.push("Spoken audio / podcast platform (-10)");
     }
 
-    const finalScore = Math.max(0, Math.min(100, Math.round(baseScore + modifier)));
+    const finalScore = Math.max(
+      0,
+      Math.min(100, Math.round(baseScore + modifier)),
+    );
 
     const isDistracting = finalScore >= 60;
     const level: "low" | "moderate" | "high" =

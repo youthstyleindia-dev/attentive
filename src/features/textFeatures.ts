@@ -1,15 +1,25 @@
 /**
  * Text Feature Normalization & Sanitization
+ * Synchronized with docs/architecture/preprocessing-spec.md and model/configs/preprocessing.json
  */
 
-export function sanitizeUrl(rawUrl: string): { sanitized: string; domain: string; pathTokens: string[] } | null {
+import {
+  normalizeText,
+  normalizeAndJoinCompositeText,
+  scrubUrl,
+} from "../intelligence/runtimePipeline";
+
+export { normalizeText, normalizeAndJoinCompositeText };
+
+export function sanitizeUrl(
+  rawUrl: string,
+): { sanitized: string; domain: string; pathTokens: string[] } | null {
   try {
     const parsed = new URL(rawUrl);
     // Ignore internal, data, javascript, extension schemas
     if (!["http:", "https:"].includes(parsed.protocol)) {
       return null;
     }
-    // Remove query, hash, authentication credentials
     parsed.search = "";
     parsed.hash = "";
     parsed.username = "";
@@ -33,35 +43,35 @@ export function sanitizeUrl(rawUrl: string): { sanitized: string; domain: string
 }
 
 export function cleanText(text: string, maxLength = 500): string {
-  if (!text) return "";
-  const cleaned = text
-    .replace(/\s+/g, " ")
-    .replace(/[^\w\s\.\-_]/g, " ")
-    .trim();
-  return cleaned.substring(0, maxLength);
+  return normalizeText(text, maxLength);
 }
 
+/**
+ * Builds composite feature text according to the shared spec:
+ * title -> description -> headings -> excerpt
+ * Falls back to including domain if title is empty.
+ */
 export function buildCompositeFeatureText(
   domain: string,
   pathTokens: string[],
   title: string,
   headings: string[] = [],
   metaDescription = "",
-  excerpt = ""
+  excerpt = "",
 ): string {
-  const parts: string[] = [];
-  if (domain) parts.push(domain.replace(/\./g, " "));
-  if (pathTokens.length > 0) parts.push(pathTokens.slice(0, 10).join(" "));
-  if (title) parts.push(cleanText(title, 200));
-  if (metaDescription) parts.push(cleanText(metaDescription, 300));
-  if (headings.length > 0) {
-    const headingsText = headings.slice(0, 10).map((h) => cleanText(h, 80)).join(" ");
-    parts.push(headingsText);
+  const composite = normalizeAndJoinCompositeText({
+    title,
+    description: metaDescription,
+    headings,
+    mainText: excerpt,
+  });
+
+  if (!composite && domain) {
+    return normalizeText(
+      `${domain.replace(/\./g, " ")} ${pathTokens.slice(0, 10).join(" ")}`,
+    );
   }
-  if (excerpt && parts.join(" ").length < 300) {
-    parts.push(cleanText(excerpt, 200));
-  }
-  return parts.join(" ").toLowerCase().trim();
+  return composite;
 }
 
 export class TextFeatureExtractor {
@@ -82,7 +92,7 @@ export class TextFeatureExtractor {
       input.title,
       input.headings,
       input.metaDescription,
-      input.excerpt
+      input.excerpt,
     );
     return {
       cleanDomain,
@@ -92,4 +102,3 @@ export class TextFeatureExtractor {
     };
   }
 }
-

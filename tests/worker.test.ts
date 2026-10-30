@@ -73,7 +73,10 @@ test("worker opt-in, switching, idle, save/restore and deletion lifecycle", asyn
     // Verify visits exist and have valid dwell duration
     assert.ok(r.state.visits.length > 0);
     const durations = r.state.visits.map((v: any) => v.end - v.start);
-    assert.ok(durations.some((d: number) => d >= 5000), `Durations: ${JSON.stringify(durations)}`);
+    assert.ok(
+      durations.some((d: number) => d >= 5000),
+      `Durations: ${JSON.stringify(durations)}`,
+    );
     await request({ type: "save", name: "Test", note: "Resume here" });
     assert.equal(local.state.snapshots.length, 1);
     await request({ type: "restore", id: local.state.snapshots[0].id });

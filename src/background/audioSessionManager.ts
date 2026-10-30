@@ -6,7 +6,11 @@
 import { db } from "../db/database";
 import { SessionRepository } from "../db/repositories/sessionRepository";
 import { ExclusionEngine } from "../privacy/exclusionEngine";
-import { AudioClassifier, type AudioClassificationResult, type AudioPlatform } from "../ml/audioClassifier";
+import {
+  AudioClassifier,
+  type AudioClassificationResult,
+  type AudioPlatform,
+} from "../ml/audioClassifier";
 import type { TabSessionRecord, ProductivityType } from "../db/schemas";
 
 export interface ActiveAudioSession {
@@ -86,7 +90,11 @@ export class AudioSessionManager {
           if (elapsed > 0) {
             existing.audibleDwellMs += elapsed;
             existing.lastTick = now;
-            await SessionRepository.updateDwell(existing.sessionId, elapsed, now);
+            await SessionRepository.updateDwell(
+              existing.sessionId,
+              elapsed,
+              now,
+            );
           }
         } else {
           // Newly audible tab! Run Audio Classifier with fastText ML
@@ -164,7 +172,11 @@ export class AudioSessionManager {
           // Audio paused or stopped
           const finalElapsed = Math.min(now - session.lastTick, 60000);
           if (finalElapsed > 0) {
-            await SessionRepository.updateDwell(session.sessionId, finalElapsed, now);
+            await SessionRepository.updateDwell(
+              session.sessionId,
+              finalElapsed,
+              now,
+            );
           }
           await SessionRepository.close(session.sessionId, now);
           this.activeSessions.delete(tabId);

@@ -13,7 +13,13 @@ import { RuleRepository } from "../db/repositories/ruleRepository";
 import { ExclusionEngine } from "../privacy/exclusionEngine";
 import type { TabSessionRecord, WorkstreamEventRecord } from "../db/schemas";
 
-export type TrackingState = "TRACKING" | "INACTIVE" | "PAUSED" | "SYSTEM_SLEEP" | "UNTRACKABLE" | "NO_ACTIVE_SESSION";
+export type TrackingState =
+  | "TRACKING"
+  | "INACTIVE"
+  | "PAUSED"
+  | "SYSTEM_SLEEP"
+  | "UNTRACKABLE"
+  | "NO_ACTIVE_SESSION";
 
 export interface ActiveCheckpoint {
   sessionId: string;
@@ -55,7 +61,8 @@ export class SessionManager {
     const now = Date.now();
     const settings = await chrome.storage.local.get("atentiv_settings");
     const enabled = settings.atentiv_settings?.enabled ?? true; // default true: track until user explicitly disables
-    const userExclusions: string[] = settings.atentiv_settings?.exclusions || [];
+    const userExclusions: string[] =
+      settings.atentiv_settings?.exclusions || [];
 
     if (!enabled) {
       if (this.active) {
@@ -80,24 +87,43 @@ export class SessionManager {
       const window = await chrome.windows.getLastFocused().catch(() => null);
       if (!window || window.id === undefined) {
         if (this.active) {
-          const elapsedActive = Math.min(now - this.active.lastCheckpoint, 60000);
+          const elapsedActive = Math.min(
+            now - this.active.lastCheckpoint,
+            60000,
+          );
           if (elapsedActive > 0) {
-            await SessionRepository.updateDwell(this.active.sessionId, elapsedActive, now);
+            await SessionRepository.updateDwell(
+              this.active.sessionId,
+              elapsedActive,
+              now,
+            );
           }
           await SessionRepository.close(this.active.sessionId, now);
           this.active = null;
           await chrome.storage.session.remove("activeCheckpoint");
         }
-        await chrome.storage.session.set({ trackingState: "NO_ACTIVE_SESSION" });
+        await chrome.storage.session.set({
+          trackingState: "NO_ACTIVE_SESSION",
+        });
         return;
       }
 
-      const [tab] = await chrome.tabs.query({ active: true, windowId: window.id });
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        windowId: window.id,
+      });
       if (!tab || !tab.url || tab.incognito) {
         if (this.active) {
-          const elapsedActive = Math.min(now - this.active.lastCheckpoint, 60000);
+          const elapsedActive = Math.min(
+            now - this.active.lastCheckpoint,
+            60000,
+          );
           if (elapsedActive > 0) {
-            await SessionRepository.updateDwell(this.active.sessionId, elapsedActive, now);
+            await SessionRepository.updateDwell(
+              this.active.sessionId,
+              elapsedActive,
+              now,
+            );
           }
           await SessionRepository.close(this.active.sessionId, now);
           this.active = null;
@@ -110,12 +136,20 @@ export class SessionManager {
       }
 
       // Check for untrackable restricted protocols (chrome://, edge://, about:, extension pages)
-      const isUntrackable = !tab.url.startsWith("http://") && !tab.url.startsWith("https://");
+      const isUntrackable =
+        !tab.url.startsWith("http://") && !tab.url.startsWith("https://");
       if (isUntrackable) {
         if (this.active) {
-          const elapsedActive = Math.min(now - this.active.lastCheckpoint, 60000);
+          const elapsedActive = Math.min(
+            now - this.active.lastCheckpoint,
+            60000,
+          );
           if (elapsedActive > 0) {
-            await SessionRepository.updateDwell(this.active.sessionId, elapsedActive, now);
+            await SessionRepository.updateDwell(
+              this.active.sessionId,
+              elapsedActive,
+              now,
+            );
           }
           await SessionRepository.close(this.active.sessionId, now);
           this.active = null;
@@ -123,7 +157,8 @@ export class SessionManager {
         }
         await chrome.storage.session.set({
           trackingState: "UNTRACKABLE",
-          untrackableReason: "Tracking unavailable on internal browser page. Atentiv will resume automatically on a supported webpage.",
+          untrackableReason:
+            "Tracking unavailable on internal browser page. Atentiv will resume automatically on a supported webpage.",
         });
         return;
       }
@@ -138,20 +173,38 @@ export class SessionManager {
 
       if (isSameTab && this.active) {
         // Tab is unchanged. Check idle state with configurable threshold (default 180s / 3m)
-        const idleThresholdSec = Math.max(60, Math.min(600, settings.atentiv_settings?.idleThresholdSeconds ?? 180));
-        const idleState = await chrome.idle.queryState(idleThresholdSec).catch(() => "active");
+        const idleThresholdSec = Math.max(
+          60,
+          Math.min(600, settings.atentiv_settings?.idleThresholdSeconds ?? 180),
+        );
+        const idleState = await chrome.idle
+          .queryState(idleThresholdSec)
+          .catch(() => "active");
         const isAudible = Boolean(tab.audible);
-        const isQualifyingCategory = ["Education", "Technology", "Research", "Communication", "Learning"].includes(this.active.category);
+        const isQualifyingCategory = [
+          "Education",
+          "Technology",
+          "Research",
+          "Communication",
+          "Learning",
+        ].includes(this.active.category);
         const mediaException = isAudible && isQualifyingCategory;
 
         if (idleState !== "active" && !mediaException) {
           // User is away/idle: keep session alive, pause active dwell, update idle_time
           const elapsedIdle = Math.min(now - this.active.lastCheckpoint, 60000);
           if (elapsedIdle > 0) {
-            await SessionRepository.updateIdle(this.active.sessionId, elapsedIdle, now);
+            await SessionRepository.updateIdle(
+              this.active.sessionId,
+              elapsedIdle,
+              now,
+            );
           }
           this.active.lastCheckpoint = now;
-          await chrome.storage.session.set({ activeCheckpoint: this.active, trackingState: "INACTIVE" });
+          await chrome.storage.session.set({
+            activeCheckpoint: this.active,
+            trackingState: "INACTIVE",
+          });
           return;
         }
 
@@ -160,8 +213,15 @@ export class SessionManager {
         if (elapsedActive > 0) {
           this.active.dwellTime += elapsedActive;
           this.active.lastCheckpoint = now;
-          await SessionRepository.updateDwell(this.active.sessionId, elapsedActive, now);
-          await chrome.storage.session.set({ activeCheckpoint: this.active, trackingState: "TRACKING" });
+          await SessionRepository.updateDwell(
+            this.active.sessionId,
+            elapsedActive,
+            now,
+          );
+          await chrome.storage.session.set({
+            activeCheckpoint: this.active,
+            trackingState: "TRACKING",
+          });
         }
         return;
       }
@@ -172,7 +232,11 @@ export class SessionManager {
       if (this.active) {
         const elapsedActive = Math.min(now - this.active.lastCheckpoint, 60000);
         if (elapsedActive > 0) {
-          await SessionRepository.updateDwell(this.active.sessionId, elapsedActive, now);
+          await SessionRepository.updateDwell(
+            this.active.sessionId,
+            elapsedActive,
+            now,
+          );
         }
         await SessionRepository.close(this.active.sessionId, now);
         this.active = null;

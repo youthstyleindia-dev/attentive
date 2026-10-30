@@ -26,7 +26,9 @@ const storage = (obj: Record<string, any>) => ({
     getURL: (s: string) => "chrome-extension://test/" + s,
   },
   tabs: {
-    query: async () => [{ id: 1, url: "https://github.com", title: "GitHub", active: true }],
+    query: async () => [
+      { id: 1, url: "https://github.com", title: "GitHub", active: true },
+    ],
     create: async () => ({ id: 2 }),
   },
   windows: {

@@ -6,3 +6,8 @@ dist/
 __pycache__/
 *.py[cod]
 .agents/
+*.mp4
+*.aiff
+*.m4a
+archive/
+.pytest_cache/

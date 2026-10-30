@@ -16,13 +16,21 @@ test("Tier 2 (Boundary): Inactivity timeout threshold boundary — 179s vs 180s"
 
   // Boundary 1: Exactly 179 seconds (179,000ms) - Below threshold
   const check179 = sm.checkInactivity(t0 + 179 * 1000);
-  assert.equal(check179.transitionedToIdle, false, "Must remain active at 179s");
+  assert.equal(
+    check179.transitionedToIdle,
+    false,
+    "Must remain active at 179s",
+  );
   assert.equal(sm.getState(), "RECORDING");
   assert.equal(sm.isIdle(), false);
 
   // Boundary 2: Exactly 180 seconds (180,000ms) - At threshold
   const check180 = sm.checkInactivity(t0 + 180 * 1000);
-  assert.equal(check180.transitionedToIdle, true, "Must transition to IDLE at exactly 180s");
+  assert.equal(
+    check180.transitionedToIdle,
+    true,
+    "Must transition to IDLE at exactly 180s",
+  );
   assert.equal(sm.getState(), "IDLE");
   assert.equal(sm.isIdle(), true);
 
@@ -34,7 +42,10 @@ test("Tier 2 (Boundary): Inactivity timeout threshold boundary — 179s vs 180s"
 
   const smMax = new AtlasStateMachine(600); // 10 minutes
   smMax.onUserActivity(t0);
-  assert.equal(smMax.checkInactivity(t0 + 599 * 1000).transitionedToIdle, false);
+  assert.equal(
+    smMax.checkInactivity(t0 + 599 * 1000).transitionedToIdle,
+    false,
+  );
   assert.equal(smMax.checkInactivity(t0 + 600 * 1000).transitionedToIdle, true);
 });
 
@@ -63,7 +74,7 @@ test("Tier 2 (Boundary): Context Switch Penalty capping at 40 points across swit
     assert.equal(
       res.switchPenalty,
       expectedSP,
-      `Switch count ${switches} must produce penalty ${expectedSP}, got ${res.switchPenalty}`
+      `Switch count ${switches} must produce penalty ${expectedSP}, got ${res.switchPenalty}`,
     );
   }
 
@@ -98,8 +109,16 @@ test("Tier 2 (Boundary): Rapid switch dwell interval boundary — 45s (SW=1.5) v
   });
 
   assert.equal(rapid45.isSwitch, true);
-  assert.equal(rapid45.isRapidSwitch, true, "45s must be classified as rapid switch");
-  assert.equal(rapid45.penaltyPoints, 6, "Rapid unrelated switch (SW=1.5, CU=4) must equal 6 points");
+  assert.equal(
+    rapid45.isRapidSwitch,
+    true,
+    "45s must be classified as rapid switch",
+  );
+  assert.equal(
+    rapid45.penaltyPoints,
+    6,
+    "Rapid unrelated switch (SW=1.5, CU=4) must equal 6 points",
+  );
 
   // Interval 2: 46s ago (> 45s => standard switch SW = 1.0 => 4 * 1.0 = 4)
   const standard46 = ContextSwitchEvaluator.evaluate({
@@ -112,8 +131,16 @@ test("Tier 2 (Boundary): Rapid switch dwell interval boundary — 45s (SW=1.5) v
   });
 
   assert.equal(standard46.isSwitch, true);
-  assert.equal(standard46.isRapidSwitch, false, "46s must NOT be classified as rapid switch");
-  assert.equal(standard46.penaltyPoints, 4, "Standard unrelated switch (SW=1.0, CU=4) must equal 4 points");
+  assert.equal(
+    standard46.isRapidSwitch,
+    false,
+    "46s must NOT be classified as rapid switch",
+  );
+  assert.equal(
+    standard46.penaltyPoints,
+    4,
+    "Standard unrelated switch (SW=1.0, CU=4) must equal 4 points",
+  );
 
   // Interval 3: Same category switch CU = 1
   // 45s rapid: round(1 * 1.5) = 2
@@ -159,7 +186,11 @@ test("Tier 2 (Boundary): Zero Tracked Time (T=0) display invariants and boundary
 
   // In metrics model, T=0 explicitly returns null score (displays as '—' in HUD)
   const zeroMetrics = metrics([], 0, 10000);
-  assert.equal(zeroMetrics.score, null, "Zero dwell must yield null score for '—' dash display");
+  assert.equal(
+    zeroMetrics.score,
+    null,
+    "Zero dwell must yield null score for '—' dash display",
+  );
 
   // 2. Clamping at 0 (Extreme distraction and switching cannot produce negative score)
   const negativeClamped = FocusScoreCalculator.compute({
@@ -187,25 +218,57 @@ test("Tier 2 (Boundary): Max Tabs Stress — 100 open tabs partitioned and clean
   const tabs: TabInfo[] = [];
 
   // Active tab
-  tabs.push({ id: 1, windowId: 1, url: "https://active.com", title: "Active", active: true, pinned: false });
+  tabs.push({
+    id: 1,
+    windowId: 1,
+    url: "https://active.com",
+    title: "Active",
+    active: true,
+    pinned: false,
+  });
 
   // Pinned tabs
   for (let i = 2; i <= 11; i++) {
-    tabs.push({ id: i, windowId: 1, url: `https://pinned-${i}.com`, title: `Pinned ${i}`, active: false, pinned: true });
+    tabs.push({
+      id: i,
+      windowId: 1,
+      url: `https://pinned-${i}.com`,
+      title: `Pinned ${i}`,
+      active: false,
+      pinned: true,
+    });
   }
 
   // Unpinned background tabs
   for (let i = 12; i <= 100; i++) {
-    tabs.push({ id: i, windowId: 1, url: `https://bg-${i}.com`, title: `Background ${i}`, active: false, pinned: false });
+    tabs.push({
+      id: i,
+      windowId: 1,
+      url: `https://bg-${i}.com`,
+      title: `Background ${i}`,
+      active: false,
+      pinned: false,
+    });
   }
 
   const t0 = performance.now();
   const evaluation = FocusModeManager.evaluateTabsToClose(tabs);
   const latency = performance.now() - t0;
 
-  assert.equal(evaluation.tabsToClose.length, 89, "Must mark all 89 unpinned background tabs to close");
-  assert.equal(evaluation.tabsToKeep.length, 11, "Must keep 1 active tab + 10 pinned tabs");
+  assert.equal(
+    evaluation.tabsToClose.length,
+    89,
+    "Must mark all 89 unpinned background tabs to close",
+  );
+  assert.equal(
+    evaluation.tabsToKeep.length,
+    11,
+    "Must keep 1 active tab + 10 pinned tabs",
+  );
   assert.ok(evaluation.tabsToKeep.includes(1), "Active tab must be kept");
   assert.equal(evaluation.toastMessage, "Closed 89 background tabs");
-  assert.ok(latency < 10, `Evaluation of 100 tabs must take <10ms (took ${latency.toFixed(2)}ms)`);
+  assert.ok(
+    latency < 10,
+    `Evaluation of 100 tabs must take <10ms (took ${latency.toFixed(2)}ms)`,
+  );
 });

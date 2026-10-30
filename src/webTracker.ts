@@ -18,7 +18,11 @@ import {
   DEFAULT_PRODUCTIVE_DOMAINS,
   DEFAULT_UNPRODUCTIVE_DOMAINS,
 } from "./model";
-import type { DecisionTraceRecord, WorkstreamRecord, ProductivityType } from "./db/schemas";
+import type {
+  DecisionTraceRecord,
+  WorkstreamRecord,
+  ProductivityType,
+} from "./db/schemas";
 
 const STATE_KEY = "atentiv_state";
 const TRACES_KEY = "atentiv_traces";
@@ -167,8 +171,18 @@ export function getFoundationalTraces(): DecisionTraceRecord[] {
       decision_id: "tr-demo-5",
       session_id: "demo-visit-5",
       timestamp: now - 12 * 60000,
-      rule_matches: [{ rule_id: "rule-ts", name: "Curated Domain: typescriptlang.org", priority: 50 }],
-      domain_match: { domain: "www.typescriptlang.org", category: "Technology", activity: "Documentation Reading" },
+      rule_matches: [
+        {
+          rule_id: "rule-ts",
+          name: "Curated Domain: typescriptlang.org",
+          priority: 50,
+        },
+      ],
+      domain_match: {
+        domain: "www.typescriptlang.org",
+        category: "Technology",
+        activity: "Documentation Reading",
+      },
       keyword_matches: ["typescript", "handbook", "types", "compiler"],
       model_predictions: [
         { label: "Technology", score: 0.96 },
@@ -178,7 +192,10 @@ export function getFoundationalTraces(): DecisionTraceRecord[] {
       selected_activity: "Documentation Reading",
       selected_productivity: "productive",
       selected_workstream: "Design & development",
-      workstream_scores: { "Design & development": 0.96, "Research & learning": 0.28 },
+      workstream_scores: {
+        "Design & development": 0.96,
+        "Research & learning": 0.28,
+      },
       final_reason: [
         "Privacy filter: Verified technical handbook (Safe to classify)",
         "Curated domain matched: typescriptlang.org -> Technology",
@@ -195,8 +212,18 @@ export function getFoundationalTraces(): DecisionTraceRecord[] {
       decision_id: "tr-demo-4",
       session_id: "demo-visit-4",
       timestamp: now - 30 * 60000,
-      rule_matches: [{ rule_id: "rule-scholar", name: "Curated Domain: scholar.google.com", priority: 50 }],
-      domain_match: { domain: "scholar.google.com", category: "Education", activity: "Literature Search" },
+      rule_matches: [
+        {
+          rule_id: "rule-scholar",
+          name: "Curated Domain: scholar.google.com",
+          priority: 50,
+        },
+      ],
+      domain_match: {
+        domain: "scholar.google.com",
+        category: "Education",
+        activity: "Literature Search",
+      },
       keyword_matches: ["scholar", "research", "citations", "browser"],
       model_predictions: [
         { label: "Education", score: 0.93 },
@@ -221,8 +248,18 @@ export function getFoundationalTraces(): DecisionTraceRecord[] {
       decision_id: "tr-demo-3",
       session_id: "demo-visit-3",
       timestamp: now - 60 * 60000,
-      rule_matches: [{ rule_id: "rule-github", name: "Curated Domain: github.com", priority: 50 }],
-      domain_match: { domain: "github.com", category: "Technology", activity: "Coding" },
+      rule_matches: [
+        {
+          rule_id: "rule-github",
+          name: "Curated Domain: github.com",
+          priority: 50,
+        },
+      ],
+      domain_match: {
+        domain: "github.com",
+        category: "Technology",
+        activity: "Coding",
+      },
       keyword_matches: ["repository", "pull request", "react", "typescript"],
       model_predictions: [
         { label: "Technology", score: 0.98 },
@@ -247,8 +284,18 @@ export function getFoundationalTraces(): DecisionTraceRecord[] {
       decision_id: "tr-demo-2",
       session_id: "demo-visit-2",
       timestamp: now - 64 * 60000,
-      rule_matches: [{ rule_id: "rule-mail", name: "Communication: mail.google.com", priority: 50 }],
-      domain_match: { domain: "mail.google.com", category: "Chat", activity: "Email" },
+      rule_matches: [
+        {
+          rule_id: "rule-mail",
+          name: "Communication: mail.google.com",
+          priority: 50,
+        },
+      ],
+      domain_match: {
+        domain: "mail.google.com",
+        category: "Chat",
+        activity: "Email",
+      },
       keyword_matches: ["inbox", "mail", "team"],
       model_predictions: [
         { label: "Chat", score: 0.84 },
@@ -273,12 +320,22 @@ export function getFoundationalTraces(): DecisionTraceRecord[] {
       decision_id: "tr-demo-1",
       session_id: "demo-visit-1",
       timestamp: now - 88 * 60000,
-      rule_matches: [{ rule_id: "rule-react", name: "Curated Domain: react.dev", priority: 50 }],
-      domain_match: { domain: "react.dev", category: "Technology", activity: "Framework Reference" },
+      rule_matches: [
+        {
+          rule_id: "rule-react",
+          name: "Curated Domain: react.dev",
+          priority: 50,
+        },
+      ],
+      domain_match: {
+        domain: "react.dev",
+        category: "Technology",
+        activity: "Framework Reference",
+      },
       keyword_matches: ["react", "hooks", "reference", "components"],
       model_predictions: [
         { label: "Technology", score: 0.95 },
-        { label: "Education", score: 0.70 },
+        { label: "Education", score: 0.7 },
       ],
       model_confidence: 0.95,
       selected_activity: "Framework Reference",
@@ -299,8 +356,18 @@ export function getFoundationalTraces(): DecisionTraceRecord[] {
       decision_id: "tr-demo-0",
       session_id: "demo-visit-0",
       timestamp: now - 120 * 60000,
-      rule_matches: [{ rule_id: "rule-arxiv", name: "Curated Domain: arxiv.org", priority: 50 }],
-      domain_match: { domain: "arxiv.org", category: "Education", activity: "Paper Reading" },
+      rule_matches: [
+        {
+          rule_id: "rule-arxiv",
+          name: "Curated Domain: arxiv.org",
+          priority: 50,
+        },
+      ],
+      domain_match: {
+        domain: "arxiv.org",
+        category: "Education",
+        activity: "Paper Reading",
+      },
       keyword_matches: ["attention", "transformer", "task", "switching"],
       model_predictions: [
         { label: "Education", score: 0.94 },
@@ -310,7 +377,10 @@ export function getFoundationalTraces(): DecisionTraceRecord[] {
       selected_activity: "Paper Reading",
       selected_productivity: "productive",
       selected_workstream: "Research & learning",
-      workstream_scores: { "Research & learning": 0.91, "Design & development": 0.32 },
+      workstream_scores: {
+        "Research & learning": 0.91,
+        "Design & development": 0.32,
+      },
       final_reason: [
         "Privacy check: Public preprint repository (Safe to track)",
         "Curated domain rule matched: arxiv.org -> Education",
@@ -377,9 +447,18 @@ export function getFoundationalSnapshots(): Snapshot[] {
       created: now - 3600000,
       tabs: [
         { title: "Research library", url: "https://scholar.google.com/" },
-        { title: "Implementation notes", url: "https://developer.chrome.com/docs/extensions/" },
-        { title: "TypeScript Handbook", url: "https://www.typescriptlang.org/docs/" },
-        { title: "GeeksforGeeks Data Structures", url: "https://www.geeksforgeeks.org/" },
+        {
+          title: "Implementation notes",
+          url: "https://developer.chrome.com/docs/extensions/",
+        },
+        {
+          title: "TypeScript Handbook",
+          url: "https://www.typescriptlang.org/docs/",
+        },
+        {
+          title: "GeeksforGeeks Data Structures",
+          url: "https://www.geeksforgeeks.org/",
+        },
       ],
     },
   ];
@@ -393,12 +472,21 @@ export function loadState(): State {
     if (raw) {
       const parsed = JSON.parse(raw) as State;
       const base = initial();
-      const visits = parsed.visits && parsed.visits.length > 0 ? parsed.visits : getFoundationalVisits();
-      const snapshots = parsed.snapshots && parsed.snapshots.length > 0 ? parsed.snapshots : getFoundationalSnapshots();
+      const visits =
+        parsed.visits && parsed.visits.length > 0
+          ? parsed.visits
+          : getFoundationalVisits();
+      const snapshots =
+        parsed.snapshots && parsed.snapshots.length > 0
+          ? parsed.snapshots
+          : getFoundationalSnapshots();
       return {
         ...base,
         ...parsed,
-        streams: parsed.streams && parsed.streams.length > 0 ? parsed.streams : base.streams,
+        streams:
+          parsed.streams && parsed.streams.length > 0
+            ? parsed.streams
+            : base.streams,
         productiveDomains:
           parsed.productiveDomains && parsed.productiveDomains.length > 0
             ? parsed.productiveDomains
@@ -505,7 +593,12 @@ export function classifyPage(
     let cat = "Technology";
     let act = "Technical Work";
 
-    if (hostname.includes("scholar") || hostname.includes("arxiv") || hostname.includes("wiki") || hostname.includes("geeksforgeeks")) {
+    if (
+      hostname.includes("scholar") ||
+      hostname.includes("arxiv") ||
+      hostname.includes("wiki") ||
+      hostname.includes("geeksforgeeks")
+    ) {
       streamId = "research";
       cat = "Education";
       act = "Learning & Research";
@@ -550,12 +643,13 @@ export function classifyPage(
 
   // 2. Fallback to model taxonomy classify
   const streamId = classify(url, title, streams);
-  const matchedStream = streams.find((s) => s.id === streamId) || streams[streams.length - 1];
+  const matchedStream =
+    streams.find((s) => s.id === streamId) || streams[streams.length - 1];
   const cat = matchedStream.name.includes("Research")
     ? "Education"
     : matchedStream.name.includes("Design")
-    ? "Technology"
-    : "General";
+      ? "Technology"
+      : "General";
 
   return {
     streamId,
@@ -580,9 +674,19 @@ export function classifyPage(
 let activeVisitId: string | null = null;
 let liveInterval: ReturnType<typeof setInterval> | null = null;
 let lastUserActivityTimestamp = Date.now();
-let onUpdateCallback: ((state: State, traces: DecisionTraceRecord[], workstreams: WorkstreamRecord[]) => void) | null = null;
+let onUpdateCallback:
+  | ((
+      state: State,
+      traces: DecisionTraceRecord[],
+      workstreams: WorkstreamRecord[],
+    ) => void)
+  | null = null;
 
-function notifyAll(state: State, traces: DecisionTraceRecord[], workstreams: WorkstreamRecord[]) {
+function notifyAll(
+  state: State,
+  traces: DecisionTraceRecord[],
+  workstreams: WorkstreamRecord[],
+) {
   onUpdateCallback?.(state, traces, workstreams);
 }
 
@@ -624,7 +728,9 @@ function tickDwellTime() {
 
   // User is active: tick dwell
   const visits = [...state.visits];
-  let idx = activeVisitId ? visits.findIndex((v) => v.id === activeVisitId) : visits.length - 1;
+  let idx = activeVisitId
+    ? visits.findIndex((v) => v.id === activeVisitId)
+    : visits.length - 1;
   if (idx === -1) idx = visits.length - 1;
 
   const current = visits[idx];
@@ -652,15 +758,27 @@ function tickDwellTime() {
 }
 
 export function startLiveTracker(
-  callback: (state: State, traces: DecisionTraceRecord[], workstreams: WorkstreamRecord[]) => void,
+  callback: (
+    state: State,
+    traces: DecisionTraceRecord[],
+    workstreams: WorkstreamRecord[],
+  ) => void,
 ) {
   onUpdateCallback = callback;
 
   if (typeof window !== "undefined") {
-    window.addEventListener("mousemove", handleUserActivityEvent, { passive: true });
-    window.addEventListener("keydown", handleUserActivityEvent, { passive: true });
-    window.addEventListener("scroll", handleUserActivityEvent, { passive: true });
-    window.addEventListener("click", handleUserActivityEvent, { passive: true });
+    window.addEventListener("mousemove", handleUserActivityEvent, {
+      passive: true,
+    });
+    window.addEventListener("keydown", handleUserActivityEvent, {
+      passive: true,
+    });
+    window.addEventListener("scroll", handleUserActivityEvent, {
+      passive: true,
+    });
+    window.addEventListener("click", handleUserActivityEvent, {
+      passive: true,
+    });
   }
 
   if (bc) {
@@ -703,9 +821,26 @@ export function stopLiveTracker() {
 
 export type WebAction =
   | { type: "read" }
-  | { type: "settings"; enabled: boolean; excluded: string; idleThresholdSeconds?: number }
-  | { type: "save"; name: string; note: string; workstreamId?: string; tabs?: { title: string; url: string }[] }
-  | { type: "update_snapshot"; id: string; name?: string; note?: string; tabs: { title: string; url: string }[] }
+  | {
+      type: "settings";
+      enabled: boolean;
+      excluded: string;
+      idleThresholdSeconds?: number;
+    }
+  | {
+      type: "save";
+      name: string;
+      note: string;
+      workstreamId?: string;
+      tabs?: { title: string; url: string }[];
+    }
+  | {
+      type: "update_snapshot";
+      id: string;
+      name?: string;
+      note?: string;
+      tabs: { title: string; url: string }[];
+    }
   | { type: "restore"; id: string }
   | { type: "delete_snapshot"; id: string }
   | { type: "rules"; streams: State["streams"] }
@@ -742,37 +877,63 @@ export function handleWebAction(action: WebAction): {
         ...state,
         enabled: action.enabled,
         excluded: action.excluded,
-        idleThresholdSeconds: action.idleThresholdSeconds ?? state.idleThresholdSeconds,
+        idleThresholdSeconds:
+          action.idleThresholdSeconds ?? state.idleThresholdSeconds,
       };
       break;
     }
 
     case "ADD_PRODUCTIVE_DOMAIN": {
-      const clean = action.domain.toLowerCase().trim().replace(/^https?:\/\//, "").replace(/\/.*$/, "").replace(/^www\./, "");
+      const clean = action.domain
+        .toLowerCase()
+        .trim()
+        .replace(/^https?:\/\//, "")
+        .replace(/\/.*$/, "")
+        .replace(/^www\./, "");
       if (clean) {
         const prod = Array.from(new Set([...state.productiveDomains, clean]));
         const unprod = state.unproductiveDomains.filter((d) => d !== clean);
-        state = { ...state, productiveDomains: prod, unproductiveDomains: unprod };
+        state = {
+          ...state,
+          productiveDomains: prod,
+          unproductiveDomains: unprod,
+        };
       }
       break;
     }
 
     case "ADD_UNPRODUCTIVE_DOMAIN": {
-      const clean = action.domain.toLowerCase().trim().replace(/^https?:\/\//, "").replace(/\/.*$/, "").replace(/^www\./, "");
+      const clean = action.domain
+        .toLowerCase()
+        .trim()
+        .replace(/^https?:\/\//, "")
+        .replace(/\/.*$/, "")
+        .replace(/^www\./, "");
       if (clean) {
-        const unprod = Array.from(new Set([...state.unproductiveDomains, clean]));
+        const unprod = Array.from(
+          new Set([...state.unproductiveDomains, clean]),
+        );
         const prod = state.productiveDomains.filter((d) => d !== clean);
-        state = { ...state, productiveDomains: prod, unproductiveDomains: unprod };
+        state = {
+          ...state,
+          productiveDomains: prod,
+          unproductiveDomains: unprod,
+        };
       }
       break;
     }
 
     case "REMOVE_DOMAIN_OVERRIDE": {
-      const clean = action.domain.toLowerCase().trim().replace(/^www\./, "");
+      const clean = action.domain
+        .toLowerCase()
+        .trim()
+        .replace(/^www\./, "");
       state = {
         ...state,
         productiveDomains: state.productiveDomains.filter((d) => d !== clean),
-        unproductiveDomains: state.unproductiveDomains.filter((d) => d !== clean),
+        unproductiveDomains: state.unproductiveDomains.filter(
+          (d) => d !== clean,
+        ),
       };
       break;
     }
@@ -819,7 +980,13 @@ export function handleWebAction(action: WebAction): {
         const firstTab = snap.tabs[0];
         if (firstTab) {
           const cleanUrl = safeUrl(firstTab.url) || firstTab.url;
-          const classification = classifyPage(cleanUrl, firstTab.title, state.streams, state.productiveDomains, state.unproductiveDomains);
+          const classification = classifyPage(
+            cleanUrl,
+            firstTab.title,
+            state.streams,
+            state.productiveDomains,
+            state.unproductiveDomains,
+          );
           const visitId = `resume-${Date.now()}`;
           activeVisitId = visitId;
           const newVisit: Visit = {
@@ -842,7 +1009,10 @@ export function handleWebAction(action: WebAction): {
     }
 
     case "delete_snapshot": {
-      state = { ...state, snapshots: state.snapshots.filter((s) => s.id !== action.id) };
+      state = {
+        ...state,
+        snapshots: state.snapshots.filter((s) => s.id !== action.id),
+      };
       break;
     }
 
@@ -864,14 +1034,23 @@ export function handleWebAction(action: WebAction): {
         isIdle: false,
       };
       traces = [];
-      workstreams = workstreams.map((ws) => ({ ...ws, total_active_seconds: 0 }));
+      workstreams = workstreams.map((ws) => ({
+        ...ws,
+        total_active_seconds: 0,
+      }));
       activeVisitId = null;
       break;
     }
 
     case "log": {
       const cleanUrl = safeUrl(action.url) || action.url;
-      const classification = classifyPage(cleanUrl, action.title, state.streams, state.productiveDomains, state.unproductiveDomains);
+      const classification = classifyPage(
+        cleanUrl,
+        action.title,
+        state.streams,
+        state.productiveDomains,
+        state.unproductiveDomains,
+      );
       const visitId = `visit-${Date.now()}`;
       activeVisitId = visitId;
 
@@ -906,15 +1085,29 @@ export function handleWebAction(action: WebAction): {
         decision_id: `tr-${Date.now()}`,
         session_id: visitId,
         timestamp: Date.now(),
-        rule_matches: [{ rule_id: `rule-${dom}`, name: `Classification Rule for ${dom}`, priority: 50 }],
-        domain_match: { domain: dom, category: classification.category, activity: classification.activity },
+        rule_matches: [
+          {
+            rule_id: `rule-${dom}`,
+            name: `Classification Rule for ${dom}`,
+            priority: 50,
+          },
+        ],
+        domain_match: {
+          domain: dom,
+          category: classification.category,
+          activity: classification.activity,
+        },
         keyword_matches: action.title.toLowerCase().split(/\s+/).slice(0, 4),
         model_predictions: classification.predictions,
         model_confidence: classification.confidence,
         selected_activity: classification.activity,
         selected_productivity: classification.productivity,
-        selected_workstream: state.streams.find((s) => s.id === classification.streamId)?.name || "General",
-        workstream_scores: { [classification.streamId]: classification.confidence },
+        selected_workstream:
+          state.streams.find((s) => s.id === classification.streamId)?.name ||
+          "General",
+        workstream_scores: {
+          [classification.streamId]: classification.confidence,
+        },
         final_reason: classification.reasons,
         model_version: "1.0.0",
         feature_schema_version: "1.0.0",
@@ -955,18 +1148,29 @@ export function handleWebAction(action: WebAction): {
       }
 
       // If user corrected to productive or distracting, also add to domain lists
-      const cleanDom = action.domain.toLowerCase().trim().replace(/^www\./, "");
+      const cleanDom = action.domain
+        .toLowerCase()
+        .trim()
+        .replace(/^www\./, "");
       if (action.userProductivity === "productive") {
         state = {
           ...state,
-          productiveDomains: Array.from(new Set([...state.productiveDomains, cleanDom])),
-          unproductiveDomains: state.unproductiveDomains.filter((d) => d !== cleanDom),
+          productiveDomains: Array.from(
+            new Set([...state.productiveDomains, cleanDom]),
+          ),
+          unproductiveDomains: state.unproductiveDomains.filter(
+            (d) => d !== cleanDom,
+          ),
         };
       } else if (action.userProductivity === "distracting") {
         state = {
           ...state,
-          unproductiveDomains: Array.from(new Set([...state.unproductiveDomains, cleanDom])),
-          productiveDomains: state.productiveDomains.filter((d) => d !== cleanDom),
+          unproductiveDomains: Array.from(
+            new Set([...state.unproductiveDomains, cleanDom]),
+          ),
+          productiveDomains: state.productiveDomains.filter(
+            (d) => d !== cleanDom,
+          ),
         };
       }
 
@@ -974,8 +1178,18 @@ export function handleWebAction(action: WebAction): {
         decision_id: `override-${Date.now()}`,
         session_id: action.sessionId || `session-${Date.now()}`,
         timestamp: Date.now(),
-        rule_matches: [{ rule_id: "user-override", name: `User Rule Override: ${action.domain}`, priority: 100 }],
-        domain_match: { domain: action.domain, category: action.userCategory, activity: action.userActivity },
+        rule_matches: [
+          {
+            rule_id: "user-override",
+            name: `User Rule Override: ${action.domain}`,
+            priority: 100,
+          },
+        ],
+        domain_match: {
+          domain: action.domain,
+          category: action.userCategory,
+          activity: action.userActivity,
+        },
         keyword_matches: ["user-correction", "manual-override"],
         model_predictions: [{ label: action.userCategory, score: 1.0 }],
         model_confidence: 1.0,
@@ -988,7 +1202,9 @@ export function handleWebAction(action: WebAction): {
           `User designated category as '${action.userCategory}'`,
           `User designated activity as '${action.userActivity}'`,
           `Contextual productivity set to: ${action.userProductivity}`,
-          action.reason ? `User reason: "${action.reason}"` : "User preference saved",
+          action.reason
+            ? `User reason: "${action.reason}"`
+            : "User preference saved",
         ],
         model_version: "1.0.0",
         feature_schema_version: "1.0.0",

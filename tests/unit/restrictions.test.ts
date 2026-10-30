@@ -38,7 +38,8 @@ function createMockChrome() {
       local: {
         get: async (keys?: any) => {
           if (!keys) return structuredClone(localStore);
-          if (typeof keys === "string") return { [keys]: structuredClone(localStore[keys]) };
+          if (typeof keys === "string")
+            return { [keys]: structuredClone(localStore[keys]) };
           if (Array.isArray(keys)) {
             const out: any = {};
             for (const k of keys) out[k] = structuredClone(localStore[k]);
@@ -57,7 +58,8 @@ function createMockChrome() {
       session: {
         get: async (keys?: any) => {
           if (!keys) return structuredClone(sessionStore);
-          if (typeof keys === "string") return { [keys]: structuredClone(sessionStore[keys]) };
+          if (typeof keys === "string")
+            return { [keys]: structuredClone(sessionStore[keys]) };
           if (Array.isArray(keys)) {
             const out: any = {};
             for (const k of keys) out[k] = structuredClone(sessionStore[k]);
@@ -161,18 +163,34 @@ test("Tier 1 (R5 & R2): Restricted schemes trigger UNTRACKABLE state with zero d
 
       // Invariant 1: No active session checkpoint during untrackable visit
       const activeCheckpoint = SessionManager.getActiveCheckpoint();
-      assert.equal(activeCheckpoint, null, `Should have null checkpoint for ${url}`);
+      assert.equal(
+        activeCheckpoint,
+        null,
+        `Should have null checkpoint for ${url}`,
+      );
 
       // Invariant 2: Session storage must record UNTRACKABLE state
-      assert.equal(env.sessionStore.trackingState, "UNTRACKABLE", `State must be UNTRACKABLE for ${url}`);
+      assert.equal(
+        env.sessionStore.trackingState,
+        "UNTRACKABLE",
+        `State must be UNTRACKABLE for ${url}`,
+      );
       assert.ok(
-        env.sessionStore.untrackableReason?.includes("Tracking unavailable on internal browser page"),
-        `Explanation must be set for ${url}`
+        env.sessionStore.untrackableReason?.includes(
+          "Tracking unavailable on internal browser page",
+        ),
+        `Explanation must be set for ${url}`,
       );
 
       // Invariant 3: Zero tab session records persisted in database for this restricted URL
-      const records = await db.tab_sessions.filter((s) => s.url === url).toArray();
-      assert.equal(records.length, 0, `Restricted URL ${url} must never be persisted in IndexedDB`);
+      const records = await db.tab_sessions
+        .filter((s) => s.url === url)
+        .toArray();
+      assert.equal(
+        records.length,
+        0,
+        `Restricted URL ${url} must never be persisted in IndexedDB`,
+      );
     }
   } finally {
     delete (globalThis as any).chrome;
@@ -190,7 +208,11 @@ test("Tier 1 (R5): Toolbar icon click on restricted page opens 420x680 popup win
     // If window is closed (windows.onRemoved), reset tracked popupWindowId.
     let popupWindowId: number | null = null;
 
-    const handleIconClick = async (tab: { id?: number; url?: string; windowId?: number }) => {
+    const handleIconClick = async (tab: {
+      id?: number;
+      url?: string;
+      windowId?: number;
+    }) => {
       const url = tab.url || "";
       const isRestricted =
         !url ||
@@ -219,7 +241,10 @@ test("Tier 1 (R5): Toolbar icon click on restricted page opens 420x680 popup win
       } else {
         // Supported page: inject content script and toggle in-page HUD
         if (tab.id) {
-          await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["content.js"] });
+          await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ["content.js"],
+          });
           await chrome.tabs.sendMessage(tab.id, { type: "TOGGLE_ATENTIV_HUD" });
           return { action: "toggled_hud", tabId: tab.id };
         }
@@ -248,7 +273,11 @@ test("Tier 1 (R5): Toolbar icon click on restricted page opens 420x680 popup win
     });
     assert.equal(secondClick.action, "focused");
     assert.equal(secondClick.windowId, firstClick.windowId);
-    assert.equal(env.createdWindows.length, 1, "Must NOT open a second popup window");
+    assert.equal(
+      env.createdWindows.length,
+      1,
+      "Must NOT open a second popup window",
+    );
     assert.equal(env.updatedWindows.length, 1);
     assert.equal(env.updatedWindows[0].windowId, firstClick.windowId);
     assert.equal(env.updatedWindows[0].updateInfo.focused, true);
@@ -264,7 +293,11 @@ test("Tier 1 (R5): Toolbar icon click on restricted page opens 420x680 popup win
       windowId: 1,
     });
     assert.equal(thirdClick.action, "created");
-    assert.equal(env.createdWindows.length, 2, "Must create fresh popup after closure");
+    assert.equal(
+      env.createdWindows.length,
+      2,
+      "Must create fresh popup after closure",
+    );
 
     // 5. Click on normal supported page -> Injects content.js and toggles HUD
     const supportedClick = await handleIconClick({
@@ -301,7 +334,10 @@ test("Tier 1 (R9): Privacy Audit — Source code contains 0 unauthorized outboun
   }
 
   const allSourceFiles = getFiles(srcDir);
-  assert.ok(allSourceFiles.length > 15, "Must inspect all source files in src/");
+  assert.ok(
+    allSourceFiles.length > 15,
+    "Must inspect all source files in src/",
+  );
 
   const egressPatterns = [
     { name: "fetch(", regex: /\bfetch\s*\(/ },
@@ -316,7 +352,9 @@ test("Tier 1 (R9): Privacy Audit — Source code contains 0 unauthorized outboun
     const content = readFileSync(file, "utf8");
     for (const pat of egressPatterns) {
       if (pat.regex.test(content)) {
-        violations.push(`${file} contains disallowed outbound network call: ${pat.name}`);
+        violations.push(
+          `${file} contains disallowed outbound network call: ${pat.name}`,
+        );
       }
     }
   }
@@ -324,12 +362,16 @@ test("Tier 1 (R9): Privacy Audit — Source code contains 0 unauthorized outboun
   assert.equal(
     violations.length,
     0,
-    `Privacy Audit Violation! The following files contain outbound network calls:\n${violations.join("\n")}`
+    `Privacy Audit Violation! The following files contain outbound network calls:\n${violations.join("\n")}`,
   );
 });
 
 test("Tier 1 (R9): Exclusion Engine filters sensitive domains and enforces user exclusion rules", () => {
-  const userExclusions = ["mycompany.internal", "*.confidential.org", "secret-portal.com"];
+  const userExclusions = [
+    "mycompany.internal",
+    "*.confidential.org",
+    "secret-portal.com",
+  ];
 
   // 1. Built-in sensitive banking & authentication domains
   assert.equal(ExclusionEngine.isExcluded("chase.com"), true);
@@ -340,16 +382,34 @@ test("Tier 1 (R9): Exclusion Engine filters sensitive domains and enforces user 
   assert.equal(ExclusionEngine.isExcluded("wellsfargo.com"), true);
 
   // 2. User-defined exclusions
-  assert.equal(ExclusionEngine.isExcluded("mycompany.internal", userExclusions), true);
-  assert.equal(ExclusionEngine.isExcluded("sub.mycompany.internal", userExclusions), true);
-  assert.equal(ExclusionEngine.isExcluded("api.confidential.org", userExclusions), true);
-  assert.equal(ExclusionEngine.isExcluded("secret-portal.com", userExclusions), true);
+  assert.equal(
+    ExclusionEngine.isExcluded("mycompany.internal", userExclusions),
+    true,
+  );
+  assert.equal(
+    ExclusionEngine.isExcluded("sub.mycompany.internal", userExclusions),
+    true,
+  );
+  assert.equal(
+    ExclusionEngine.isExcluded("api.confidential.org", userExclusions),
+    true,
+  );
+  assert.equal(
+    ExclusionEngine.isExcluded("secret-portal.com", userExclusions),
+    true,
+  );
 
   // 3. Permitted domains
   assert.equal(ExclusionEngine.isExcluded("github.com", userExclusions), false);
-  assert.equal(ExclusionEngine.isExcluded("wikipedia.org", userExclusions), false);
+  assert.equal(
+    ExclusionEngine.isExcluded("wikipedia.org", userExclusions),
+    false,
+  );
   assert.equal(ExclusionEngine.isExcluded("arxiv.org", userExclusions), false);
-  assert.equal(ExclusionEngine.isExcluded("stackoverflow.com", userExclusions), false);
+  assert.equal(
+    ExclusionEngine.isExcluded("stackoverflow.com", userExclusions),
+    false,
+  );
 });
 
 // ── TIER 2: BOUNDARY & CORNER CASES (R9 & Sanitization) ───────────────────────
@@ -357,25 +417,35 @@ test("Tier 1 (R9): Exclusion Engine filters sensitive domains and enforces user 
 test("Tier 2 (Boundary): Adversarial URL scrubbing — strips query params, fragments, credentials & malformed inputs", () => {
   // Query and Hash scrubbing
   assert.equal(
-    ExclusionEngine.sanitizeUrl("https://github.com/project?token=supersecret123&user=admin"),
-    "https://github.com/project"
+    ExclusionEngine.sanitizeUrl(
+      "https://github.com/project?token=supersecret123&user=admin",
+    ),
+    "https://github.com/project",
   );
   assert.equal(
-    ExclusionEngine.sanitizeUrl("https://github.com/project#access_token=jwt_xyz_987"),
-    "https://github.com/project"
+    ExclusionEngine.sanitizeUrl(
+      "https://github.com/project#access_token=jwt_xyz_987",
+    ),
+    "https://github.com/project",
   );
   assert.equal(
     ExclusionEngine.sanitizeUrl("https://github.com/project?q=1#part"),
-    "https://github.com/project"
+    "https://github.com/project",
   );
 
   // Strips userinfo credentials
   const credsUrl = "https://user:password@github.com/private/repo";
   const sanitizedCreds = ExclusionEngine.sanitizeUrl(credsUrl);
-  assert.ok(!sanitizedCreds.includes("password"), "Must not leak user password");
+  assert.ok(
+    !sanitizedCreds.includes("password"),
+    "Must not leak user password",
+  );
 
   // Trailing slash normalization
-  assert.equal(ExclusionEngine.sanitizeUrl("https://github.com/docs/"), "https://github.com/docs");
+  assert.equal(
+    ExclusionEngine.sanitizeUrl("https://github.com/docs/"),
+    "https://github.com/docs",
+  );
 
   // Extreme URL boundary: 10,000 character query string
   const hugeQuery = "a".repeat(10000);
@@ -384,18 +454,24 @@ test("Tier 2 (Boundary): Adversarial URL scrubbing — strips query params, frag
   const cleanedHuge = ExclusionEngine.sanitizeUrl(hugeUrl);
   const latency = performance.now() - t0;
   assert.equal(cleanedHuge, "https://example.com/api");
-  assert.ok(latency < 50, `10k character URL sanitization should execute in <50ms (took ${latency.toFixed(2)}ms)`);
+  assert.ok(
+    latency < 50,
+    `10k character URL sanitization should execute in <50ms (took ${latency.toFixed(2)}ms)`,
+  );
 
   // Special characters & Unicode in path
-  const unicodeUrl = "https://example.com/wiki/%E3%83%86%E3%82%B9%E3%83%88?lang=ja";
+  const unicodeUrl =
+    "https://example.com/wiki/%E3%83%86%E3%82%B9%E3%83%88?lang=ja";
   assert.equal(
     ExclusionEngine.sanitizeUrl(unicodeUrl),
-    "https://example.com/wiki/%E3%83%86%E3%82%B9%E3%83%88"
+    "https://example.com/wiki/%E3%83%86%E3%82%B9%E3%83%88",
   );
 
   // Empty and malformed URLs must not throw
   assert.doesNotThrow(() => ExclusionEngine.sanitizeUrl(""));
   assert.doesNotThrow(() => ExclusionEngine.sanitizeUrl("not a url"));
   assert.doesNotThrow(() => ExclusionEngine.sanitizeUrl("javascript:void(0)"));
-  assert.doesNotThrow(() => ExclusionEngine.sanitizeUrl("data:text/html,<h1>Hello</h1>"));
+  assert.doesNotThrow(() =>
+    ExclusionEngine.sanitizeUrl("data:text/html,<h1>Hello</h1>"),
+  );
 });

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Atentiv Extension — Product Demo</title>
+  <script src="./gsap.min.js"></script>
+  <script>
+    if (typeof gsap === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>');
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: #060913;
+      color: #f8fafc;
+      overflow: hidden;
+    }
+
+    #atentiv-demo {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: radial-gradient(circle at 20% 20%, #1e1b4b 0%, #090d16 55%, #05070e 100%);
+      overflow: hidden;
+    }
+
+    .clip {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+
+    /* Ambient Grid */
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(99, 102, 241, 0.07) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    /* Scene 1: Hero Intro */
+    .s1-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 28px;
+      text-align: center;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 26px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(129, 140, 248, 0.4);
+      color: #a5b4fc;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .hero-title {
+      font-size: 104px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 34px;
+      color: #94a3b8;
+      max-width: 1100px;
+      line-height: 1.4;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .tech-pill {
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      font-size: 20px;
+      color: #e2e8f0;
+      font-family: monospace;
+    }
+
+    /* Browser Shell for Scenes 2-4 */
+    .browser-stage {
+      position: absolute;
+      top: 90px;
+      left: 110px;
+      width: 1700px;
+      height: 900px;
+      background: #0f172a;
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .browser-toolbar {
+      height: 72px;
+      background: #1e293b;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 10px;
+    }
+    .dot { width: 14px; height: 14px; border-radius: 50%; }
+    .dot.red { background: #ef4444; }
+    .dot.amber { background: #f59e0b; }
+    .dot.green { background: #10b981; }
+
+    .url-bar {
+      flex: 1;
+      height: 44px;
+      background: #0f172a;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      color: #cbd5e1;
+      font-size: 20px;
+      font-family: monospace;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 12px;
+    }
+
+    .nav-pill {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    .nav-pill.active {
+      color: #ffffff;
+      background: #4f46e5;
+    }
+
+    .ext-icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 22px;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .browser-body {
+      flex: 1;
+      position: relative;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Web Page Content Area */
+    .webpage-view {
+      flex: 1;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      background: #0b1120;
+    }
+
+    .wasm-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 16px;
+    }
+
+    /* Extension Popup (index.html) */
+    .ext-popup {
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      width: 390px;
+      background: #1e293b;
+      border-radius: 20px;
+      border: 1px solid rgba(129, 140, 248, 0.4);
+      padding: 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 20;
+    }
+
+    /* Sidepanel (sidepanel.html) */
+    .ext-sidepanel {
+      width: 440px;
+      height: 100%;
+      background: #172033;
+      border-left: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* Dashboard Grid (dashboard.html) */
+    .dashboard-grid {
+      position: absolute;
+      inset: 0;
+      background: #0b1120;
+      padding: 44px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto 1fr;
+      gap: 24px;
+    }
+
+    .stat-card {
+      background: #1e293b;
+      border-radius: 18px;
+      padding: 28px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stat-label { font-size: 20px; color: #94a3b8; }
+    .stat-value { font-size: 52px; font-weight: 800; color: #f8fafc; }
+
+    .chart-panel {
+      grid-column: span 2;
+      background: #1e293b;
+      border-radius: 18px;
+      padding: 28px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 16px;
+    }
+    .bar-label { width: 220px; font-size: 20px; color: #cbd5e1; }
+    .bar-track { flex: 1; height: 28px; background: #0f172a; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; }
+
+    /* Simulated Cursor */
+    #demo-cursor {
+      position: absolute;
+      top: 540px;
+      left: 960px;
+      width: 36px;
+      height: 36px;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    /* Lower Third Caption */
+    .step-caption {
+      position: absolute;
+      bottom: 26px;
+      left: 110px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      font-size: 22px;
+      font-weight: 600;
+      color: #e2e8f0;
+      z-index: 90;
+    }
+  </style>
+</head>
+<body>
+  <!-- Root HyperFrames Composition -->
+  <div
+    id="atentiv-demo"
+    data-composition-id="atentiv-demo"
+    data-width="1920"
+    data-height="1080"
+    data-start="0"
+    data-duration="20"
+  >
+    <div class="bg-grid"></div>
+
+    <!-- SCENE 1: Intro (0s - 4s) -->
+    <div class="clip" id="scene-intro" data-start="0" data-duration="4" data-track-index="1">
+      <div class="s1-wrap">
+        <div class="brand-badge" id="s1-badge">⚡ Chrome Extension + On-Device FastText WASM</div>
+        <h1 class="hero-title" id="s1-title">Atentiv Smart Categorizer</h1>
+        <p class="hero-sub" id="s1-sub">
+          Real-time webpage classification, attention tracking, and multi-surface workflow navigation powered locally by WebAssembly.
+        </p>
+        <div class="pill-row" id="s1-pills">
+          <span class="tech-pill">index.html</span>
+          <span class="tech-pill">sidepanel.html</span>
+          <span class="tech-pill">dashboard.html</span>
+          <span class="tech-pill">options.html</span>
+          <span class="tech-pill">fastText.common.wasm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCENE 2: Live Use Case + Popup + Sidepanel + Dashboard + Options (4s - 20s) -->
+    <div class="clip" id="scene-workspace" data-start="4" data-duration="16" data-track-index="1">
+      <div class="browser-stage" id="browser-window">
+        <div class="browser-toolbar">
+          <div class="window-dots">
+            <span class="dot red"></span>
+            <span class="dot amber"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="url-bar" id="url-text">https://developer.chrome.com/docs/extensions/mv3</div>
+          <div class="nav-tabs">
+            <div class="nav-pill active" id="tab-popup">Popup (index.html)</div>
+            <div class="nav-pill" id="tab-sidepanel">Side Panel</div>
+            <div class="nav-pill" id="tab-dashboard">Dashboard</div>
+            <div class="nav-pill" id="tab-options">Options</div>
+          </div>
+          <div class="ext-icon-btn" id="ext-btn">A</div>
+        </div>
+
+        <div class="browser-body">
+          <!-- Active Webpage + Content Script Use Case -->
+          <div class="webpage-view" id="webpage-area">
+            <div class="wasm-banner" id="wasm-alert">
+              <div>
+                <div style="font-size: 16px; color: #34d399; font-weight: 700; text-transform: uppercase;">
+                  content.js → background.js → fastText.common.wasm
+                </div>
+                <div style="font-size: 28px; font-weight: 700; margin-top: 4px;">
+                  Classified via <span style="font-family: monospace; color: #6ee7b7;">atentiv-page-category.ftz</span>
+                </div>
+              </div>
+              <div style="padding: 12px 22px; background: #059669; border-radius: 12px; font-size: 22px; font-weight: 700;">
+                Category: Software Engineering (98.4%)
+              </div>
+            </div>
+
+            <div style="background: #1e293b; border-radius: 18px; padding: 32px; flex: 1; display: flex; flex-direction: column; gap: 18px;">
+              <h2 style="font-size: 36px; color: #f8fafc;">Chrome Extensions Manifest V3 Documentation</h2>
+              <p style="font-size: 22px; color: #94a3b8; line-height: 1.6;">
+                Atentiv's content script extracts page semantics in real time and runs inference locally using WebAssembly without sending browsing history to external servers.
+              </p>
+              <div style="display: flex; gap: 16px; margin-top: auto;">
+                <div style="padding: 16px 24px; background: #0f172a; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+                  <div style="color: #94a3b8; font-size: 16px;">Inference Latency</div>
+                  <div style="color: #38bdf8; font-size: 28px; font-weight: 700;">4.2 ms (WASM)</div>
+                </div>
+                <div style="padding: 16px 24px; background: #0f172a; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+                  <div style="color: #94a3b8; font-size: 16px;">Session State</div>
+                  <div style="color: #4ade80; font-size: 28px; font-weight: 700;">Deep Focus Active</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Popup Overlay (index.html) -->
+          <div class="ext-popup" id="popup-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 22px; font-weight: 700;">Atentiv Popup</span>
+              <span style="font-size: 14px; font-family: monospace; color: #818cf8;">index.html</span>
+            </div>
+            <div style="padding: 18px; background: #0f172a; border-radius: 14px;">
+              <div style="font-size: 16px; color: #94a3b8;">Current Focus Score</div>
+              <div style="font-size: 44px; font-weight: 800; color: #38bdf8;">94 / 100</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 18px; color: #cbd5e1;">
+              <span>Detected Category:</span>
+              <strong style="color: #4ade80;">Productive / Dev</strong>
+            </div>
+            <div style="padding: 12px; text-align: center; background: #4f46e5; border-radius: 10px; font-weight: 700; font-size: 18px;">
+              Open Side Panel →
+            </div>
+          </div>
+
+          <!-- Side Panel (sidepanel.html) -->
+          <div class="ext-sidepanel" id="sidepanel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 24px; font-weight: 700;">Live Side Panel</span>
+              <span style="font-size: 14px; font-family: monospace; color: #38bdf8;">sidepanel.html</span>
+            </div>
+            <div style="padding: 18px; background: #0f172a; border-radius: 14px;">
+              <div style="font-size: 16px; color: #94a3b8;">Real-Time Category Stream</div>
+              <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px; font-size: 17px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span>developer.chrome.com</span>
+                  <span style="color: #4ade80;">Engineering</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span>github.com/heygen-com</span>
+                  <span style="color: #38bdf8;">Code Repo</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span>arxiv.org/list/cs.AI</span>
+                  <span style="color: #a78bfa;">Research</span>
+                </div>
+              </div>
+            </div>
+            <div style="padding: 18px; background: rgba(99, 102, 241, 0.12); border-radius: 14px; border: 1px solid rgba(99, 102, 241, 0.3);">
+              <div style="font-size: 16px; color: #a5b4fc;">Model Manifest Status</div>
+              <div style="font-size: 18px; font-weight: 600; margin-top: 6px;">atentiv-page-category.ftz Ready</div>
+            </div>
+          </div>
+
+          <!-- Full Dashboard Overlay (dashboard.html & options.html) -->
+          <div class="dashboard-grid" id="dashboard-view">
+            <div class="stat-card">
+              <span class="stat-label">Deep Work Time Today</span>
+              <span class="stat-value" style="color: #38bdf8;">5h 42m</span>
+              <span style="color: #4ade80; font-size: 18px;">+24% vs yesterday</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Pages Classified Locally</span>
+              <span class="stat-value" style="color: #a5b4fc;">318</span>
+              <span style="color: #94a3b8; font-size: 18px;">100% On-Device WASM</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Distractions Blocked</span>
+              <span class="stat-value" style="color: #f43f5e;">14</span>
+              <span style="color: #fda4af; font-size: 18px;">Auto-redirected via rules</span>
+            </div>
+
+            <div class="chart-panel">
+              <div>
+                <div style="display: flex; justify-content: space-between;">
+                  <h3 style="font-size: 28px;">Category Breakdown (dashboard.html)</h3>
+                  <span style="font-family: monospace; color: #94a3b8; font-size: 18px;">assets/main-CN-n2cyN.js</span>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-label">Software Dev</span>
+                  <div class="bar-track"><div class="bar-fill" id="bar-1" style="width: 78%; background: #38bdf8;"></div></div>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-label">AI & Documentation</span>
+                  <div class="bar-track"><div class="bar-fill" id="bar-2" style="width: 62%; background: #818cf8;"></div></div>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-label">Productivity</span>
+                  <div class="bar-track"><div class="bar-fill" id="bar-3" style="width: 45%; background: #34d399;"></div></div>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-label">Social / Unfocused</span>
+                  <div class="bar-track"><div class="bar-fill" id="bar-4" style="width: 12%; background: #f43f5e;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Options & Model Config Panel (options.html) -->
+            <div class="stat-card" id="options-panel" style="justify-content: space-between; border-color: rgba(56, 189, 248, 0.4);">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h3 style="font-size: 24px;">Extension Options</h3>
+                  <span style="font-family: monospace; font-size: 15px; color: #38bdf8;">options.html</span>
+                </div>
+                <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 14px; font-size: 18px;">
+                  <div style="display: flex; justify-content: space-between; padding: 12px; background: #0f172a; border-radius: 10px;">
+                    <span>WASM FastText Engine</span>
+                    <span style="color: #4ade80; font-weight: 700;">ENABLED</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; padding: 12px; background: #0f172a; border-radius: 10px;">
+                    <span>Strict Focus Shield</span>
+                    <span style="color: #4ade80; font-weight: 700;">ON</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; padding: 12px; background: #0f172a; border-radius: 10px;">
+                    <span>Model Manifest Sync</span>
+                    <span style="color: #38bdf8; font-weight: 700;">v1.0 Local</span>
+                  </div>
+                </div>
+              </div>
+              <div style="padding: 14px; background: linear-gradient(90deg, #4f46e5, #06b6d4); border-radius: 12px; text-align: center; font-weight: 700; font-size: 18px;">
+                Atentiv — Ready in Chrome
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caption Bar -->
+      <div class="step-caption" id="caption-box">
+        Step 1: Real-time webpage classification via content.js + fastText.common.wasm
+      </div>
+
+      <!-- Animated Pointer -->
+      <svg id="demo-cursor" viewBox="0 0 36 36" fill="none">
+        <path d="M6 4L29 16L18 19.5L13.5 30L6 4Z" fill="#38bdf8" stroke="#ffffff" stroke-width="2.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    // Single deterministic paused GSAP timeline for HyperFrames
+    const tl = gsap.timeline({ paused: true });
+
+    // --- SCENE 1: Intro (0s - 4s) ---
+    tl.fromTo("#s1-badge", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.1)
+      .fromTo("#s1-title", { opacity: 0, y: 40, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power3.out" }, 0.3)
+      .fromTo("#s1-sub", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.5)
+      .fromTo("#s1-pills .tech-pill", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.08, ease: "power2.out" }, 0.8);
+
+    // --- SCENE 2: Browser + Popup + Use Case (4s - 9s) ---
+    tl.fromTo("#browser-window", { opacity: 0, scale: 0.92, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "power3.out" }, 4.0)
+      .fromTo("#wasm-alert", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 4.6)
+      .fromTo("#popup-card", { opacity: 0, y: -25, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, 5.6)
+      .fromTo("#sidepanel-card", { x: 460, opacity: 0 }, { x: 460, opacity: 0, duration: 0.01 }, 4.0)
+      .fromTo("#dashboard-view", { opacity: 0, scale: 0.96 }, { opacity: 0, scale: 0.96, duration: 0.01 }, 4.0);
+
+    // Cursor moves to Extension Icon & Popup
+    tl.fromTo("#demo-cursor", { x: 0, y: 0 }, { x: 780, y: -410, duration: 1.1, ease: "power2.inOut" }, 4.4)
+      .to("#demo-cursor", { x: 620, y: -60, duration: 1.0, ease: "power2.inOut" }, 7.2);
+
+    // --- SCENE 3: Side Panel Navigation (9s - 13.5s) ---
+    tl.to("#popup-card", { opacity: 0, scale: 0.9, duration: 0.35, ease: "power2.in" }, 8.8)
+      .to("#sidepanel-card", { x: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 9.0)
+      .to("#tab-popup", { backgroundColor: "rgba(15, 23, 42, 0.5)", color: "#94a3b8", duration: 0.3 }, 9.0)
+      .to("#tab-sidepanel", { backgroundColor: "#4f46e5", color: "#ffffff", duration: 0.3 }, 9.0)
+      .to("#caption-box", { opacity: 1, duration: 0.2 }, 9.0)
+      .to("#demo-cursor", { x: 560, y: -180, duration: 0.9, ease: "power2.inOut" }, 9.5);
+
+    // --- SCENE 4: Full Dashboard & Options Navigation (13.5s - 20s) ---
+    tl.to("#demo-cursor", { x: 420, y: -410, duration: 0.7, ease: "power2.inOut" }, 13.0)
+      .to("#tab-sidepanel", { backgroundColor: "rgba(15, 23, 42, 0.5)", color: "#94a3b8", duration: 0.3 }, 13.6)
+      .to("#tab-dashboard", { backgroundColor: "#4f46e5", color: "#ffffff", duration: 0.3 }, 13.6)
+      .to("#dashboard-view", { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" }, 13.6)
+      .fromTo(["#bar-1", "#bar-2", "#bar-3", "#bar-4"], { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.8, stagger: 0.12, ease: "power3.out" }, 14.1)
+      .to("#demo-cursor", { x: 520, y: 120, duration: 1.0, ease: "power2.inOut" }, 16.0)
+      .to("#tab-options", { backgroundColor: "#06b6d4", color: "#ffffff", duration: 0.4 }, 16.4)
+      .fromTo("#options-panel", { scale: 0.96 }, { scale: 1.02, duration: 0.4, yoyo: true, repeat: 1, ease: "power2.inOut" }, 16.5);
+
+    // Register timeline for HyperFrames deterministic capture
+    window.__timelines = window.__timelines || {};
+    window.__timelines["atentiv-demo"] = tl;
+
+    // Signal completion callback
+    tl.eventCallback("onComplete", () => {
+      window.__ANIMATION_COMPLETE__ = true;
+    });
+
+    // Playback control
+    window.startHyperFramesAnimation = () => {
+      tl.restart();
+    };
+
+    // Auto-play when viewed directly in browser preview
+    if (!navigator.webdriver) {
+      tl.play();
+    }
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Atentiv Page Category Classifier: Evaluation Report
 
-**Evaluation Date:** 2026-09-28 15:06:55 UTC  
+**Evaluation Date:** 2026-10-14 10:40:05 UTC  
 **Dataset:** Hugging Face `tshasan/multi-label-web-categorization`  
 **Test Set Size:** 4,710 distinct web pages  
 **Framework:** fastText (Supervised, loss: `ova` for multi-label classification)  
@@ -12,15 +12,15 @@
 | Metric | Raw Baseline (`.bin`) | Quantized Browser Model (`.ftz`) | Change |
 | :--- | :--- | :--- | :--- |
 | **Model Size** | **37.59 MB** | **1.80 MB** | **-95.2%** |
-| **Macro F1** | **0.6071** | **0.6144** | +0.0073 |
-| **Micro F1** | **0.6688** | **0.6638** | -0.0050 |
-| **Macro Precision** | 0.7303 | 0.6702 | -0.0601 |
-| **Macro Recall** | 0.5427 | 0.5763 | +0.0336 |
+| **Macro F1** | **0.6034** | **0.6144** | +0.0110 |
+| **Micro F1** | **0.6668** | **0.6638** | -0.0030 |
+| **Macro Precision** | 0.7221 | 0.6702 | -0.0519 |
+| **Macro Recall** | 0.5402 | 0.5763 | +0.0361 |
 | **Precision @ 1 (P@1)** | 0.7461 | 0.7301 | -0.0160 |
-| **Precision @ 3 (P@3)** | 0.4638 | 0.4570 | -0.0068 |
-| **Recall @ 3 (R@3)** | 0.7897 | 0.7782 | -0.0115 |
-| **Mean Latency** | 0.060 ms | 0.042 ms | -0.018 ms |
-| **p95 Latency** | 0.124 ms | 0.083 ms | -0.041 ms |
+| **Precision @ 3 (P@3)** | 0.4632 | 0.4570 | -0.0062 |
+| **Recall @ 3 (R@3)** | 0.7886 | 0.7782 | -0.0104 |
+| **Mean Latency** | 0.011 ms | 0.011 ms | +0.000 ms |
+| **p95 Latency** | 0.020 ms | 0.020 ms | +0.000 ms |
 
 ---
 
@@ -45,6 +45,6 @@
 ## 3. Analysis & Key Takeaways
 
 1. **Massive Compression with Minimal Degradation:** The quantized `.ftz` model achieves a **20.9x compression factor** (from 37.59 MB down to 1.80 MB) while maintaining strong Macro F1 (0.6144) and Micro F1 (0.6638).
-2. **Sub-Millisecond Inference:** Per-document inference is under **0.08 ms at p95**, completely meeting the SRS tab tracking latency requirement (< 15 ms).
+2. **Sub-Millisecond Inference:** Per-document inference is under **0.02 ms at p95**, completely meeting the SRS tab tracking latency requirement (< 15 ms).
 3. **Multi-Label Calibration:** FastText with `ova` loss reliably identifies multi-category web domains (e.g. Technology + Education for StackOverflow and ArXiv).
 4. **On-Device Viability:** The 1.8 MB artifact fits effortlessly in browser memory and loads via WebAssembly in a fraction of a second without remote API calls.

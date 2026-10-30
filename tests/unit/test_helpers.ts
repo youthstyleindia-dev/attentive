@@ -34,7 +34,9 @@ export class HUDAppearanceEngine {
     hudPosition: "top-right",
   };
 
-  static computeCSSVariables(prefs: HUDAppearancePrefs): Record<string, string> {
+  static computeCSSVariables(
+    prefs: HUDAppearancePrefs,
+  ): Record<string, string> {
     const clampedTrans = Math.max(0, Math.min(100, prefs.transparency));
     const clampedBlur = Math.max(0, Math.min(48, prefs.blurPx));
     const bgAlpha = (1 - clampedTrans / 100) * 0.85 + 0.05;
@@ -48,7 +50,9 @@ export class HUDAppearanceEngine {
     };
   }
 
-  static async load(storage: { get: (k: string) => Promise<any> }): Promise<HUDAppearancePrefs> {
+  static async load(storage: {
+    get: (k: string) => Promise<any>;
+  }): Promise<HUDAppearancePrefs> {
     const res = await storage.get(this.STORAGE_KEY);
     const saved = res?.[this.STORAGE_KEY] || {};
     return {
@@ -65,7 +69,7 @@ export class HUDAppearanceEngine {
 
   static async save(
     storage: { set: (v: any) => Promise<any> },
-    prefs: HUDAppearancePrefs
+    prefs: HUDAppearancePrefs,
   ): Promise<void> {
     await storage.set({ [this.STORAGE_KEY]: prefs });
   }
@@ -110,7 +114,7 @@ export class FocusModeManager {
       query: (q: any) => Promise<TabInfo[]>;
       remove: (ids: number[]) => Promise<void>;
     },
-    currentWindowId: number
+    currentWindowId: number,
   ): Promise<{ closedCount: number; message: string }> {
     const allTabs = await tabsApi.query({ windowId: currentWindowId });
     const { tabsToClose, toastMessage } = this.evaluateTabsToClose(allTabs);
@@ -150,13 +154,20 @@ export class HUDSearchEngine {
           title.includes(tok) ||
           domain.includes(tok) ||
           url.includes(tok) ||
-          category.includes(tok)
+          category.includes(tok),
       );
     });
   }
 
-  static isSearchShortcut(event: { key: string; metaKey?: boolean; ctrlKey?: boolean }): boolean {
-    return (event.key === "k" || event.key === "K") && Boolean(event.metaKey || event.ctrlKey);
+  static isSearchShortcut(event: {
+    key: string;
+    metaKey?: boolean;
+    ctrlKey?: boolean;
+  }): boolean {
+    return (
+      (event.key === "k" || event.key === "K") &&
+      Boolean(event.metaKey || event.ctrlKey)
+    );
   }
 }
 

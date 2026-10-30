@@ -19,7 +19,8 @@ export interface SwitchContext {
 export interface SwitchEvaluation {
   isSwitch: boolean;
   penaltyPoints: number;
-  switchType: "none" | "within_workstream" | "same_category" | "related" | "unrelated";
+  switchType:
+    "none" | "within_workstream" | "same_category" | "related" | "unrelated";
   isRapidSwitch: boolean;
   switchBurden?: "low" | "medium" | "high";
   switchBurdenScore?: number;
@@ -28,11 +29,16 @@ export interface SwitchEvaluation {
 export class ContextSwitchEvaluator {
   static evaluate(ctx: SwitchContext): SwitchEvaluation {
     const isTabSwitch =
-      (ctx.fromTabId !== undefined && ctx.toTabId !== undefined && ctx.fromTabId !== ctx.toTabId) ||
+      (ctx.fromTabId !== undefined &&
+        ctx.toTabId !== undefined &&
+        ctx.fromTabId !== ctx.toTabId) ||
       (ctx.fromUrl && ctx.toUrl && ctx.fromUrl !== ctx.toUrl);
 
-    const isWorkstreamSwitch =
-      Boolean(ctx.fromWorkstreamId && ctx.toWorkstreamId && ctx.fromWorkstreamId !== ctx.toWorkstreamId);
+    const isWorkstreamSwitch = Boolean(
+      ctx.fromWorkstreamId &&
+      ctx.toWorkstreamId &&
+      ctx.fromWorkstreamId !== ctx.toWorkstreamId,
+    );
 
     if (!isTabSwitch && !isWorkstreamSwitch) {
       return {
@@ -45,16 +51,25 @@ export class ContextSwitchEvaluator {
       };
     }
 
-    const elapsedSeconds = Math.max(0, (ctx.now - ctx.lastSwitchTimestamp) / 1000);
+    const elapsedSeconds = Math.max(
+      0,
+      (ctx.now - ctx.lastSwitchTimestamp) / 1000,
+    );
     const isRapid = elapsedSeconds <= 45;
 
     let basePenalty = 2;
-    let switchType: "within_workstream" | "same_category" | "related" | "unrelated" = "related";
+    let switchType:
+      "within_workstream" | "same_category" | "related" | "unrelated" =
+      "related";
 
     if (!isWorkstreamSwitch) {
       basePenalty = 0; // SRS: CU=0 for within-workstream switch
       switchType = "within_workstream";
-    } else if (ctx.fromCategory && ctx.toCategory && ctx.fromCategory.toLowerCase() === ctx.toCategory.toLowerCase()) {
+    } else if (
+      ctx.fromCategory &&
+      ctx.toCategory &&
+      ctx.fromCategory.toLowerCase() === ctx.toCategory.toLowerCase()
+    ) {
       basePenalty = 1;
       switchType = "same_category";
     } else if (
@@ -69,7 +84,8 @@ export class ContextSwitchEvaluator {
     }
 
     const penaltyPoints = isRapid ? Math.round(basePenalty * 1.5) : basePenalty;
-    const switchBurden: "low" | "medium" | "high" = penaltyPoints <= 1 ? "low" : penaltyPoints <= 3 ? "medium" : "high";
+    const switchBurden: "low" | "medium" | "high" =
+      penaltyPoints <= 1 ? "low" : penaltyPoints <= 3 ? "medium" : "high";
     const switchBurdenScore = Math.min(100, penaltyPoints * 18);
 
     return {

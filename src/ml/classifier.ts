@@ -8,8 +8,15 @@ import { RuleEngine, type PageContext } from "../rules/ruleEngine";
 import { DomainRepository } from "../db/repositories/domainRepository";
 import { InferenceCache } from "./inferenceCache";
 import { ModelLoader } from "./modelLoader";
-import { buildCompositeFeatureText, sanitizeUrl } from "../features/textFeatures";
-import type { UserRuleRecord, ProductivityType, DecisionTraceRecord } from "../db/schemas";
+import {
+  buildCompositeFeatureText,
+  sanitizeUrl,
+} from "../features/textFeatures";
+import type {
+  UserRuleRecord,
+  ProductivityType,
+  DecisionTraceRecord,
+} from "../db/schemas";
 
 import productivityRulesJson from "../../libraries/productivity/productivity_rules.json";
 import devKeywords from "../../libraries/keywords/development.json";
@@ -47,7 +54,9 @@ export interface ClassificationResult {
 }
 
 export class Classifier {
-  static async classify(input: ClassificationInput): Promise<ClassificationResult> {
+  static async classify(
+    input: ClassificationInput,
+  ): Promise<ClassificationResult> {
     const t0 = performance.now();
     const sessionId = input.sessionId || crypto.randomUUID();
     const sanitized = sanitizeUrl(input.url);
@@ -65,7 +74,21 @@ export class Classifier {
         isExcluded: true,
         exclusionReason: "Non-trackable or internal URL protocol",
         compositeText: "",
-        decisionTrace: this.makeTrace(sessionId, [], null, [], [], 1.0, "Unknown", "neutral", "None", {}, ["Non-trackable URL"], "none", latency),
+        decisionTrace: this.makeTrace(
+          sessionId,
+          [],
+          null,
+          [],
+          [],
+          1.0,
+          "Unknown",
+          "neutral",
+          "None",
+          {},
+          ["Non-trackable URL"],
+          "none",
+          latency,
+        ),
         inferenceLatencyMs: latency,
       };
     }
@@ -76,7 +99,11 @@ export class Classifier {
     const reasons: string[] = [];
 
     // 1. PRIVACY EXCLUSION CHECK (Section 34)
-    const exclCheck = ExclusionEngine.check(domain, input.url, input.userExclusions || []);
+    const exclCheck = ExclusionEngine.check(
+      domain,
+      input.url,
+      input.userExclusions || [],
+    );
     if (exclCheck.isExcluded) {
       const latency = performance.now() - t0;
       return {
@@ -90,7 +117,21 @@ export class Classifier {
         isExcluded: true,
         exclusionReason: exclCheck.reason,
         compositeText: domain,
-        decisionTrace: this.makeTrace(sessionId, [], null, [], [], 1.0, "Excluded", "neutral", "None", {}, [exclCheck.reason || "Excluded"], "none", latency),
+        decisionTrace: this.makeTrace(
+          sessionId,
+          [],
+          null,
+          [],
+          [],
+          1.0,
+          "Excluded",
+          "neutral",
+          "None",
+          {},
+          [exclCheck.reason || "Excluded"],
+          "none",
+          latency,
+        ),
         inferenceLatencyMs: latency,
       };
     }
@@ -121,7 +162,27 @@ export class Classifier {
           isExcluded: true,
           exclusionReason: ruleMatch.reason,
           compositeText: domain,
-          decisionTrace: this.makeTrace(sessionId, [{ rule_id: ruleMatch.matchedRule.rule_id, name: ruleMatch.matchedRule.name, priority: ruleMatch.matchedRule.priority }], null, [], [], 1.0, action.activity_type || "Excluded", "neutral", action.force_workstream || "User Override", {}, reasons, "user-rule", latency),
+          decisionTrace: this.makeTrace(
+            sessionId,
+            [
+              {
+                rule_id: ruleMatch.matchedRule.rule_id,
+                name: ruleMatch.matchedRule.name,
+                priority: ruleMatch.matchedRule.priority,
+              },
+            ],
+            null,
+            [],
+            [],
+            1.0,
+            action.activity_type || "Excluded",
+            "neutral",
+            action.force_workstream || "User Override",
+            {},
+            reasons,
+            "user-rule",
+            latency,
+          ),
           inferenceLatencyMs: latency,
         };
       }
@@ -137,11 +198,43 @@ export class Classifier {
         confidence: 1.0,
         activity: assignedActivity,
         productivity: assignedProductivity,
-        productivityScore: assignedProductivity === "productive" ? 1.0 : assignedProductivity === "distracting" ? -1.0 : 0.0,
+        productivityScore:
+          assignedProductivity === "productive"
+            ? 1.0
+            : assignedProductivity === "distracting"
+              ? -1.0
+              : 0.0,
         modelVersion: "user-rule",
         isExcluded: false,
-        compositeText: buildCompositeFeatureText(domain, pathTokens, cleanTitle, headings, input.metaDescription, input.visibleTextExcerpt),
-        decisionTrace: this.makeTrace(sessionId, [{ rule_id: ruleMatch.matchedRule.rule_id, name: ruleMatch.matchedRule.name, priority: ruleMatch.matchedRule.priority }], null, [], [{ label: assignedCategory, score: 1.0 }], 1.0, assignedActivity, assignedProductivity, action.force_workstream || "User Assigned", {}, reasons, "user-rule", latency),
+        compositeText: buildCompositeFeatureText(
+          domain,
+          pathTokens,
+          cleanTitle,
+          headings,
+          input.metaDescription,
+          input.visibleTextExcerpt,
+        ),
+        decisionTrace: this.makeTrace(
+          sessionId,
+          [
+            {
+              rule_id: ruleMatch.matchedRule.rule_id,
+              name: ruleMatch.matchedRule.name,
+              priority: ruleMatch.matchedRule.priority,
+            },
+          ],
+          null,
+          [],
+          [{ label: assignedCategory, score: 1.0 }],
+          1.0,
+          assignedActivity,
+          assignedProductivity,
+          action.force_workstream || "User Assigned",
+          {},
+          reasons,
+          "user-rule",
+          latency,
+        ),
         inferenceLatencyMs: latency,
       };
     }
@@ -158,11 +251,37 @@ export class Classifier {
         confidence: cached.confidence,
         activity: cached.activity,
         productivity: cached.productivity,
-        productivityScore: cached.productivity === "productive" ? 1.0 : cached.productivity === "distracting" ? -1.0 : 0.0,
+        productivityScore:
+          cached.productivity === "productive"
+            ? 1.0
+            : cached.productivity === "distracting"
+              ? -1.0
+              : 0.0,
         modelVersion: cached.modelVersion,
         isExcluded: false,
-        compositeText: buildCompositeFeatureText(domain, pathTokens, cleanTitle, headings, input.metaDescription, input.visibleTextExcerpt),
-        decisionTrace: this.makeTrace(sessionId, [], null, [], cached.categoryScores, cached.confidence, cached.activity, cached.productivity, "Cached", {}, reasons, cached.modelVersion, latency),
+        compositeText: buildCompositeFeatureText(
+          domain,
+          pathTokens,
+          cleanTitle,
+          headings,
+          input.metaDescription,
+          input.visibleTextExcerpt,
+        ),
+        decisionTrace: this.makeTrace(
+          sessionId,
+          [],
+          null,
+          [],
+          cached.categoryScores,
+          cached.confidence,
+          cached.activity,
+          cached.productivity,
+          "Cached",
+          {},
+          reasons,
+          cached.modelVersion,
+          latency,
+        ),
         inferenceLatencyMs: latency,
       };
     }
@@ -175,35 +294,103 @@ export class Classifier {
     }
 
     // 5. ML CLASSIFIER / FASTTEXT WASM INFERENCE (Section 10, 27)
-    const compositeText = buildCompositeFeatureText(domain, pathTokens, cleanTitle, headings, input.metaDescription, input.visibleTextExcerpt);
-    let model = ModelLoader.getActiveModel();
-    if (!model) {
-      model = await ModelLoader.load();
+    const compositeText = buildCompositeFeatureText(
+      domain,
+      pathTokens,
+      cleanTitle,
+      headings,
+      input.metaDescription,
+      input.visibleTextExcerpt,
+    );
+    let predictions: Array<{ label: string; score: number }> = [];
+    let sentenceVector: Float32Array | undefined = undefined;
+    let modelVersion = "fastText-1.0";
+
+    try {
+      let model = ModelLoader.getActiveModel();
+      if (!model) {
+        model = await ModelLoader.load();
+      }
+      predictions = model.predict(compositeText, 3, 0.0);
+      sentenceVector = model.getSentenceVector(compositeText);
+      modelVersion = model.version;
+    } catch {
+      reasons.push(
+        "fastText WASM unavailable; fell back silently to keyword scoring",
+      );
     }
 
-    const predictions = model.predict(compositeText, 3, 0.0);
-    const topPred = predictions[0] || { label: "Uncategorized", score: 0.5 };
-    const sentenceVector = model.getSentenceVector(compositeText);
+    const topPred = predictions[0] || null;
 
-    // Merge Domain Knowledge with ML Predictions
-    let finalCategory = topPred.label;
-    let confidence = topPred.score;
+    // Merge Domain Knowledge with ML Predictions or Keyword Fallback
+    let finalCategory = "Uncategorized";
+    let confidence = 0.5;
 
     if (domainRecord && domainRecord.confidence >= 0.95) {
       // High confidence domain rule wins over generic ML
       finalCategory = domainRecord.category;
       confidence = domainRecord.confidence;
-      reasons.push(`Curated domain rule '${domain}' matched (${domainRecord.category})`);
+      reasons.push(
+        `Curated domain rule '${domain}' matched (${domainRecord.category})`,
+      );
+    } else if (topPred && topPred.score > 0.35) {
+      finalCategory = topPred.label;
+      confidence = topPred.score;
+      reasons.push(
+        `fastText model predicted ${topPred.label} with confidence ${topPred.score.toFixed(2)}`,
+      );
     } else {
-      reasons.push(`fastText model predicted ${topPred.label} with confidence ${topPred.score.toFixed(2)}`);
+      // Step 7: Keyword scoring fallback
+      const kw = this.inferActivity(compositeText, "Uncategorized");
+      if (kw.matchedKeywords.length > 0) {
+        if (
+          kw.activity === "Coding" ||
+          kw.activity === "Debugging" ||
+          kw.activity === "Documentation"
+        )
+          finalCategory = "Technology";
+        else if (kw.activity === "Research" || kw.activity === "Paper Reading")
+          finalCategory = "Research";
+        else if (
+          kw.activity === "Learning" ||
+          kw.activity === "Tutorial" ||
+          kw.activity === "Lecture"
+        )
+          finalCategory = "Education";
+        else if (kw.activity === "Communication" || kw.activity === "Email")
+          finalCategory = "Communication";
+        else if (kw.activity === "Entertainment" || kw.activity === "Video")
+          finalCategory = "Entertainment";
+        confidence = 0.7;
+        reasons.push(
+          `Keyword scoring heuristic assigned '${finalCategory}' based on keywords [${kw.matchedKeywords.slice(0, 3).join(", ")}]`,
+        );
+      } else {
+        finalCategory = "Uncategorized";
+        confidence = 0.5;
+        reasons.push("Safe fallback: Uncategorized");
+      }
+      predictions = [{ label: finalCategory, score: confidence }];
     }
 
     // 6. ACTIVITY INFERENCE ENGINE (Section 17)
-    const { activity, matchedKeywords } = this.inferActivity(compositeText, finalCategory, domainRecord?.default_activity);
-    reasons.push(`Activity Engine determined '${activity}' based on keywords: [${matchedKeywords.slice(0, 3).join(", ")}]`);
+    const { activity, matchedKeywords } = this.inferActivity(
+      compositeText,
+      finalCategory,
+      domainRecord?.default_activity,
+    );
+    reasons.push(
+      `Activity Engine determined '${activity}' based on keywords: [${matchedKeywords.slice(0, 3).join(", ")}]`,
+    );
 
     // 7. CONTEXTUAL PRODUCTIVITY ENGINE (Section 18)
-    const productivity = this.inferProductivity(domain, compositeText, activity, finalCategory, domainRecord?.productivity_type);
+    const productivity = this.inferProductivity(
+      domain,
+      compositeText,
+      activity,
+      finalCategory,
+      domainRecord?.productivity_type,
+    );
     reasons.push(`Productivity Engine assigned '${productivity}'`);
 
     const latency = performance.now() - t0;
@@ -213,15 +400,26 @@ export class Classifier {
       confidence,
       activity,
       productivity,
-      productivityScore: productivity === "productive" ? 1.0 : productivity === "distracting" ? -1.0 : 0.0,
-      modelVersion: model.version,
+      productivityScore:
+        productivity === "productive"
+          ? 1.0
+          : productivity === "distracting"
+            ? -1.0
+            : 0.0,
+      modelVersion: modelVersion,
       isExcluded: false,
       sentenceVector,
       compositeText,
       decisionTrace: this.makeTrace(
         sessionId,
         [],
-        domainRecord ? { domain: domainRecord.domain, category: domainRecord.category, activity: domainRecord.default_activity } : null,
+        domainRecord
+          ? {
+              domain: domainRecord.domain,
+              category: domainRecord.category,
+              activity: domainRecord.default_activity,
+            }
+          : null,
         matchedKeywords,
         predictions,
         confidence,
@@ -230,8 +428,8 @@ export class Classifier {
         "Determined during Workstream Matching",
         {},
         reasons,
-        model.version,
-        latency
+        modelVersion,
+        latency,
       ),
       inferenceLatencyMs: latency,
     };
@@ -250,7 +448,11 @@ export class Classifier {
     return result;
   }
 
-  private static inferActivity(text: string, category: string, defaultActivity?: string): { activity: string; matchedKeywords: string[] } {
+  private static inferActivity(
+    text: string,
+    category: string,
+    defaultActivity?: string,
+  ): { activity: string; matchedKeywords: string[] } {
     const matched: string[] = [];
     const lower = text.toLowerCase();
 
@@ -271,10 +473,20 @@ export class Classifier {
 
     if (devHits.length > 0) {
       matched.push(...devHits);
-      if (lower.includes("error") || lower.includes("exception") || lower.includes("debug") || lower.includes("issue")) {
+      if (
+        lower.includes("error") ||
+        lower.includes("exception") ||
+        lower.includes("debug") ||
+        lower.includes("issue")
+      ) {
         return { activity: "Debugging", matchedKeywords: matched };
       }
-      if (lower.includes("docs") || lower.includes("documentation") || lower.includes("reference") || lower.includes("api")) {
+      if (
+        lower.includes("docs") ||
+        lower.includes("documentation") ||
+        lower.includes("reference") ||
+        lower.includes("api")
+      ) {
         return { activity: "Documentation", matchedKeywords: matched };
       }
       return { activity: "Coding", matchedKeywords: matched };
@@ -287,14 +499,17 @@ export class Classifier {
 
     if (learnHits.length > 0) {
       matched.push(...learnHits);
-      if (lower.includes("tutorial") || lower.includes("walkthrough")) return { activity: "Tutorial", matchedKeywords: matched };
-      if (lower.includes("lecture") || lower.includes("video")) return { activity: "Lecture", matchedKeywords: matched };
+      if (lower.includes("tutorial") || lower.includes("walkthrough"))
+        return { activity: "Tutorial", matchedKeywords: matched };
+      if (lower.includes("lecture") || lower.includes("video"))
+        return { activity: "Lecture", matchedKeywords: matched };
       return { activity: "Course", matchedKeywords: matched };
     }
 
     if (commHits.length > 0) {
       matched.push(...commHits);
-      if (lower.includes("mail") || lower.includes("inbox")) return { activity: "Email", matchedKeywords: matched };
+      if (lower.includes("mail") || lower.includes("inbox"))
+        return { activity: "Email", matchedKeywords: matched };
       return { activity: "Messaging", matchedKeywords: matched };
     }
 
@@ -304,12 +519,24 @@ export class Classifier {
     }
 
     return {
-      activity: defaultActivity || (category === "Technology" ? "Coding" : category === "Education" ? "Paper Reading" : "General Browsing"),
+      activity:
+        defaultActivity ||
+        (category === "Technology"
+          ? "Coding"
+          : category === "Education"
+            ? "Paper Reading"
+            : "General Browsing"),
       matchedKeywords: matched,
     };
   }
 
-  private static inferProductivity(domain: string, text: string, activity: string, category: string, domainDefault?: ProductivityType): ProductivityType {
+  private static inferProductivity(
+    domain: string,
+    text: string,
+    activity: string,
+    category: string,
+    domainDefault?: ProductivityType,
+  ): ProductivityType {
     const lowerText = text.toLowerCase();
 
     // YouTube Contextual Overrides (SRS Workflow 10 / Section 20)
@@ -329,10 +556,24 @@ export class Classifier {
 
     // Reddit Contextual Overrides
     if (domain.includes("reddit.com")) {
-      if (lowerText.includes("learnprogramming") || lowerText.includes("programming") || lowerText.includes("machinelearning") || lowerText.includes("reactjs") || lowerText.includes("datascience")) {
+      if (
+        lowerText.includes("learnprogramming") ||
+        lowerText.includes("programming") ||
+        lowerText.includes("machinelearning") ||
+        lowerText.includes("reactjs") ||
+        lowerText.includes("datascience") ||
+        lowerText.includes("rust") ||
+        activity === "Coding" ||
+        activity === "Technical Research" ||
+        activity === "Documentation"
+      ) {
         return "productive";
       }
-      if (lowerText.includes("memes") || lowerText.includes("funny") || lowerText.includes("gaming")) {
+      if (
+        lowerText.includes("memes") ||
+        lowerText.includes("funny") ||
+        lowerText.includes("gaming")
+      ) {
         return "distracting";
       }
       return "neutral";
@@ -342,20 +583,34 @@ export class Classifier {
     if (domainDefault) return domainDefault;
 
     // Activity Defaults
-    const actDefaults = (productivityRulesJson as { activity_defaults: Record<string, ProductivityType> }).activity_defaults;
+    const actDefaults = (
+      productivityRulesJson as {
+        activity_defaults: Record<string, ProductivityType>;
+      }
+    ).activity_defaults;
     if (actDefaults[activity]) {
       return actDefaults[activity];
     }
 
-    if (category === "Technology" || category === "Education" || category === "Work") return "productive";
-    if (category === "Entertainment" || category === "Shop") return "distracting";
+    if (
+      category === "Technology" ||
+      category === "Education" ||
+      category === "Work"
+    )
+      return "productive";
+    if (category === "Entertainment" || category === "Shop")
+      return "distracting";
     return "neutral";
   }
 
   private static makeTrace(
     sessionId: string,
     ruleMatches: Array<{ rule_id: string; name: string; priority: number }>,
-    domainMatch: { domain: string; category?: string; activity?: string } | null,
+    domainMatch: {
+      domain: string;
+      category?: string;
+      activity?: string;
+    } | null,
     keywordMatches: string[],
     modelPredictions: Array<{ label: string; score: number }>,
     modelConfidence: number,
@@ -365,7 +620,7 @@ export class Classifier {
     workstreamScores: Record<string, number>,
     finalReason: string[],
     modelVersion: string,
-    totalLatencyMs: number
+    totalLatencyMs: number,
   ): Omit<DecisionTraceRecord, "decision_id"> {
     return {
       session_id: sessionId,

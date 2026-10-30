@@ -4,7 +4,13 @@
 import { db } from "../database";
 import type { WorkstreamRecord, WorkstreamEventRecord } from "../schemas";
 export class WorkstreamRepository {
-  static async create(data: Partial<WorkstreamRecord> & { workstream_id: string; name: string; category: string }): Promise<WorkstreamRecord> {
+  static async create(
+    data: Partial<WorkstreamRecord> & {
+      workstream_id: string;
+      name: string;
+      category: string;
+    },
+  ): Promise<WorkstreamRecord> {
     const now = Date.now();
     const ws: WorkstreamRecord = {
       workstream_id: data.workstream_id,
@@ -23,7 +29,9 @@ export class WorkstreamRepository {
     return ws;
   }
 
-  static async getById(workstreamId: string): Promise<WorkstreamRecord | undefined> {
+  static async getById(
+    workstreamId: string,
+  ): Promise<WorkstreamRecord | undefined> {
     return await db.workstreams.get(workstreamId);
   }
 
@@ -39,7 +47,11 @@ export class WorkstreamRepository {
     await db.workstreams.put(record);
   }
 
-  static async updateCentroid(workstreamId: string, newCentroid: number[], activeDurationSeconds: number): Promise<void> {
+  static async updateCentroid(
+    workstreamId: string,
+    newCentroid: number[],
+    activeDurationSeconds: number,
+  ): Promise<void> {
     const ws = await db.workstreams.get(workstreamId);
     if (!ws) return;
     await db.workstreams.update(workstreamId, {

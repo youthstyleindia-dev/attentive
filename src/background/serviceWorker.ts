@@ -7,6 +7,7 @@ import { EventMonitor, serial } from "./eventMonitor";
 import { MessageRouter } from "./messageRouter";
 import { SessionManager } from "./sessionManager";
 import { DomainRepository } from "../db/repositories/domainRepository";
+import { RetentionManager } from "../db/retentionManager";
 
 console.log("Atentiv Service Worker initializing...");
 
@@ -32,7 +33,9 @@ async function openOrFocusRestrictedPopup(): Promise<void> {
   }
 
   try {
-    const popupUrl = chrome.runtime?.getURL ? chrome.runtime.getURL("sidepanel.html") : "sidepanel.html";
+    const popupUrl = chrome.runtime?.getURL
+      ? chrome.runtime.getURL("sidepanel.html")
+      : "sidepanel.html";
     const win = await chrome.windows.create({
       url: popupUrl,
       type: "popup",
@@ -43,7 +46,10 @@ async function openOrFocusRestrictedPopup(): Promise<void> {
       popupWindowId = win.id;
     }
   } catch (err) {
-    console.warn("Atentiv: Failed to create restricted page popup window:", err);
+    console.warn(
+      "Atentiv: Failed to create restricted page popup window:",
+      err,
+    );
   }
 }
 
@@ -72,13 +78,17 @@ chrome.action.onClicked.addListener((tab) => {
   if (!tabId) return;
   chrome.scripting
     .executeScript({ target: { tabId }, files: ["content.js"] })
-    .catch(() => { /* already injected — safe to ignore */ })
+    .catch(() => {
+      /* already injected — safe to ignore */
+    })
     .finally(() => {
       // Small delay lets content.js finish boot() on first inject
       setTimeout(() => {
         chrome.tabs
           .sendMessage(tabId, { type: "TOGGLE_ATENTIV_HUD" })
-          .catch((e) => console.warn("Atentiv: Could not send TOGGLE_ATENTIV_HUD", e));
+          .catch((e) =>
+            console.warn("Atentiv: Could not send TOGGLE_ATENTIV_HUD", e),
+          );
       }, 150);
     });
 });
@@ -90,5 +100,15 @@ serial(async () => {
   await DomainRepository.seedDefaults();
   await SessionManager.initFromStorage();
   await SessionManager.reconcile();
+  try {
+    const pruneRes = await RetentionManager.pruneExpired();
+    if (pruneRes.totalPruned > 0) {
+      console.log(
+        `[AtentivDB] Startup retention maintenance pruned ${pruneRes.totalPruned} expired records.`,
+      );
+    }
+  } catch (err) {
+    console.warn("[AtentivDB] Startup retention maintenance error:", err);
+  }
   console.log("Atentiv Service Worker ready.");
 });

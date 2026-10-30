@@ -101,7 +101,10 @@ export class AtlasStateMachine {
   /**
    * User interaction detected (keypress, click, scroll, tab activation)
    */
-  onUserActivity(now = Date.now()): { wasIdle: boolean; idleDurationMs: number } {
+  onUserActivity(now = Date.now()): {
+    wasIdle: boolean;
+    idleDurationMs: number;
+  } {
     const wasIdle = this.state === "IDLE" || this.state === "IDLE_CANDIDATE";
     let idleDurationMs = 0;
     if (wasIdle && this.idleStartTime) {
@@ -118,7 +121,10 @@ export class AtlasStateMachine {
   /**
    * Periodic watchdog tick to test inactivity
    */
-  checkInactivity(now = Date.now()): { transitionedToIdle: boolean; state: AtlasTrackingState } {
+  checkInactivity(now = Date.now()): {
+    transitionedToIdle: boolean;
+    state: AtlasTrackingState;
+  } {
     if (this.state !== "RECORDING") {
       return { transitionedToIdle: false, state: this.state };
     }
@@ -126,7 +132,8 @@ export class AtlasStateMachine {
     if (elapsedSeconds >= this.idleThresholdSeconds) {
       this.state = "IDLE";
       if (!this.idleStartTime) {
-        this.idleStartTime = now - (elapsedSeconds - this.idleThresholdSeconds) * 1000;
+        this.idleStartTime =
+          now - (elapsedSeconds - this.idleThresholdSeconds) * 1000;
       }
       return { transitionedToIdle: true, state: this.state };
     }
@@ -165,7 +172,11 @@ export class TabSwitchDetector {
    * Evaluates active tab transition
    * Context Switch Event = Active Tab A -> Active Tab B
    */
-  evaluateSwitch(newTabId: number, windowId = 1, timestamp = Date.now()): {
+  evaluateSwitch(
+    newTabId: number,
+    windowId = 1,
+    timestamp = Date.now(),
+  ): {
     isSwitch: boolean;
     previousTabId: number | null;
     newTabId: number;
@@ -177,18 +188,33 @@ export class TabSwitchDetector {
     if (previous === null) {
       // Initial tab session boot
       this.currentTabId = newTabId;
-      return { isSwitch: false, previousTabId: null, newTabId, switchCount: this.totalSwitches };
+      return {
+        isSwitch: false,
+        previousTabId: null,
+        newTabId,
+        switchCount: this.totalSwitches,
+      };
     }
 
     if (previous === newTabId) {
       // Same tab re-focused or updated
-      return { isSwitch: false, previousTabId: previous, newTabId, switchCount: this.totalSwitches };
+      return {
+        isSwitch: false,
+        previousTabId: previous,
+        newTabId,
+        switchCount: this.totalSwitches,
+      };
     }
 
     // Pure observable tab switch!
     this.totalSwitches += 1;
     this.currentTabId = newTabId;
-    return { isSwitch: true, previousTabId: previous, newTabId, switchCount: this.totalSwitches };
+    return {
+      isSwitch: true,
+      previousTabId: previous,
+      newTabId,
+      switchCount: this.totalSwitches,
+    };
   }
 }
 
@@ -226,12 +252,19 @@ export class SwitchBurdenEvaluator {
     }
 
     // 2. Category disparity
-    if (input.previousCategory && input.newCategory && input.previousCategory !== input.newCategory) {
+    if (
+      input.previousCategory &&
+      input.newCategory &&
+      input.previousCategory !== input.newCategory
+    ) {
       score += 20;
     }
 
     // 3. Productivity transition (Productive -> Distracting/Unproductive carries high friction)
-    if (input.previousProductivity === "productive" && input.newProductivity === "distracting") {
+    if (
+      input.previousProductivity === "productive" &&
+      input.newProductivity === "distracting"
+    ) {
       score += 35;
     } else if (input.newProductivity === "distracting") {
       score += 20;
@@ -243,14 +276,15 @@ export class SwitchBurdenEvaluator {
     }
 
     const clamped = Math.min(100, Math.max(0, score));
-    const burden: SwitchBurdenLevel = clamped >= 60 ? "high" : clamped >= 30 ? "medium" : "low";
+    const burden: SwitchBurdenLevel =
+      clamped >= 60 ? "high" : clamped >= 30 ? "medium" : "low";
 
     const reason =
       burden === "high"
         ? "Cross-workstream shift with distinct behavioral context"
         : burden === "medium"
-        ? "Context transition with moderate domain or category difference"
-        : "Low-friction tab switch within consistent task space";
+          ? "Context transition with moderate domain or category difference"
+          : "Low-friction tab switch within consistent task space";
 
     return {
       burden,
@@ -305,14 +339,16 @@ export class ActivitySegmentBuilder {
 
   updateActiveDwell(elapsedActiveSeconds: number) {
     if (this.currentSegment) {
-      this.currentSegment.active_seconds = (this.currentSegment.active_seconds || 0) + elapsedActiveSeconds;
+      this.currentSegment.active_seconds =
+        (this.currentSegment.active_seconds || 0) + elapsedActiveSeconds;
       this.currentSegment.end = Date.now();
     }
   }
 
   updateIdle(elapsedIdleSeconds: number) {
     if (this.currentSegment) {
-      this.currentSegment.idle_seconds = (this.currentSegment.idle_seconds || 0) + elapsedIdleSeconds;
+      this.currentSegment.idle_seconds =
+        (this.currentSegment.idle_seconds || 0) + elapsedIdleSeconds;
       this.currentSegment.end = Date.now();
     }
   }
@@ -327,13 +363,20 @@ export class ActivitySegmentBuilder {
       title: this.currentSegment.title || "",
       start: this.currentSegment.start || now,
       end: now,
-      active_seconds: Math.max(1, Math.round(this.currentSegment.active_seconds || 0)),
-      idle_seconds: Math.max(0, Math.round(this.currentSegment.idle_seconds || 0)),
+      active_seconds: Math.max(
+        1,
+        Math.round(this.currentSegment.active_seconds || 0),
+      ),
+      idle_seconds: Math.max(
+        0,
+        Math.round(this.currentSegment.idle_seconds || 0),
+      ),
       category: this.currentSegment.category || "General",
       activity: this.currentSegment.activity || "Browsing",
       productivity: this.currentSegment.productivity || "neutral",
       workstream_id: this.currentSegment.workstream_id || "general",
-      workstream_name: this.currentSegment.workstream_name || "General Browsing",
+      workstream_name:
+        this.currentSegment.workstream_name || "General Browsing",
       confidence: this.currentSegment.confidence || 0.85,
       model_version: this.currentSegment.model_version || "1.0.0",
       is_tentative: this.currentSegment.is_tentative,
@@ -392,7 +435,8 @@ export class AtlasMetricsEngine {
 
     // Active Coverage = (P + U + N) / (P + U + N + I)
     const grandTotal = activeTotalSeconds + I;
-    const activeCoverage = grandTotal > 0 ? (activeTotalSeconds / grandTotal) * 100 : 100;
+    const activeCoverage =
+      grandTotal > 0 ? (activeTotalSeconds / grandTotal) * 100 : 100;
 
     return {
       focusScore: Math.min(100, Math.max(0, focusScore)),

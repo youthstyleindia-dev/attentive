@@ -54,5 +54,9 @@ test("Focus Score: Distracting fragmentation drops score to 0", () => {
     contextSwitchCount: 30,
   });
 
-  assert.equal(result.score, 0, "Heavy distraction and switching should clamp at 0");
+  assert.equal(
+    result.score,
+    0,
+    "Heavy distraction and switching should clamp at 0",
+  );
 });

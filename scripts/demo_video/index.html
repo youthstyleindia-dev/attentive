@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Atentiv Product Demo — HyperFrames Video</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      width: 1920px;
+      height: 1080px;
+      background: #090d16;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── CINEMATIC STAGE CONTAINER ────────────────────────────────────────── */
+    #stage {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #090d16 65%);
+    }
+
+    /* ── SCENE CONTAINERS ─────────────────────────────────────────────────── */
+    .scene {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.98);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scene.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    /* ── CAPTIONS (Dev.to HyperFrames Geist-style typography) ──────────────── */
+    #caption-bar {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+      z-index: 10000;
+      transition: all 0.4s ease;
+    }
+
+    .caption-logo {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .caption-logo svg {
+      width: 14px;
+      height: 14px;
+      fill: white;
+    }
+
+    .caption-text {
+      font-size: 19px;
+      font-weight: 500;
+      color: #cbd5e1;
+      letter-spacing: -0.2px;
+    }
+
+    .caption-text strong, .caption-text .hl {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    .caption-text .hl-purple {
+      color: #c084fc;
+      font-weight: 700;
+    }
+
+    .caption-text .hl-green {
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    .caption-text .hl-red {
+      color: #f87171;
+      font-weight: 700;
+    }
+
+    /* ── MOUSE CURSOR SIMULATOR ───────────────────────────────────────────── */
+    #cursor {
+      position: absolute;
+      top: 500px;
+      left: 960px;
+      width: 28px;
+      height: 28px;
+      z-index: 99999;
+      pointer-events: none;
+      transition: transform 0.1s ease-out;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+    }
+
+    #cursor.clicking svg {
+      transform: scale(0.85);
+    }
+
+    /* ── BROWSER MOCKUP CONTAINER ─────────────────────────────────────────── */
+    .browser-frame {
+      width: 1680px;
+      height: 940px;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.8), 0 0 100px -20px rgba(139, 92, 246, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Browser Header / Tab Bar */
+    .browser-bar {
+      height: 52px;
+      background: #131d33;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      gap: 16px;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .window-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .browser-tabs {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+      margin-left: 12px;
+    }
+
+    .browser-tab {
+      height: 38px;
+      padding: 0 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #94a3b8;
+      max-width: 260px;
+      transition: all 0.3s ease;
+    }
+
+    .browser-tab.active {
+      background: #0f172a;
+      color: #f8fafc;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .tab-speaker {
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.15); }
+    }
+
+    .url-bar {
+      width: 480px;
+      height: 34px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #94a3b8;
+      gap: 8px;
+    }
+
+    .url-bar .lock {
+      color: #10b981;
+    }
+
+    .url-bar .host {
+      color: #f8fafc;
+    }
+
+    /* Browser Viewport */
+    .browser-body {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: #0b1120;
+    }
+
+    /* ── SCENE 1: HERO TITLE ──────────────────────────────────────────────── */
+    .hero-wrap {
+      text-align: center;
+      max-width: 1080px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 9999px;
+      color: #c084fc;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 24px;
+    }
+
+    .hero-title .gradient-txt {
+      background: linear-gradient(90deg, #8b5cf6, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 24px;
+      color: #94a3b8;
+      line-height: 1.5;
+      font-weight: 400;
+      margin-bottom: 40px;
+    }
+
+    .hero-features {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .feature-chip {
+      padding: 12px 24px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── DEV.TO WEBPAGE SIMULATION (SCENE 2) ───────────────────────────────── */
+    .devto-page {
+      padding: 40px 180px;
+      height: 100%;
+      overflow: hidden;
+      background: #0f172a;
+    }
+
+    .devto-hero-img {
+      width: 100%;
+      height: 240px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #312e81, #1e1b4b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #e0e7ff;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .devto-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .devto-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .devto-meta div:first-child {
+      font-weight: 700;
+      font-size: 16px;
+      color: #f1f5f9;
+    }
+    .devto-meta div:last-child {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .devto-title {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #ffffff;
+      margin-bottom: 18px;
+      letter-spacing: -1px;
+    }
+
+    .devto-tags {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .devto-tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
+    }
+
+    .devto-p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #cbd5e1;
+      margin-bottom: 18px;
+    }
+
+    /* ── ATENTIV FLOATING FOCUS PILL (CORNER WIDGET) ──────────────────────── */
+    #atentiv-pill {
+      position: absolute;
+      bottom: 24px;
+      right: 28px;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      z-index: 1000;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #atentiv-pill:hover {
+      transform: translateY(-2px);
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+
+    .pill-logo {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pill-logo svg {
+      width: 14px;
+      height: 14px;
+      fill: white;
+    }
+
+    .pill-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pill-status {
+      font-size: 12px;
+      font-weight: 600;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 1s infinite;
+    }
+
+    .pill-timer {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .pill-score {
+      padding: 4px 10px;
+      background: rgba(139, 92, 246, 0.2);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #c084fc;
+    }
+
+    /* ── TRANSPARENT GLASS HUD OVERLAY (SCENE 3) ──────────────────────────── */
+    #glass-hud {
+      position: absolute;
+      bottom: 24px;
+      right: 28px;
+      width: 440px;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8), 0 0 50px rgba(139, 92, 246, 0.2);
+      z-index: 2000;
+      transform-origin: bottom right;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: none;
+    }
+
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .hud-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .hud-card {
+      background: rgba(30, 41, 59, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .hud-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .hud-tab-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 8px;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .badge-prod { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-tech { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-dist { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .hud-metrics-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .focus-ring-wrap {
+      position: relative;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .focus-ring-svg {
+      transform: rotate(-90deg);
+      width: 70px;
+      height: 70px;
+    }
+
+    .focus-val-center {
+      position: absolute;
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .metrics-stats {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+    }
+    .stat-val {
+      font-weight: 600;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .full-view-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* ── SCENE 4: EXPANDED 3-COLUMN COMMAND CENTER ────────────────────────── */
+    #full-dashboard {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 15, 25, 0.96);
+      backdrop-filter: blur(30px);
+      z-index: 3000;
+      display: none;
+      flex-direction: column;
+      padding: 28px 40px;
+    }
+
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 24px;
+    }
+
+    .dash-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dash-columns {
+      display: grid;
+      grid-template-columns: 360px 1fr 380px;
+      gap: 24px;
+      flex: 1;
+    }
+
+    .dash-col {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .col-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .workstream-item {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-left: 3px solid #8b5cf6;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+
+    .ws-name { font-weight: 700; font-size: 14px; color: #f8fafc; }
+    .ws-tabs { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+    /* Center Timeline / Activity Blocks */
+    .timeline-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .activity-block {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .act-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .act-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(139, 92, 246, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c084fc;
+      font-weight: 700;
+    }
+
+    /* ── SCENE 5 & 6: AUDIO CLASSIFICATION DEMO CARDS ─────────────────────── */
+    .audio-card {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-left: 4px solid #8b5cf6;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .audio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .audio-platform {
+      font-size: 13px;
+      font-weight: 700;
+      color: #a78bfa;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .audio-title-live {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
+      margin-bottom: 10px;
+    }
+
+    .audio-meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .audio-score-val {
+      font-weight: 700;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .audio-score-val.distracting {
+      color: #f87171;
+    }
+
+    /* Waveform Animation */
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 18px;
+    }
+
+    .wave-bar {
+      width: 3px;
+      background: #8b5cf6;
+      border-radius: 9999px;
+      animation: wave 1s ease-in-out infinite alternate;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.1s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.3s; }
+
+    @keyframes wave {
+      0% { height: 4px; }
+      100% { height: 18px; }
+    }
+
+    /* ── SCENE 7: PRIVACY & OUTRO ─────────────────────────────────────────── */
+    .outro-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 340px);
+      gap: 24px;
+      margin-top: 36px;
+    }
+
+    .outro-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .outro-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #c084fc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 24px;
+    }
+
+    .outro-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+
+    .outro-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div id="stage">
+
+    <!-- ── SCENE 1: CINEMATIC TITLE HERO ─────────────────────────────────── -->
+    <div id="scene-1" class="scene active">
+      <div class="hero-wrap">
+        <div class="hero-badge">
+          <span>●</span> ATENTIV ENGINE SPECIFICATION 3.0
+        </div>
+        <h1 class="hero-title">
+          Browse Mindfully with <br/>
+          <span class="gradient-txt">Local ML Intelligence</span>
+        </h1>
+        <p class="hero-sub">
+          Autonomous productivity tracking, contextual workstream clustering, and real-time audio distraction classification—running 100% locally in your browser.
+        </p>
+        <div class="hero-features">
+          <div class="feature-chip">⚡ FastText WASM (0.01ms P50)</div>
+          <div class="feature-chip">🔒 Zero Server Communication</div>
+          <div class="feature-chip">🎧 Background Audio Classifier</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCENE 2: ACTIVE TAB TRACKING (DEV.TO ARTICLE) ──────────────────── -->
+    <div id="scene-2" class="scene">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="window-dots">
+            <span class="window-dot dot-red"></span>
+            <span class="window-dot dot-yellow"></span>
+            <span class="window-dot dot-green"></span>
+          </div>
+          <div class="browser-tabs">
+            <div class="browser-tab active" id="tab-devto">
+              <span>📄</span>
+              <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">I made our product demo in HTML...</span>
+            </div>
+            <div class="browser-tab" id="tab-github">
+              <span>🐙</span>
+              <span>github.com/atentiv</span>
+            </div>
+          </div>
+          <div class="url-bar">
+            <span class="lock">🔒</span>
+            <span class="host">dev.to</span>/whateverneveranywhere/i-made-our-product-demo-in-html
+          </div>
+        </div>
+
+        <div class="browser-body">
+          <!-- Dev.to Article Content -->
+          <div class="devto-page">
+            <div class="devto-hero-img">
+              HYPERFRAMES HTML VIDEO PIPELINE
+            </div>
+            <div class="devto-author">
+              <div class="devto-avatar">AB</div>
+              <div class="devto-meta">
+                <div>Ava Bagherzadeh</div>
+                <div>Posted on 28 Sept &bull; 6 min read</div>
+              </div>
+            </div>
+            <div class="devto-title">
+              I made our product demo in HTML with HyperFrames, no video editor
+            </div>
+            <div class="devto-tags">
+              <span class="devto-tag">#showdev</span>
+              <span class="devto-tag">#webdev</span>
+              <span class="devto-tag">#video</span>
+              <span class="devto-tag">#html</span>
+            </div>
+            <p class="devto-p">
+              Recording a real web app is messier than it looks. Pages load in stages, spinners show up, the test data is never quite right, and every small UI change means recording again. I wanted the demo to look exactly like the product without fighting any of that.
+            </p>
+            <p class="devto-p">
+              HyperFrames takes an HTML page per scene and renders it to frames. That meant the demo could use the same fonts, colors, and layout tokens as our site, because they were literally the site's files...
+            </p>
+          </div>
+
+          <!-- Atentiv Corner Focus Pill -->
+          <div id="atentiv-pill">
+            <div class="pill-logo">
+              <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="white" stroke-width="2"/><circle cx="10" cy="10" r="2.5" fill="white"/></svg>
+            </div>
+            <div class="pill-info">
+              <div class="pill-status">Tracking Active</div>
+              <div class="pill-timer" id="dwell-timer">00:03:42</div>
+            </div>
+            <div class="pill-score">Focus 92</div>
+          </div>
+
+          <!-- Transparent Glass HUD (Revealed in Scene 3) -->
+          <div id="glass-hud">
+            <div class="hud-header">
+              <div class="hud-brand">
+                <div class="pill-logo">
+                  <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="white" stroke-width="2"/><circle cx="10" cy="10" r="2.5" fill="white"/></svg>
+                </div>
+                <span>Atentiv Glass HUD</span>
+              </div>
+              <span style="font-size:12px;color:#10b981;font-weight:600;">● Active</span>
+            </div>
+
+            <div class="hud-card">
+              <div class="hud-label">CURRENT TAB</div>
+              <div class="hud-tab-title">I made our product demo in HTML with HyperFrames...</div>
+              <div class="badge-row">
+                <span class="badge badge-prod">Productive</span>
+                <span class="badge badge-tech">Technology &bull; Dev.to</span>
+              </div>
+            </div>
+
+            <!-- Background Audio Card (Toggled in Scene 5 & 6) -->
+            <div id="hud-audio-card" class="audio-card" style="display: none;">
+              <div class="audio-header">
+                <div class="audio-platform" id="hud-audio-platform">
+                  <span>🎵</span> Spotify Audio Stream
+                </div>
+                <div class="waveform">
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                </div>
+              </div>
+              <div class="audio-title-live" id="hud-audio-title">
+                Lo-Fi Instrumental Beats for Coding & Deep Focus
+              </div>
+              <div class="audio-meta-row">
+                <span id="hud-audio-cat">ML: Education / Focus</span>
+                <span class="audio-score-val" id="hud-audio-score">Distraction: 15/100 (Focus Aid)</span>
+              </div>
+            </div>
+
+            <div class="hud-card">
+              <div class="hud-label">LIVE COGNITIVE METRICS</div>
+              <div class="hud-metrics-row">
+                <div class="focus-ring-wrap">
+                  <svg class="focus-ring-svg" viewBox="0 0 70 70">
+                    <circle cx="35" cy="35" r="28" stroke="rgba(255,255,255,0.1)" stroke-width="6" fill="none"/>
+                    <circle id="focus-circle" cx="35" cy="35" r="28" stroke="#10b981" stroke-width="6" fill="none" stroke-dasharray="176" stroke-dashoffset="14"/>
+                  </svg>
+                  <div class="focus-val-center" id="hud-focus-val">92</div>
+                </div>
+                <div class="metrics-stats">
+                  <div class="stat-row"><span>Switches:</span> <span class="stat-val">2</span></div>
+                  <div class="stat-row"><span>Session:</span> <span class="stat-val">00:34:12</span></div>
+                  <div class="stat-row"><span>Workstream:</span> <span class="stat-val">Dev.to Engineering</span></div>
+                </div>
+              </div>
+            </div>
+
+            <button class="full-view-btn" id="expand-hud-btn">
+              <span>Full 3-Column View</span>
+              <span>⤢</span>
+            </button>
+          </div>
+
+          <!-- Full 3-Column Expanded Dashboard (Scene 4) -->
+          <div id="full-dashboard">
+            <div class="dash-header">
+              <div class="dash-title">
+                <div class="pill-logo" style="width:32px;height:32px;">
+                  <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="white" stroke-width="2"/><circle cx="10" cy="10" r="2.5" fill="white"/></svg>
+                </div>
+                <span>Atentiv Focus Workspace &bull; ATLAS Engine</span>
+              </div>
+              <div style="font-family:'JetBrains Mono';font-size:14px;color:#94a3b8;">
+                SESSION ID: AT-94821 &bull; 100% OFFLINE
+              </div>
+            </div>
+
+            <div class="dash-columns">
+              <!-- Left Column: Workstreams & Open Tabs -->
+              <div class="dash-col">
+                <div class="col-title">
+                  <span>Open Tabs by Workstream</span>
+                  <span style="color:#8b5cf6;">3 Active</span>
+                </div>
+                <div class="workstream-item" style="border-left-color: #10b981;">
+                  <div class="ws-name">dev.to ProductiveWorkstream</div>
+                  <div class="ws-tabs">2 tabs &bull; Dwell: 18m &bull; Focus 92%</div>
+                </div>
+                <div class="workstream-item" style="border-left-color: #38bdf8;">
+                  <div class="ws-name">GitHub / Atentiv-Variation-3</div>
+                  <div class="ws-tabs">4 tabs &bull; Dwell: 42m &bull; Focus 95%</div>
+                </div>
+                <div class="workstream-item" style="border-left-color: #f59e0b;">
+                  <div class="ws-name">fastText Research & Papers</div>
+                  <div class="ws-tabs">1 tab &bull; Dwell: 12m &bull; Focus 88%</div>
+                </div>
+              </div>
+
+              <!-- Center Column: Cognitive Switch Timeline -->
+              <div class="dash-col">
+                <div class="col-title">
+                  <span>Cognitive Dwell & Timeline</span>
+                  <span style="color:#10b981;">0 Switch Penalties</span>
+                </div>
+                <div class="timeline-wrap">
+                  <div class="activity-block">
+                    <div class="act-left">
+                      <div class="act-icon">DEV</div>
+                      <div>
+                        <div style="font-weight:700;font-size:14px;">I made our product demo in HTML...</div>
+                        <div style="font-size:12px;color:#94a3b8;">dev.to &bull; Technology Reading</div>
+                      </div>
+                    </div>
+                    <span class="badge badge-prod">+14m Dwell</span>
+                  </div>
+
+                  <div class="activity-block">
+                    <div class="act-left">
+                      <div class="act-icon" style="background:rgba(56,189,248,0.2);color:#38bdf8;">GIT</div>
+                      <div>
+                        <div style="font-weight:700;font-size:14px;">Atentiv-Variation-3 / audioClassifier.ts</div>
+                        <div style="font-size:12px;color:#94a3b8;">github.com &bull; Code Review</div>
+                      </div>
+                    </div>
+                    <span class="badge badge-prod">+28m Dwell</span>
+                  </div>
+
+                  <div class="activity-block" id="dash-audio-block">
+                    <div class="act-left">
+                      <div class="act-icon" style="background:rgba(16,185,129,0.2);color:#34d399;">AUD</div>
+                      <div>
+                        <div style="font-weight:700;font-size:14px;">Background Audio Playback</div>
+                        <div style="font-size:12px;color:#94a3b8;">Spotify &bull; Lo-Fi Focus Aid (Score: 15/100)</div>
+                      </div>
+                    </div>
+                    <span class="badge badge-prod">Focus Aid</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Taxonomy Breakdown -->
+              <div class="dash-col">
+                <div class="col-title">
+                  <span>FastText Category Breakdown</span>
+                  <span style="color:#38bdf8;">13 Classes</span>
+                </div>
+                <div style="text-align:center;padding:20px 0;">
+                  <div style="font-size:48px;font-weight:800;color:#10b981;">92<span style="font-size:24px;color:#64748b;">/100</span></div>
+                  <div style="font-size:13px;color:#94a3b8;margin-top:4px;">Net Cognitive Focus Score</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px;font-size:13px;">
+                  <div class="stat-row"><span>Technology:</span> <span class="stat-val" style="color:#38bdf8;">68%</span></div>
+                  <div class="stat-row"><span>Education:</span> <span class="stat-val" style="color:#34d399;">24%</span></div>
+                  <div class="stat-row"><span>Entertainment:</span> <span class="stat-val" style="color:#f87171;">8%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCENE 7: LOCAL-FIRST PRIVACY & OUTRO ──────────────────────────── -->
+    <div id="scene-7" class="scene">
+      <div class="hero-wrap">
+        <div class="hero-badge" style="background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.3);color:#34d399;">
+          <span>✓</span> 100% LOCAL PRIVACY INVARIANT
+        </div>
+        <h1 class="hero-title" style="font-size:56px;">
+          Deep Productivity Intelligence.<br/>
+          <span class="gradient-txt">Zero Data Ever Leaves Your Device.</span>
+        </h1>
+        <div class="outro-grid">
+          <div class="outro-card">
+            <div class="outro-icon">⚡</div>
+            <div class="outro-title">FastText WASM</div>
+            <div class="outro-desc">Sub-millisecond inference running purely on browser CPU WebAssembly.</div>
+          </div>
+          <div class="outro-card">
+            <div class="outro-icon">🔒</div>
+            <div class="outro-title">0 Byte Telemetry</div>
+            <div class="outro-desc">Zero tracking servers, zero third-party analytics, 100% offline-first.</div>
+          </div>
+          <div class="outro-card">
+            <div class="outro-icon">🎧</div>
+            <div class="outro-title">Audio Distraction ML</div>
+            <div class="outro-desc">Cognitive scoring distinguishing focus aids from visual distractions.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SIMULATED CURSOR ──────────────────────────────────────────────── -->
+    <div id="cursor">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M4 4L11.5 24L15.5 15.5L24 11.5L4 4Z" fill="#38bdf8" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- ── CAPTION BAR ───────────────────────────────────────────────────── -->
+    <div id="caption-bar">
+      <div class="caption-logo">
+        <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="white" stroke-width="2"/><circle cx="10" cy="10" r="2.5" fill="white"/></svg>
+      </div>
+      <div class="caption-text" id="caption-txt">
+        Welcome to <strong>Atentiv</strong> &bull; Browse Mindfully with Local ML Intelligence.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── TIMELINE CONTROLLER SCRIPT (HyperFrames Engine) ────────────────── -->
+  <script>
+    const scenes = {
+      1: document.getElementById('scene-1'),
+      2: document.getElementById('scene-2'),
+      7: document.getElementById('scene-7'),
+    };
+
+    const pill = document.getElementById('atentiv-pill');
+    const hud = document.getElementById('glass-hud');
+    const dash = document.getElementById('full-dashboard');
+    const cursor = document.getElementById('cursor');
+    const caption = document.getElementById('caption-txt');
+    const audioCard = document.getElementById('hud-audio-card');
+    const timer = document.getElementById('dwell-timer');
+
+    function showScene(id) {
+      Object.values(scenes).forEach(s => s.classList.remove('active'));
+      if (scenes[id]) scenes[id].classList.add('active');
+    }
+
+    function moveCursor(x, y, duration = 800) {
+      return new Promise(resolve => {
+        cursor.style.transition = `top ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), left ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`;
+        cursor.style.top = y + 'px';
+        cursor.style.left = x + 'px';
+        setTimeout(resolve, duration);
+      });
+    }
+
+    function clickCursor() {
+      return new Promise(resolve => {
+        cursor.classList.add('clicking');
+        setTimeout(() => {
+          cursor.classList.remove('clicking');
+          resolve();
+        }, 150);
+      });
+    }
+
+    // Sequence Director (Total duration: 65 seconds)
+    async function playTimeline() {
+      // 00:00 - 00:07 : Intro Scene
+      caption.innerHTML = "Welcome to <span class='hl'>Atentiv</span> &bull; Cognitive focus tracking with local machine learning.";
+      showScene(1);
+      await new Promise(r => setTimeout(r, 6000));
+
+      // 00:07 - 00:16 : Dev.to Active Browsing
+      caption.innerHTML = "Reading an engineering article on <span class='hl'>dev.to</span> &bull; Autonomous dwell tracking with zero setup.";
+      showScene(2);
+      await moveCursor(1700, 920, 1500);
+      await new Promise(r => setTimeout(r, 3000));
+
+      // 00:16 - 00:26 : Expand Glass HUD
+      caption.innerHTML = "Clicking the <span class='hl-purple'>Atentiv Pill</span> (<kbd>Alt+A</kbd>) reveals the Transparent Glass HUD.";
+      await clickCursor();
+      pill.style.display = 'none';
+      hud.style.display = 'block';
+      await moveCursor(1550, 750, 1000);
+      await new Promise(r => setTimeout(r, 4000));
+
+      // 00:26 - 00:36 : 3-Column Command Center
+      caption.innerHTML = "Opening <span class='hl'>Full View</span> &bull; 3-Column workspace with dynamic workstream clustering.";
+      await moveCursor(1680, 890, 800);
+      await clickCursor();
+      dash.style.display = 'flex';
+      await moveCursor(960, 540, 1500);
+      await new Promise(r => setTimeout(r, 4500));
+
+      // 00:36 - 00:48 : Background Audio: Spotify Lo-Fi (Focus Aid)
+      caption.innerHTML = "A new tab opens: <span class='hl-green'>Spotify Lo-Fi Beats</span> &bull; FastText WASM evaluates audio context: <strong>Score 15/100 (Focus Aid)</strong>.";
+      dash.style.display = 'none';
+      hud.style.display = 'block';
+      audioCard.style.display = 'block';
+      
+      // Update Tab Bar with Speaker
+      const tabDev = document.getElementById('tab-devto');
+      tabDev.insertAdjacentHTML('afterend', `
+        <div class="browser-tab" id="tab-spotify" style="border-left: 2px solid #10b981;">
+          <span>🎧</span>
+          <span>Spotify &bull; Lo-Fi Beats</span>
+          <span class="tab-speaker">🔊</span>
+        </div>
+      `);
+      await moveCursor(1600, 680, 1000);
+      await new Promise(r => setTimeout(r, 5500));
+
+      // 00:48 - 00:58 : Background Audio: Twitch Gaming (High Distraction)
+      caption.innerHTML = "Switched stream: <span class='hl-red'>Twitch Gaming Stream</span> &bull; High visual cognitive draw escalates distraction: <strong>Score 95/100 (⚠️ Distracting)</strong>.";
+      
+      // Update audio card to distraction
+      const spTab = document.getElementById('tab-spotify');
+      if (spTab) spTab.remove();
+      tabDev.insertAdjacentHTML('afterend', `
+        <div class="browser-tab" id="tab-twitch" style="border-left: 2px solid #ef4444;">
+          <span>🎮</span>
+          <span>Twitch &bull; GTA V Live</span>
+          <span class="tab-speaker" style="color:#ef4444;">🔊</span>
+        </div>
+      `);
+
+      audioCard.style.borderLeftColor = "#ef4444";
+      document.getElementById('hud-audio-platform').innerHTML = "<span>🎮</span> Twitch Stream Alert";
+      document.getElementById('hud-audio-platform').style.color = "#f87171";
+      document.getElementById('hud-audio-title').textContent = "Twitch GTA V Funny Moments & Reaction Stream";
+      document.getElementById('hud-audio-cat').textContent = "ML: Entertainment / Gaming";
+      const scoreElem = document.getElementById('hud-audio-score');
+      scoreElem.textContent = "Distraction: 95/100 (⚠️ Distracting Media)";
+      scoreElem.className = "audio-score-val distracting";
+      
+      await moveCursor(1600, 680, 800);
+      await new Promise(r => setTimeout(r, 5500));
+
+      // 00:58 - 01:08 : Outro & Privacy Invariant
+      caption.innerHTML = "<strong>Atentiv</strong> &bull; Complete privacy. Zero cloud telemetry. Own your attention.";
+      showScene(7);
+      await moveCursor(960, 540, 1000);
+      await new Promise(r => setTimeout(r, 6000));
+
+      window.__VIDEO_DONE__ = true;
+    }
+
+    window.startTimeline = playTimeline;
+  </script>
+</body>
+</html>

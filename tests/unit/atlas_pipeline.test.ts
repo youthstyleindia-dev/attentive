@@ -31,7 +31,10 @@ test("ATLAS State Machine: Lifecycle, Inactivity Detection & Resumption", () => 
   // User returns after 12 minutes away
   const returnRes = sm.onUserActivity(t0 + 720 * 1000);
   assert.equal(returnRes.wasIdle, true);
-  assert.ok(returnRes.idleDurationMs >= 530 * 1000, "Accumulated idle duration recorded");
+  assert.ok(
+    returnRes.idleDurationMs >= 530 * 1000,
+    "Accumulated idle duration recorded",
+  );
   assert.equal(sm.getState(), "RECORDING");
   assert.equal(sm.isRecording(), true);
 

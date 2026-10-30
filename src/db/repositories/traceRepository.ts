@@ -9,12 +9,19 @@ export class TraceRepository {
     await db.decision_traces.put(trace);
   }
 
-  static async getById(decisionId: string): Promise<DecisionTraceRecord | undefined> {
+  static async getById(
+    decisionId: string,
+  ): Promise<DecisionTraceRecord | undefined> {
     return await db.decision_traces.get(decisionId);
   }
 
-  static async getBySession(sessionId: string): Promise<DecisionTraceRecord | undefined> {
-    return await db.decision_traces.where("session_id").equals(sessionId).first();
+  static async getBySession(
+    sessionId: string,
+  ): Promise<DecisionTraceRecord | undefined> {
+    return await db.decision_traces
+      .where("session_id")
+      .equals(sessionId)
+      .first();
   }
 
   static async getRecent(limit = 20): Promise<DecisionTraceRecord[]> {

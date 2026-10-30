@@ -1,9 +1,9 @@
 /**
  * Smart Navigation Engine — Context-Aware Tab Switching & Deduplication
- * 
+ *
  * Ranks candidate destinations using:
  * R(t) = 0.35 * WorkstreamRelevance + 0.25 * Recency + 0.20 * ResumeRelevance + 0.10 * ActivityRelevance + 0.10 * Frequency
- * 
+ *
  * Prevents tab duplication by querying existing window tabs before creating new ones.
  */
 
@@ -59,8 +59,16 @@ export class SmartNavigationEngine {
 
     // 1. Fetch active workstreams from Dexie
     const workstreams = await WorkstreamRepository.listActive(5);
-    const recentSessions = await db.tab_sessions.orderBy("start_time").reverse().limit(30).toArray();
-    const savedSnapshots = await db.snapshots.orderBy("timestamp").reverse().limit(5).toArray();
+    const recentSessions = await db.tab_sessions
+      .orderBy("start_time")
+      .reverse()
+      .limit(30)
+      .toArray();
+    const savedSnapshots = await db.snapshots
+      .orderBy("timestamp")
+      .reverse()
+      .limit(5)
+      .toArray();
 
     const groups: SmartNavGroup[] = [];
 
@@ -69,12 +77,22 @@ export class SmartNavigationEngine {
     const seenUrls = new Set<string>();
 
     // Add candidate tabs from recent sessions or open tabs
-    const devDomains = ["github.com", "gitlab.com", "stackoverflow.com", "localhost", "127.0.0.1", "react.dev", "developer.mozilla.org"];
-    
+    const devDomains = [
+      "github.com",
+      "gitlab.com",
+      "stackoverflow.com",
+      "localhost",
+      "127.0.0.1",
+      "react.dev",
+      "developer.mozilla.org",
+    ];
+
     // Check open tabs first
     for (const ot of openTabs) {
       if (!ot.url || ot.incognito) continue;
-      const domain = ot.url ? new URL(ot.url, "http://localhost").hostname.replace(/^www\./, "") : "";
+      const domain = ot.url
+        ? new URL(ot.url, "http://localhost").hostname.replace(/^www\./, "")
+        : "";
       if (devDomains.some((d) => domain.includes(d))) {
         if (!seenUrls.has(ot.url)) {
           seenUrls.add(ot.url);
@@ -108,7 +126,8 @@ export class SmartNavigationEngine {
           title: "Google Docs — Project Report",
           url: "https://docs.google.com",
           domain: "docs.google.com",
-          favicon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",
+          favicon:
+            "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",
           isOpen: openUrlMap.has("https://docs.google.com"),
           productivity: "productive",
           category: "Work",
@@ -121,7 +140,7 @@ export class SmartNavigationEngine {
           isOpen: openUrlMap.has("https://notion.so"),
           productivity: "productive",
           category: "Productivity",
-        }
+        },
       );
     }
 
@@ -229,7 +248,10 @@ export class SmartNavigationEngine {
    * Switches to an existing open tab if available, avoiding duplicate tabs.
    * Creates a new tab only if no matching tab is found.
    */
-  static async switchOrOpen(url: string, title?: string): Promise<{ switched: boolean; tabId?: number }> {
+  static async switchOrOpen(
+    url: string,
+    title?: string,
+  ): Promise<{ switched: boolean; tabId?: number }> {
     if (typeof chrome === "undefined" || !chrome.tabs?.query) {
       if (typeof window !== "undefined") {
         window.open(url, "_blank");
@@ -240,7 +262,9 @@ export class SmartNavigationEngine {
     try {
       const tabs = await chrome.tabs.query({ currentWindow: true });
       const targetUrl = new URL(url, "http://localhost");
-      const targetDomain = targetUrl.hostname.replace(/^www\./, "").toLowerCase();
+      const targetDomain = targetUrl.hostname
+        .replace(/^www\./, "")
+        .toLowerCase();
 
       // 1. Check exact URL match
       let match = tabs.find((t) => t.url === url);
@@ -253,7 +277,8 @@ export class SmartNavigationEngine {
             const u = new URL(t.url);
             return (
               u.hostname.replace(/^www\./, "").toLowerCase() === targetDomain &&
-              (u.pathname === targetUrl.pathname || u.pathname.startsWith(targetUrl.pathname))
+              (u.pathname === targetUrl.pathname ||
+                u.pathname.startsWith(targetUrl.pathname))
             );
           } catch {
             return false;
@@ -266,7 +291,10 @@ export class SmartNavigationEngine {
         match = tabs.find((t) => {
           if (!t.url) return false;
           try {
-            return new URL(t.url).hostname.replace(/^www\./, "").toLowerCase() === targetDomain;
+            return (
+              new URL(t.url).hostname.replace(/^www\./, "").toLowerCase() ===
+              targetDomain
+            );
           } catch {
             return false;
           }
@@ -277,7 +305,9 @@ export class SmartNavigationEngine {
         // Tab exists! Switch directly to it
         await chrome.tabs.update(match.id, { active: true });
         if (match.windowId !== undefined && chrome.windows?.update) {
-          await chrome.windows.update(match.windowId, { focused: true }).catch(() => {});
+          await chrome.windows
+            .update(match.windowId, { focused: true })
+            .catch(() => {});
         }
         return { switched: true, tabId: match.id };
       }

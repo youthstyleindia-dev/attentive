@@ -29,7 +29,9 @@ try {
   const signInBtn = page.getByRole("button", { name: "Sign In to Atentiv" });
   if (await signInBtn.isVisible()) {
     console.log("Testing Login Page...");
-    await page.getByRole("button", { name: "1-Click Continue as Divya (Personal)" }).click();
+    await page
+      .getByRole("button", { name: "1-Click Continue as Divya (Personal)" })
+      .click();
   }
 
   // ── 2. Focus Score on Login Welcome Modal ──
@@ -42,11 +44,17 @@ try {
   // ── 3. Overview Page & Focus Balance Card ──
   console.log("Testing Overview & Focus Balance Card...");
   await page.getByRole("button", { name: "Overview", exact: true }).click();
-  await page.getByRole("heading", { name: "Your attention, at a glance" }).waitFor();
+  await page
+    .getByRole("heading", { name: "Your attention, at a glance" })
+    .waitFor();
 
   // Verify that the old focus session / "Set an intention" section is completely removed
   const oldFocusBtn = page.getByRole("button", { name: "Start focus session" });
-  assert.equal(await oldFocusBtn.count(), 0, "Old focus session button must not exist");
+  assert.equal(
+    await oldFocusBtn.count(),
+    0,
+    "Old focus session button must not exist",
+  );
 
   // Verify Productivity & Focus Balance Card exists
   await page.getByText("Productive vs Unproductive Time").waitFor();
@@ -61,7 +69,9 @@ try {
   // ── 4. Analytics Dashboard: Toggle, Hourly Context Switches & Ascending Sites ──
   console.log("Testing Analytics Dashboard...");
   await page.getByRole("button", { name: "Analytics", exact: true }).click();
-  await page.getByRole("heading", { name: "Behavioral & Multitasking Graphs" }).waitFor();
+  await page
+    .getByRole("heading", { name: "Behavioral & Multitasking Graphs" })
+    .waitFor();
 
   // Test Pie chart mode toggle (By Workstream vs By Domain / Tab)
   await page.getByRole("button", { name: "By Domain / Tab" }).first().click();
@@ -70,22 +80,40 @@ try {
   // Verify 24h Context Switches vs Time (per hour)
   await page.getByText("Context Switches vs Time (Per Hour)").first().waitFor();
 
+  // Verify FR-19 Context-Switch Penalty Report
+  await page.getByText("Cognitive Switch Penalty (CSP) Report").waitFor();
+  await page
+    .getByText("Optimal Cognitive Flow Maintained (<6 switches/10m)")
+    .waitFor();
+
   // Verify Sites Visited vs Time (Ascending Order)
   await page.getByText("Sites Visited vs Time (Ascending Order)").waitFor();
 
   // ── 5. Productive Sites Management ──
   console.log("Testing Productive Sites Manager...");
-  await page.getByRole("button", { name: "Productive Sites", exact: true }).click();
-  await page.getByRole("heading", { name: "Add Domain to Focus Classification" }).waitFor();
+  await page
+    .getByRole("button", { name: "Productive Sites", exact: true })
+    .click();
+  await page
+    .getByRole("heading", { name: "Add Domain to Focus Classification" })
+    .waitFor();
 
   // Verify pre-seeded domains
-  await page.locator(".site-domain-chip", { hasText: "geeksforgeeks.org" }).waitFor();
-  await page.locator(".site-domain-chip", { hasText: "docs.google.com" }).waitFor();
+  await page
+    .locator(".site-domain-chip", { hasText: "geeksforgeeks.org" })
+    .waitFor();
+  await page
+    .locator(".site-domain-chip", { hasText: "docs.google.com" })
+    .waitFor();
 
   // Add custom productive domain
-  await page.getByPlaceholder("e.g. geeksforgeeks.org or youtube.com").fill("leetcode.com");
+  await page
+    .getByPlaceholder("e.g. geeksforgeeks.org or youtube.com")
+    .fill("leetcode.com");
   await page.getByRole("button", { name: "Add Domain" }).click();
-  await page.locator(".site-domain-chip", { hasText: "leetcode.com" }).waitFor();
+  await page
+    .locator(".site-domain-chip", { hasText: "leetcode.com" })
+    .waitFor();
 
   // ── 6. Workstreams & Edit Rules ──
   console.log("Testing Workstreams...");
@@ -117,25 +145,41 @@ try {
   await new Promise((r) => setTimeout(r, 1200));
 
   await page.bringToFront();
-  await page.getByRole("button", { name: "Context resume", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Context resume", exact: true })
+    .click();
   await page.getByRole("button", { name: "Save current workspace" }).click();
   await page.getByRole("dialog").waitFor();
 
   // Fill workspace name & resume note
   await page.getByLabel("Workspace name").fill("Integration workspace");
-  await page.getByLabel("Where should you pick up?").fill("Next step: review implementation");
+  await page
+    .getByLabel("Where should you pick up?")
+    .fill("Next step: review implementation");
 
   // Save workspace
-  await page.getByRole("dialog").getByRole("button", { name: "Save workspace" }).click();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Save workspace" })
+    .click();
   await page.getByRole("heading", { name: "Integration workspace" }).waitFor();
 
   // Test "Update tabs" button preserving resume notes
   await page.getByRole("button", { name: "Update tabs" }).first().click();
   await page.getByRole("dialog").waitFor();
   // Verify resume note is preserved
-  const noteValue = await page.getByLabel("Where should you pick up?").inputValue();
-  assert.equal(noteValue, "Next step: review implementation", "Resume note must be preserved");
-  await page.getByRole("dialog").getByRole("button", { name: "Update workspace" }).click();
+  const noteValue = await page
+    .getByLabel("Where should you pick up?")
+    .inputValue();
+  assert.equal(
+    noteValue,
+    "Next step: review implementation",
+    "Resume note must be preserved",
+  );
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Update workspace" })
+    .click();
 
   // ── 9. Content Script: Floating Badge & Distraction Alert ──
   console.log("Testing Content Script Floating Badge & Distraction Alert...");
@@ -158,10 +202,14 @@ try {
   console.log("Verified floating badge attached to DOM.");
 
   // Verify Distraction Alert toast on unproductive site
-  const distractionToast = yt.locator("#atentiv-sidebar-container #atentiv-distraction-toast");
+  const distractionToast = yt.locator(
+    "#atentiv-sidebar-container #atentiv-distraction-toast",
+  );
   if (await distractionToast.isVisible({ timeout: 3000 }).catch(() => false)) {
     console.log("Verified Distraction Alert toast on unproductive site.");
-    const markProdBtn = yt.locator("#atentiv-sidebar-container #atentiv-mark-prod");
+    const markProdBtn = yt.locator(
+      "#atentiv-sidebar-container #atentiv-mark-prod",
+    );
     if (await markProdBtn.isVisible()) {
       await markProdBtn.click();
       console.log("Clicked Mark as Productive Site.");
@@ -177,7 +225,9 @@ try {
     await logoutBtn.click();
     console.log("Logged out successfully.");
     await page.getByRole("button", { name: "Sign In to Atentiv" }).waitFor();
-    await page.getByRole("button", { name: "1-Click Continue as Divya (Personal)" }).click();
+    await page
+      .getByRole("button", { name: "1-Click Continue as Divya (Personal)" })
+      .click();
     await page.getByText("Welcome back, Divya!").waitFor();
     await page.locator(".welcome-score-circle").waitFor();
     console.log("Verified Focus Score on Login Modal.");
@@ -188,18 +238,29 @@ try {
   console.log("Testing Mobile Responsiveness & Data Reset...");
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page.getByRole("button", { name: "Delete data", exact: true }).click();
-  await page.getByRole("dialog").getByRole("button", { name: "Delete data", exact: true }).click();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Delete data", exact: true })
+    .click();
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Overview", exact: true }).click();
   assert.equal(
-    await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
     true,
     "Mobile layout should not horizontally overflow",
   );
 
-  assert.deepEqual(errors, [], `Expected 0 page errors, found: ${errors.join(", ")}`);
-  console.log("PASS: All features verified (Login, Focus Score on Login, Analytics toggle & 24h graphs, Productive Sites, Checkbox Context Resume, Idle threshold, Content Script Floating Badge & Distraction Alert, Responsive layout, 0 errors).");
+  assert.deepEqual(
+    errors,
+    [],
+    `Expected 0 page errors, found: ${errors.join(", ")}`,
+  );
+  console.log(
+    "PASS: All features verified (Login, Focus Score on Login, Analytics toggle & 24h graphs, Productive Sites, Checkbox Context Resume, Idle threshold, Content Script Floating Badge & Distraction Alert, Responsive layout, 0 errors).",
+  );
 } finally {
   await context.close();
   await rm(profile, { recursive: true, force: true });

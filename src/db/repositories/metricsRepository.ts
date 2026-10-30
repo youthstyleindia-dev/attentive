@@ -12,10 +12,19 @@ export interface AggregateSummary {
   switchCount: number;
   switchPenalty: number;
   focusScore: number;
-  topDomains: Array<{ domain: string; activeSeconds: number; percentage: number }>;
+  topDomains: Array<{
+    domain: string;
+    activeSeconds: number;
+    percentage: number;
+  }>;
   categoryDistribution: Record<string, number>;
   activityDistribution: Record<string, number>;
-  workstreamSummary: Array<{ id: string; name: string; category: string; activeSeconds: number }>;
+  workstreamSummary: Array<{
+    id: string;
+    name: string;
+    category: string;
+    activeSeconds: number;
+  }>;
 }
 
 export class MetricsRepository {
@@ -33,7 +42,10 @@ export class MetricsRepository {
     const domainTimes: Record<string, number> = {};
     const catTimes: Record<string, number> = {};
     const actTimes: Record<string, number> = {};
-    const wsTimes: Record<string, { id: string; name: string; category: string; ms: number }> = {};
+    const wsTimes: Record<
+      string,
+      { id: string; name: string; category: string; ms: number }
+    > = {};
 
     let switchCount = 0;
     let prevWs: string | null = null;
@@ -42,7 +54,7 @@ export class MetricsRepository {
     const sorted = sessions.slice().sort((a, b) => a.start_time - b.start_time);
 
     for (const s of sorted) {
-      const activeMs = s.active_time || (s.end_time - s.start_time) || 0;
+      const activeMs = s.active_time || s.end_time - s.start_time || 0;
       totalActiveMs += activeMs;
 
       if (s.productivity_type === "productive") productiveMs += activeMs;
@@ -80,14 +92,18 @@ export class MetricsRepository {
     // productive_ratio = productive / total
     // stability_ratio = dominant_workstream_time / total
     // penalty = min(40, switch_count * 2)
-    const dominantWsMs = Object.values(wsTimes).reduce((max, w) => Math.max(max, w.ms), 0);
+    const dominantWsMs = Object.values(wsTimes).reduce(
+      (max, w) => Math.max(max, w.ms),
+      0,
+    );
     const prodRatio = totalActiveMs > 0 ? productiveMs / totalActiveMs : 0;
     const stabilityRatio = totalActiveMs > 0 ? dominantWsMs / totalActiveMs : 0;
     const switchPenalty = Math.min(40, switchCount * 2);
 
     let focusScore = 0;
     if (totalActiveSeconds > 0) {
-      const rawFocus = 100 * (0.65 * prodRatio + 0.35 * stabilityRatio) - switchPenalty;
+      const rawFocus =
+        100 * (0.65 * prodRatio + 0.35 * stabilityRatio) - switchPenalty;
       focusScore = Math.max(0, Math.min(100, Math.round(rawFocus)));
     }
 
@@ -96,7 +112,8 @@ export class MetricsRepository {
       .map(([domain, ms]) => ({
         domain,
         activeSeconds: Math.round(ms / 1000),
-        percentage: totalActiveMs > 0 ? Math.round((ms / totalActiveMs) * 100) : 0,
+        percentage:
+          totalActiveMs > 0 ? Math.round((ms / totalActiveMs) * 100) : 0,
       }))
       .sort((a, b) => b.activeSeconds - a.activeSeconds)
       .slice(0, 10);

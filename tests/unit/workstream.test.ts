@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cosineSimilarity, computeWorkstreamSimilarity } from "../../src/workstreams/similarity";
+import {
+  cosineSimilarity,
+  computeWorkstreamSimilarity,
+} from "../../src/workstreams/similarity";
 import { ContextSwitchEvaluator } from "../../src/workstreams/contextSwitch";
 
 test("Workstream Similarity: Cosine similarity vector math", () => {
@@ -87,5 +90,8 @@ test("Context Switch Evaluator: Switch classification and rapid switch penalties
   assert.equal(rapidUnrelated.isSwitch, true);
   assert.equal(rapidUnrelated.isRapidSwitch, true);
   assert.equal(rapidUnrelated.switchType, "unrelated");
-  assert.ok(rapidUnrelated.penaltyPoints >= 6, "Rapid unrelated switch should have elevated penalty");
+  assert.ok(
+    rapidUnrelated.penaltyPoints >= 6,
+    "Rapid unrelated switch should have elevated penalty",
+  );
 });

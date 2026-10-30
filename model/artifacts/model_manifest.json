@@ -32,7 +32,7 @@
     "Travel",
     "Uncategorized"
   ],
-  "created_at": "2026-09-28T15:07:38Z",
+  "created_at": "2026-10-14T10:40:11Z",
   "validation_metrics": {
     "macro_precision": 0.6702,
     "macro_recall": 0.5763,
@@ -44,11 +44,11 @@
     "p_at_3": 0.457,
     "r_at_3": 0.7782,
     "latency_ms": {
-      "mean": 0.042,
-      "median": 0.03,
-      "p95": 0.083,
-      "p99": 0.197,
-      "std": 0.101
+      "mean": 0.011,
+      "median": 0.009,
+      "p95": 0.02,
+      "p99": 0.028,
+      "std": 0.007
     },
     "per_label": {
       "Chat": {

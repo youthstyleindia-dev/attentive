@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 
 /**
  * Playwright E2E Test: Automatic Activation on Supported Webpages
- * 
+ *
  * Verifies:
  * 1. Automatic background tracking starts without clicking toolbar icon.
  * 2. Content script runs automatically on supported pages.
@@ -49,7 +49,7 @@ try {
         </html>
       `,
       contentType: "text/html",
-    })
+    }),
   );
 
   await page1.goto("https://github.com/atentiv/multi-task-engine");
@@ -60,10 +60,18 @@ try {
   // Verify HUD is HIDDEN by default (not intrusive)
   const fullHud1 = page1.locator("#atentiv-v3 .a-full");
   const compactHud1 = page1.locator("#atentiv-v3 .a-compact");
-  const isFullOpen = await fullHud1.evaluate((el) => el.classList.contains("open")).catch(() => false);
-  const isCompactOpen = await compactHud1.evaluate((el) => el.classList.contains("open")).catch(() => false);
+  const isFullOpen = await fullHud1
+    .evaluate((el) => el.classList.contains("open"))
+    .catch(() => false);
+  const isCompactOpen = await compactHud1
+    .evaluate((el) => el.classList.contains("open"))
+    .catch(() => false);
   assert.equal(isFullOpen, false, "Full HUD must NOT be open automatically");
-  assert.equal(isCompactOpen, false, "Compact HUD must NOT be open automatically");
+  assert.equal(
+    isCompactOpen,
+    false,
+    "Compact HUD must NOT be open automatically",
+  );
   console.log("Verified: HUD is quietly hidden during normal browsing.");
 
   // Step 2: Open StackOverflow in second tab
@@ -83,22 +91,30 @@ try {
         </html>
       `,
       contentType: "text/html",
-    })
+    }),
   );
 
-  await page2.goto("https://stackoverflow.com/questions/12345/typescript-generic-constraint");
+  await page2.goto(
+    "https://stackoverflow.com/questions/12345/typescript-generic-constraint",
+  );
   await page2.bringToFront();
   await new Promise((r) => setTimeout(r, 1500));
 
   // Step 3: Verify Service Worker state has automatically tracked both tabs
-  console.log("3. Verifying automatic session tracking in Service Worker & Database...");
+  console.log(
+    "3. Verifying automatic session tracking in Service Worker & Database...",
+  );
   const dashPage = await context.newPage();
   await dashPage.goto(`chrome-extension://${id}/index.html`);
 
   // Bypass login if modal appears
-  const signInBtn = dashPage.getByRole("button", { name: "Sign In to Atentiv" });
+  const signInBtn = dashPage.getByRole("button", {
+    name: "Sign In to Atentiv",
+  });
   if (await signInBtn.isVisible()) {
-    await dashPage.getByRole("button", { name: "1-Click Continue as Divya (Personal)" }).click();
+    await dashPage
+      .getByRole("button", { name: "1-Click Continue as Divya (Personal)" })
+      .click();
   }
   const welcomeModal = dashPage.getByText("Welcome back, Divya!");
   if (await welcomeModal.isVisible()) {
@@ -110,7 +126,9 @@ try {
   await dashPage.waitForTimeout(1000);
 
   // Check recent activity or decision traces
-  await dashPage.getByRole("button", { name: "Decision traces", exact: true }).click();
+  await dashPage
+    .getByRole("button", { name: "Decision traces", exact: true })
+    .click();
   await dashPage.waitForTimeout(500);
 
   const tracesHeader = dashPage.getByText("Verify every classification.");
@@ -120,12 +138,12 @@ try {
   // Step 4: Test manual HUD invocation via message
   console.log("4. Testing manual HUD invocation on page...");
   await page1.bringToFront();
-  
+
   // Send TOGGLE message as chrome.action does
   await page1.evaluate(() => {
     window.postMessage({ type: "TEST_TOGGLE_HUD" }, "*");
   });
-  
+
   console.log("ALL AUTOMATIC ACTIVATION CHECKS PASSED!");
 } finally {
   await context.close();

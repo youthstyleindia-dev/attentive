@@ -6,7 +6,11 @@ import type { FastTextModel } from "fasttext.wasm.js/common";
 
 export interface AtentivModelWrapper {
   isLoaded: boolean;
-  predict: (text: string, k?: number, threshold?: number) => Array<{ label: string; score: number }>;
+  predict: (
+    text: string,
+    k?: number,
+    threshold?: number,
+  ) => Array<{ label: string; score: number }>;
   getSentenceVector: (text: string) => Float32Array;
   getDimension: () => number;
   version: string;
@@ -30,13 +34,17 @@ export class ModelLoader {
 
     loadPromise = (async () => {
       try {
-        const isExtension = typeof chrome !== "undefined" && !!chrome.runtime?.id;
+        const isExtension =
+          typeof chrome !== "undefined" && !!chrome.runtime?.id;
 
         if (isExtension) {
           // Browser extension environment
-          const { getFastTextClass, getFastTextModule } = await import("fasttext.wasm.js/common");
+          const { getFastTextClass, getFastTextModule } =
+            await import("fasttext.wasm.js/common");
           const wasmUrl = chrome.runtime.getURL("wasm/fastText.common.wasm");
-          const modelUrl = modelPathOverride || chrome.runtime.getURL("models/atentiv-page-category.ftz");
+          const modelUrl =
+            modelPathOverride ||
+            chrome.runtime.getURL("models/atentiv-classifier.ftz");
 
           const FastText = await getFastTextClass({
             getFastTextModule: () => getFastTextModule({ wasmPath: wasmUrl }),
@@ -44,21 +52,30 @@ export class ModelLoader {
           const ft = new FastText();
           const rawModel: FastTextModel = await ft.loadModel(modelUrl);
 
-          activeModelWrapper = this.wrapModel(rawModel, "1.0.0");
+          activeModelWrapper = this.wrapModel(rawModel, "2.0.0");
           return activeModelWrapper;
         } else {
           // Node.js or development environment
-          const { getFastTextClass, getFastTextModule } = await import("fasttext.wasm.js");
+          const { getFastTextClass, getFastTextModule } =
+            await import("fasttext.wasm.js");
           const FastText = await getFastTextClass({ getFastTextModule });
           const ft = new FastText();
-          const modelUrl = modelPathOverride || `file://${process.cwd()}/public/models/atentiv-page-category.ftz`;
+          const modelUrl =
+            modelPathOverride ||
+            `file://${process.cwd()}/public/models/atentiv-classifier.ftz`;
           const rawModel = await ft.loadModel(modelUrl);
 
-          activeModelWrapper = this.wrapModel(rawModel as unknown as FastTextModel, "1.0.0");
+          activeModelWrapper = this.wrapModel(
+            rawModel as unknown as FastTextModel,
+            "2.0.0",
+          );
           return activeModelWrapper;
         }
       } catch (err) {
-        console.warn("FastText WASM load failed, activating heuristic fallback model:", err);
+        console.warn(
+          "FastText WASM load failed, activating heuristic fallback model:",
+          err,
+        );
         activeModelWrapper = this.createFallbackModel();
         return activeModelWrapper;
       }
@@ -67,7 +84,10 @@ export class ModelLoader {
     return loadPromise;
   }
 
-  private static wrapModel(model: FastTextModel, version: string): AtentivModelWrapper {
+  private static wrapModel(
+    model: FastTextModel,
+    version: string,
+  ): AtentivModelWrapper {
     return {
       isLoaded: true,
       version,
@@ -108,16 +128,38 @@ export class ModelLoader {
       version: "fallback-heuristics-1.0",
       predict: (text: string) => {
         const lower = text.toLowerCase();
-        if (lower.includes("code") || lower.includes("python") || lower.includes("git")) {
-          return [{ label: "Technology", score: 0.9 }, { label: "Education", score: 0.4 }];
+        if (
+          lower.includes("code") ||
+          lower.includes("python") ||
+          lower.includes("git")
+        ) {
+          return [
+            { label: "Technology", score: 0.9 },
+            { label: "Education", score: 0.4 },
+          ];
         }
-        if (lower.includes("paper") || lower.includes("arxiv") || lower.includes("study")) {
-          return [{ label: "Education", score: 0.9 }, { label: "Technology", score: 0.5 }];
+        if (
+          lower.includes("paper") ||
+          lower.includes("arxiv") ||
+          lower.includes("study")
+        ) {
+          return [
+            { label: "Education", score: 0.9 },
+            { label: "Technology", score: 0.5 },
+          ];
         }
-        if (lower.includes("video") || lower.includes("watch") || lower.includes("music")) {
+        if (
+          lower.includes("video") ||
+          lower.includes("watch") ||
+          lower.includes("music")
+        ) {
           return [{ label: "Entertainment", score: 0.9 }];
         }
-        if (lower.includes("shop") || lower.includes("cart") || lower.includes("buy")) {
+        if (
+          lower.includes("shop") ||
+          lower.includes("cart") ||
+          lower.includes("buy")
+        ) {
           return [{ label: "Shop", score: 0.9 }];
         }
         return [{ label: "Uncategorized", score: 0.6 }];

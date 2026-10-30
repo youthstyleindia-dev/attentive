@@ -1,7 +1,7 @@
 /**
  * Focus Score Calculation Engine
  * 0–100 Explainable Metric grounded in active dwell time, workstream stability, and switch penalties.
- * 
+ *
  * PROVISIONAL SPECIFICATION NOTICE (SRS Revision 3.1 / Submission Version 3.0):
  * - PR (Productive Ratio): Officially marked [To Be Specified] in SRS Revision 3.1.
  *   Provisional implementation: productiveActiveSeconds / totalActiveSeconds.
@@ -50,11 +50,13 @@ export class FocusScoreCalculator {
     // PR = productiveActiveSeconds / totalActiveSeconds
     // SR = dominantWorkstreamSeconds / totalActiveSeconds
     const productiveRatio = inputs.productiveActiveSeconds / totalActiveSeconds;
-    const stabilityRatio = inputs.dominantWorkstreamSeconds / totalActiveSeconds;
+    const stabilityRatio =
+      inputs.dominantWorkstreamSeconds / totalActiveSeconds;
     const switchPenalty = Math.min(40, inputs.contextSwitchCount * 2);
 
     // Weighted combination: 65% productivity, 35% task stability
-    const rawScore = 100 * (0.65 * productiveRatio + 0.35 * stabilityRatio) - switchPenalty;
+    const rawScore =
+      100 * (0.65 * productiveRatio + 0.35 * stabilityRatio) - switchPenalty;
     const score = Math.max(0, Math.min(100, Math.round(rawScore)));
 
     let explanation = `Productive time share: ${(productiveRatio * 100).toFixed(0)}%, Workstream stability: ${(stabilityRatio * 100).toFixed(0)}%`;

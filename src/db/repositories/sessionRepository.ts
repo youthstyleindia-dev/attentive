@@ -5,7 +5,9 @@ import { db } from "../database";
 import type { TabSessionRecord } from "../schemas";
 
 export class SessionRepository {
-  static async create(session: Partial<TabSessionRecord> & { url: string; domain: string }): Promise<TabSessionRecord> {
+  static async create(
+    session: Partial<TabSessionRecord> & { url: string; domain: string },
+  ): Promise<TabSessionRecord> {
     const now = Date.now();
     const fullSession: TabSessionRecord = {
       session_id: session.session_id || crypto.randomUUID(),
@@ -34,11 +36,17 @@ export class SessionRepository {
     return fullSession;
   }
 
-  static async getById(sessionId: string): Promise<TabSessionRecord | undefined> {
+  static async getById(
+    sessionId: string,
+  ): Promise<TabSessionRecord | undefined> {
     return await db.tab_sessions.get(sessionId);
   }
 
-  static async updateDwell(sessionId: string, activeTimeDelta: number, now: number): Promise<void> {
+  static async updateDwell(
+    sessionId: string,
+    activeTimeDelta: number,
+    now: number,
+  ): Promise<void> {
     const existing = await db.tab_sessions.get(sessionId);
     if (!existing) return;
     const newActive = existing.active_time + activeTimeDelta;
@@ -50,7 +58,11 @@ export class SessionRepository {
     });
   }
 
-  static async updateIdle(sessionId: string, idleTimeDelta: number, now: number): Promise<void> {
+  static async updateIdle(
+    sessionId: string,
+    idleTimeDelta: number,
+    now: number,
+  ): Promise<void> {
     const existing = await db.tab_sessions.get(sessionId);
     if (!existing) return;
     await db.tab_sessions.update(sessionId, {
@@ -83,10 +95,79 @@ export class SessionRepository {
       .toArray();
   }
 
-  static async getByWorkstream(workstreamId: string): Promise<TabSessionRecord[]> {
+  static async getByWorkstream(
+    workstreamId: string,
+  ): Promise<TabSessionRecord[]> {
     return await db.tab_sessions
       .where("workstream_id")
       .equals(workstreamId)
       .toArray();
+  }
+
+  /**
+   * Fast compound query by workstream and time range.
+   */
+  static async getByWorkstreamRange(
+    workstreamId: string,
+    from: number,
+    to: number,
+  ): Promise<TabSessionRecord[]> {
+    return await db.tab_sessions
+      .where("[workstream_id+start_time]")
+      .between([workstreamId, from], [workstreamId, to], true, true)
+      .toArray();
+  }
+
+  /**
+   * Fast compound query by domain and time range.
+   */
+  static async getByDomainRange(
+    domain: string,
+    from: number,
+    to: number,
+  ): Promise<TabSessionRecord[]> {
+    return await db.tab_sessions
+      .where("[domain+start_time]")
+      .between([domain, from], [domain, to], true, true)
+      .toArray();
+  }
+
+  /**
+   * High-scale paginated range query to prevent UI thread lockups and memory bloat.
+   */
+  static async getRangePaged(
+    from: number,
+    to: number,
+    offset = 0,
+    limit = 50,
+  ): Promise<{ sessions: TabSessionRecord[]; total: number }> {
+    const query = db.tab_sessions
+      .where("start_time")
+      .between(from, to, true, true);
+    const total = await query.count();
+    const sessions = await query.offset(offset).limit(limit).toArray();
+    return { sessions, total };
+  }
+
+  /**
+   * Count total tracked sessions in the database.
+   */
+  static async countTotal(): Promise<number> {
+    return await db.tab_sessions.count();
+  }
+
+  /**
+   * Bulk insert sessions with high-throughput batching.
+   */
+  static async bulkCreate(sessions: TabSessionRecord[]): Promise<void> {
+    if (sessions.length === 0) return;
+    await db.tab_sessions.bulkPut(sessions);
+  }
+
+  /**
+   * Delete session by ID.
+   */
+  static async delete(sessionId: string): Promise<void> {
+    await db.tab_sessions.delete(sessionId);
   }
 }

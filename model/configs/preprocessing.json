@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "2.0.0",
+  "name": "atentiv-shared-preprocessing-spec",
+  "description": "Single source of truth for text normalization and feature joining across TypeScript runtime and Python offline pipeline",
+  "unicode_normalization": "NFKC",
+  "lowercase": true,
+  "strip_rules": {
+    "urls": "https?:\\/\\/[^\\s]+",
+    "emails": "[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+",
+    "long_digit_runs": "\\b\\d{7,}\\b",
+    "control_characters": "[\\u0000-\\u0008\\u000B-\\u001F\\u007F-\\u009F]",
+    "non_standard_punctuation": "[^\\w\\s\\.\\-_]"
+  },
+  "field_order": [
+    "title",
+    "description",
+    "headings",
+    "main_text"
+  ],
+  "field_limits": {
+    "title_max_chars": 300,
+    "description_max_chars": 500,
+    "max_headings_count": 20,
+    "heading_single_max_chars": 150,
+    "main_text_max_chars": 2048,
+    "composite_max_chars": 4096
+  },
+  "separator": " ",
+  "stop_conditions": {
+    "min_valid_text_length": 3,
+    "empty_fallback": ""
+  }
+}

@@ -31,19 +31,23 @@ function createScenarioChrome() {
       local: {
         get: async (keys?: any) => {
           if (!keys) return structuredClone(localStore);
-          if (typeof keys === "string") return { [keys]: structuredClone(localStore[keys]) };
+          if (typeof keys === "string")
+            return { [keys]: structuredClone(localStore[keys]) };
           return structuredClone(localStore);
         },
-        set: async (items: Record<string, any>) => Object.assign(localStore, structuredClone(items)),
+        set: async (items: Record<string, any>) =>
+          Object.assign(localStore, structuredClone(items)),
         remove: async (k: string) => delete localStore[k],
       },
       session: {
         get: async (keys?: any) => {
           if (!keys) return structuredClone(sessionStore);
-          if (typeof keys === "string") return { [keys]: structuredClone(sessionStore[keys]) };
+          if (typeof keys === "string")
+            return { [keys]: structuredClone(sessionStore[keys]) };
           return structuredClone(sessionStore);
         },
-        set: async (items: Record<string, any>) => Object.assign(sessionStore, structuredClone(items)),
+        set: async (items: Record<string, any>) =>
+          Object.assign(sessionStore, structuredClone(items)),
         remove: async (k: string) => delete sessionStore[k],
       },
     },
@@ -102,8 +106,15 @@ test("Tier 3 (Interaction): Inactivity + Educational Background Audio Exception 
     await SessionManager.reconcile();
 
     const activeAfterIdle = SessionManager.getActiveCheckpoint();
-    assert.ok(activeAfterIdle, "Session must remain active due to educational audio exception");
-    assert.equal(env.sessionStore.trackingState, "TRACKING", "Tracking state must remain TRACKING");
+    assert.ok(
+      activeAfterIdle,
+      "Session must remain active due to educational audio exception",
+    );
+    assert.equal(
+      env.sessionStore.trackingState,
+      "TRACKING",
+      "Tracking state must remain TRACKING",
+    );
 
     // 3. Negative control: Audio paused (audible = false)
     env.setCurrentTab({
@@ -116,7 +127,11 @@ test("Tier 3 (Interaction): Inactivity + Educational Background Audio Exception 
     });
 
     await SessionManager.reconcile();
-    assert.equal(env.sessionStore.trackingState, "INACTIVE", "Tracking must pause when audio is not playing");
+    assert.equal(
+      env.sessionStore.trackingState,
+      "INACTIVE",
+      "Tracking must pause when audio is not playing",
+    );
   } finally {
     delete (globalThis as any).chrome;
   }
@@ -162,8 +177,10 @@ test("Tier 3 (Interaction): User Custom Rules override FastText ML & Curated DB 
   assert.equal(overriddenRes.productivity, "productive");
   assert.equal(overriddenRes.modelVersion, "user-rule");
   assert.ok(
-    overriddenRes.decisionTrace.rule_matches.some((r) => r.rule_id === "rule-reddit-study"),
-    "Decision trace must record applied user rule"
+    overriddenRes.decisionTrace.rule_matches.some(
+      (r) => r.rule_id === "rule-reddit-study",
+    ),
+    "Decision trace must record applied user rule",
   );
 
   // Non-matching path still uses default classification
@@ -191,7 +208,7 @@ test("Tier 3 (Interaction): YouTube Contextual Title Overrides (Educational vs E
     assert.equal(
       res.productivity,
       "productive",
-      `Title '${title}' must be classified as productive`
+      `Title '${title}' must be classified as productive`,
     );
   }
 
@@ -210,7 +227,7 @@ test("Tier 3 (Interaction): YouTube Contextual Title Overrides (Educational vs E
     assert.equal(
       res.productivity,
       "distracting",
-      `Title '${title}' must remain distracting`
+      `Title '${title}' must remain distracting`,
     );
   }
 });
@@ -282,7 +299,10 @@ test("Tier 4 (Scenario 1): Academic Deep Research Session yields top Focus Score
   assert.equal(m.unproductiveTime, 0);
   assert.equal(m.switches, 3);
   assert.equal(m.penalty, 6); // 3 switches * 2 = 6 points
-  assert.ok(m.score !== null && m.score >= 90, `Focus score must be high, got ${m.score}`);
+  assert.ok(
+    m.score !== null && m.score >= 90,
+    `Focus score must be high, got ${m.score}`,
+  );
 
   // 2. Analytical formula verification
   // F = round(100(0.65PR + 0.35SR)) - min(40, N*2)
@@ -318,7 +338,11 @@ test("Tier 4 (Scenario 2): Multitasking & Distraction Fragmentation drops Focus 
     });
 
     assert.equal(evaluation.isRapidSwitch, true);
-    assert.equal(evaluation.penaltyPoints, 6, "Each rapid unrelated switch adds 6 points");
+    assert.equal(
+      evaluation.penaltyPoints,
+      6,
+      "Each rapid unrelated switch adds 6 points",
+    );
     penaltySum += evaluation.penaltyPoints;
     lastTime = now;
   }
@@ -334,8 +358,16 @@ test("Tier 4 (Scenario 2): Multitasking & Distraction Fragmentation drops Focus 
     contextSwitchCount: 25,
   });
 
-  assert.equal(scoreResult.switchPenalty, 40, "Switch penalty must cap strictly at 40");
-  assert.equal(scoreResult.score, 0, "Score must clamp at 0 under heavy distraction thrashing");
+  assert.equal(
+    scoreResult.switchPenalty,
+    40,
+    "Switch penalty must cap strictly at 40",
+  );
+  assert.equal(
+    scoreResult.score,
+    0,
+    "Score must clamp at 0 under heavy distraction thrashing",
+  );
 });
 
 test("Tier 4 (Scenario 3): Workstream Snapshot Save and Quick Resume Rehydration in <=50ms", async () => {
@@ -351,10 +383,26 @@ test("Tier 4 (Scenario 3): Workstream Snapshot Save and Quick Resume Rehydration
       timestamp: Date.now(),
       tab_count: 4,
       tabs: [
-        { url: "https://arxiv.org/abs/1706.03762", title: "Attention Is All You Need", pin_state: false },
-        { url: "https://github.com/huggingface/transformers", title: "Transformers Library", pin_state: false },
-        { url: "https://pytorch.org/docs", title: "PyTorch Documentation", pin_state: true },
-        { url: "https://colab.research.google.com", title: "Google Colab", pin_state: false },
+        {
+          url: "https://arxiv.org/abs/1706.03762",
+          title: "Attention Is All You Need",
+          pin_state: false,
+        },
+        {
+          url: "https://github.com/huggingface/transformers",
+          title: "Transformers Library",
+          pin_state: false,
+        },
+        {
+          url: "https://pytorch.org/docs",
+          title: "PyTorch Documentation",
+          pin_state: true,
+        },
+        {
+          url: "https://colab.research.google.com",
+          title: "Google Colab",
+          pin_state: false,
+        },
       ],
     };
 
@@ -373,10 +421,13 @@ test("Tier 4 (Scenario 3): Workstream Snapshot Save and Quick Resume Rehydration
 
     assert.equal(env.createdTabs.length, 4, "Must rehydrate all 4 tabs");
     assert.equal(env.createdTabs[0].url, "https://arxiv.org/abs/1706.03762");
-    assert.equal(env.createdTabs[1].url, "https://github.com/huggingface/transformers");
+    assert.equal(
+      env.createdTabs[1].url,
+      "https://github.com/huggingface/transformers",
+    );
     assert.ok(
       restoreLatencyMs < 50,
-      `Quick Resume rehydration must complete in <=50ms (took ${restoreLatencyMs.toFixed(2)}ms)`
+      `Quick Resume rehydration must complete in <=50ms (took ${restoreLatencyMs.toFixed(2)}ms)`,
     );
   } finally {
     delete (globalThis as any).chrome;
@@ -412,9 +463,16 @@ test("Tier 4 (Scenario 4): Service Worker Sleep & Session Checkpoint Recovery", 
     await SessionManager.initFromStorage();
 
     const recovered = SessionManager.getActiveCheckpoint();
-    assert.ok(recovered, "Must recover active checkpoint upon service worker startup");
+    assert.ok(
+      recovered,
+      "Must recover active checkpoint upon service worker startup",
+    );
     assert.equal(recovered.sessionId, "session-persist-01");
-    assert.equal(recovered.dwellTime, 115_000, "Must preserve existing dwell time across worker lifecycle");
+    assert.equal(
+      recovered.dwellTime,
+      115_000,
+      "Must preserve existing dwell time across worker lifecycle",
+    );
     assert.equal(recovered.workstreamName, "Development");
   } finally {
     delete (globalThis as any).chrome;
@@ -436,7 +494,11 @@ test("Tier 4 (Scenario 5): Machine Sleep Detection (>90s Gap) excludes sleep fro
   const sleepDelta = (sleepWakeTime - lastHeartbeat) / 1000;
 
   const isSystemSleep = sleepDelta > 90;
-  assert.equal(isSystemSleep, true, "Delta > 90s must be detected as SYSTEM_SLEEP");
+  assert.equal(
+    isSystemSleep,
+    true,
+    "Delta > 90s must be detected as SYSTEM_SLEEP",
+  );
 
   // Gap classification: 45 minutes excluded from dwell time
   let activeDwell = 120; // 2 minutes dwell before sleep
@@ -450,6 +512,14 @@ test("Tier 4 (Scenario 5): Machine Sleep Detection (>90s Gap) excludes sleep fro
     activeDwell += sleepDelta;
   }
 
-  assert.equal(activeDwell, 120, "Active dwell time must NOT accrue during machine sleep");
-  assert.equal(sleepTime, 2700, "Sleep gap must be accounted for in system sleep records");
+  assert.equal(
+    activeDwell,
+    120,
+    "Active dwell time must NOT accrue during machine sleep",
+  );
+  assert.equal(
+    sleepTime,
+    2700,
+    "Sleep gap must be accounted for in system sleep records",
+  );
 });

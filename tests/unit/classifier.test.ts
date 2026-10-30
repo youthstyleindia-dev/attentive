@@ -14,7 +14,10 @@ test("Feature Extractor: URL, Title, and Meta text normalization", () => {
   });
 
   assert.equal(result.cleanDomain, "github.com");
-  assert.equal(result.sanitizedUrl, "https://github.com/torvalds/linux/blob/master/Makefile");
+  assert.equal(
+    result.sanitizedUrl,
+    "https://github.com/torvalds/linux/blob/master/Makefile",
+  );
   assert.ok(result.compositeText.includes("linux"));
   assert.ok(result.compositeText.includes("makefile"));
   assert.ok(result.compositeText.includes("kernel"));
@@ -31,15 +34,24 @@ test("Classifier: Curated domain lookup and activity inference", async () => {
   assert.equal(result.category, "Technology");
   assert.equal(result.activity, "Coding");
   assert.equal(result.productivity, "productive");
-  assert.ok(result.decisionTrace.domain_match !== null, "Domain match should be present");
-  assert.ok(result.inferenceLatencyMs < 2000, "Classification should complete reasonably on disk model cold start (< 2000ms)");
+  assert.ok(
+    result.decisionTrace.domain_match !== null,
+    "Domain match should be present",
+  );
+  assert.ok(
+    result.inferenceLatencyMs < 2000,
+    "Classification should complete reasonably on disk model cold start (< 2000ms)",
+  );
 
   // Warm classification test
   const warmResult = await Classifier.classify({
     url: "https://github.com/nodejs/node",
     title: "Node.js JavaScript runtime",
   });
-  assert.ok(warmResult.inferenceLatencyMs < 50, "Warm classification should be sub-50ms");
+  assert.ok(
+    warmResult.inferenceLatencyMs < 50,
+    "Warm classification should be sub-50ms",
+  );
 });
 
 test("Classifier: Contextual productivity overrides for video/social platforms", async () => {
@@ -49,7 +61,9 @@ test("Classifier: Contextual productivity overrides for video/social platforms",
     title: "PyTorch Deep Learning Full Course - 10 Hour Tutorial for Beginners",
   });
   assert.ok(ytEdu.category === "Technology" || ytEdu.category === "Education");
-  assert.ok(ytEdu.activity === "Tutorial" || ytEdu.activity === "Technical Research");
+  assert.ok(
+    ytEdu.activity === "Tutorial" || ytEdu.activity === "Technical Research",
+  );
   assert.equal(ytEdu.productivity, "productive");
 
   // YouTube Music / Entertainment
@@ -63,7 +77,8 @@ test("Classifier: Contextual productivity overrides for video/social platforms",
   // Reddit Programming Discussion
   const redditTech = await Classifier.classify({
     url: "https://www.reddit.com/r/programming/comments/123/rust_async",
-    title: "Why Rust async/await works this way: deep dive into compiler internals",
+    title:
+      "Why Rust async/await works this way: deep dive into compiler internals",
   });
   assert.equal(redditTech.productivity, "productive");
 });
@@ -74,7 +89,10 @@ test("Classifier: Decision Trace generation and explainability", async () => {
     title: "Attention Is All You Need: Transformers in Deep Learning",
   });
 
-  assert.ok(result.decisionTrace.final_reason.length > 0, "final_reason must contain explainability trace");
+  assert.ok(
+    result.decisionTrace.final_reason.length > 0,
+    "final_reason must contain explainability trace",
+  );
   assert.ok(result.compositeText.includes("attention"));
   assert.ok(result.compositeText.includes("transformers"));
 });

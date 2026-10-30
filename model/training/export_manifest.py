@@ -20,7 +20,7 @@ TAXONOMY_CONFIG = "model/configs/taxonomy.json"
 OUTPUT_MANIFEST = "model/artifacts/model_manifest.json"
 OUTPUT_REPRODUCIBILITY = "model/artifacts/reports/reproducibility.json"
 TARGET_PUBLIC_DIR = "public/models"
-TARGET_PUBLIC_MODEL = os.path.join(TARGET_PUBLIC_DIR, "atentiv-page-category.ftz")
+TARGET_PUBLIC_MODEL = os.path.join(TARGET_PUBLIC_DIR, "atentiv-classifier.ftz")
 
 def sha256_file(path):
     h = hashlib.sha256()
@@ -73,7 +73,7 @@ def export():
         "size_bytes": quant_size,
         "size_mb": round(quant_size / (1024 * 1024), 2),
         "checksum_sha256": quant_hash,
-        "public_path": "models/atentiv-page-category.ftz",
+        "public_path": "models/atentiv-classifier.ftz",
         "training_dataset": "tshasan/multi-label-web-categorization",
         "training_rows": 49399,
         "cleaned_unique_rows": 47093,

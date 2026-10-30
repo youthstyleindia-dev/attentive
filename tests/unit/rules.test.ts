@@ -112,7 +112,9 @@ test("Privacy & Exclusion Engine: Sensitive domain filtering", () => {
   assert.ok(ExclusionEngine.isExcluded("app.1password.com", excludedUser));
 
   // 2. Check user exclusions
-  assert.ok(ExclusionEngine.isExcluded("mysecretproject.internal", excludedUser));
+  assert.ok(
+    ExclusionEngine.isExcluded("mysecretproject.internal", excludedUser),
+  );
   assert.ok(ExclusionEngine.isExcluded("sub.personal-blog.org", excludedUser));
 
   // 3. Allowed domain
@@ -120,6 +122,8 @@ test("Privacy & Exclusion Engine: Sensitive domain filtering", () => {
   assert.ok(!ExclusionEngine.isExcluded("en.wikipedia.org", excludedUser));
 
   // 4. URL Sanitization
-  const sanitized = ExclusionEngine.sanitizeUrl("https://github.com/divya/atentiv?secret_token=abc#section-1");
+  const sanitized = ExclusionEngine.sanitizeUrl(
+    "https://github.com/divya/atentiv?secret_token=abc#section-1",
+  );
   assert.equal(sanitized, "https://github.com/divya/atentiv");
 });

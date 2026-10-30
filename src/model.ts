@@ -89,7 +89,8 @@ export const initial = (): State => ({
       name: "Design & development",
       color: "#369989",
       keywords: "code,react,typescript,design,github,documentation",
-      domains: "github.com,stackoverflow.com,developer.chrome.com,figma.com,canva.com",
+      domains:
+        "github.com,stackoverflow.com,developer.chrome.com,figma.com,canva.com",
     },
     {
       id: "communication",
@@ -215,7 +216,11 @@ export function metrics(
   const domainDurations: Record<string, number> = {};
   const domainMeta: Record<
     string,
-    { category: string; productivity: "productive" | "neutral" | "distracting"; pageCount: number }
+    {
+      category: string;
+      productivity: "productive" | "neutral" | "distracting";
+      pageCount: number;
+    }
   > = {};
   const hourlySwitches = Array<number>(24).fill(0);
 
@@ -242,7 +247,8 @@ export function metrics(
     domainDurations[dom] = (domainDurations[dom] || 0) + ms;
 
     // Determine productivity
-    let prod: "productive" | "neutral" | "distracting" = x.productivity || "productive";
+    let prod: "productive" | "neutral" | "distracting" =
+      x.productivity || "productive";
     if (prodList.length > 0 || unprodList.length > 0) {
       if (isDomainMatch(dom, prodList)) {
         prod = "productive";
@@ -293,7 +299,10 @@ export function metrics(
   const idlePenalty = Math.min(20, Math.floor(idleSeconds / 180) * 2);
   const netProductiveTime = productiveTime - unproductiveTime;
   const idleMs = idleSeconds * 1000;
-  const activeCoverage = total + idleMs > 0 ? Math.round((total / (total + idleMs)) * 1000) / 10 : 100;
+  const activeCoverage =
+    total + idleMs > 0
+      ? Math.round((total / (total + idleMs)) * 1000) / 10
+      : 100;
 
   let score: number | null = null;
   if (total > 0) {
@@ -301,7 +310,9 @@ export function metrics(
       // ATLAS Uncoupled Focus Score: 100 * P / (P + U)
       // Idle duration does NOT pollute the denominator; Active Coverage reports away-time instead
       if (productiveTime + unproductiveTime > 0) {
-        score = Math.round((100 * productiveTime) / (productiveTime + unproductiveTime));
+        score = Math.round(
+          (100 * productiveTime) / (productiveTime + unproductiveTime),
+        );
       } else {
         score = 50;
       }

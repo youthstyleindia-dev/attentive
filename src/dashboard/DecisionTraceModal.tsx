@@ -3,7 +3,15 @@
  * Displays full evidence breakdown, model confidence, and latencies (Section 39, 65).
  */
 import React from "react";
-import { X, ShieldCheck, Sparkles, Brain, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  X,
+  ShieldCheck,
+  Sparkles,
+  Brain,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 import type { DecisionTraceRecord } from "../db/schemas";
 
 interface DecisionTraceModalProps {
@@ -11,21 +19,34 @@ interface DecisionTraceModalProps {
   onClose: () => void;
 }
 
-export function DecisionTraceModal({ trace, onClose }: DecisionTraceModalProps) {
+export function DecisionTraceModal({
+  trace,
+  onClose,
+}: DecisionTraceModalProps) {
   if (!trace) return null;
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-card trace-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal-card trace-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <div className="modal-title-group">
             <Sparkles size={20} className="trace-sparkle" />
             <div>
               <h2>Explainable Decision Trace</h2>
-              <small>Trace ID: {trace.decision_id.slice(0, 8)} · Session {trace.session_id.slice(0, 8)}</small>
+              <small>
+                Trace ID: {trace.decision_id.slice(0, 8)} · Session{" "}
+                {trace.session_id.slice(0, 8)}
+              </small>
             </div>
           </div>
-          <button className="quiet icon-btn" onClick={onClose} aria-label="Close">
+          <button
+            className="quiet icon-btn"
+            onClick={onClose}
+            aria-label="Close"
+          >
             <X size={18} />
           </button>
         </div>
@@ -35,12 +56,15 @@ export function DecisionTraceModal({ trace, onClose }: DecisionTraceModalProps) 
           <div className="trace-final-card">
             <div className="trace-pill-row">
               <span className="trace-pill category-pill">
-                Category: <b>{trace.model_predictions[0]?.label || "Technology"}</b>
+                Category:{" "}
+                <b>{trace.model_predictions[0]?.label || "Technology"}</b>
               </span>
               <span className="trace-pill activity-pill">
                 Activity: <b>{trace.selected_activity}</b>
               </span>
-              <span className={`trace-pill prod-pill ${trace.selected_productivity}`}>
+              <span
+                className={`trace-pill prod-pill ${trace.selected_productivity}`}
+              >
                 Productivity: <b>{trace.selected_productivity}</b>
               </span>
               <span className="trace-pill ws-pill">
@@ -50,7 +74,9 @@ export function DecisionTraceModal({ trace, onClose }: DecisionTraceModalProps) 
 
             <div className="trace-latency-badge">
               <Clock size={13} />
-              <span>Total Inference: <b>{trace.total_latency_ms} ms</b></span>
+              <span>
+                Total Inference: <b>{trace.total_latency_ms} ms</b>
+              </span>
             </div>
           </div>
 
@@ -79,12 +105,17 @@ export function DecisionTraceModal({ trace, onClose }: DecisionTraceModalProps) 
                   <div>
                     <strong>Curated Domain Match:</strong>
                     <p>
-                      {trace.domain_match.domain} matched category &apos;{trace.domain_match.category}&apos; (Activity: {trace.domain_match.activity})
+                      {trace.domain_match.domain} matched category &apos;
+                      {trace.domain_match.category}&apos; (Activity:{" "}
+                      {trace.domain_match.activity})
                     </p>
                   </div>
                 </div>
               ) : (
-                <p className="no-evidence">No pre-set domain rule matched; evaluated via local ML pipeline.</p>
+                <p className="no-evidence">
+                  No pre-set domain rule matched; evaluated via local ML
+                  pipeline.
+                </p>
               )}
             </div>
 
@@ -94,16 +125,24 @@ export function DecisionTraceModal({ trace, onClose }: DecisionTraceModalProps) 
                 <Brain size={16} /> Local fastText ML Classifier Evidence
               </h4>
               <div className="model-version-note">
-                Model: <b>atentiv-page-category v{trace.model_version}</b> (Quantized WebAssembly, Loss: ova)
+                Model: <b>atentiv-page-category v{trace.model_version}</b>{" "}
+                (Quantized WebAssembly, Loss: ova)
               </div>
               <div className="predictions-list">
                 {trace.model_predictions.map((p, idx) => (
                   <div key={p.label || idx} className="pred-row">
                     <span className="pred-label">{p.label}</span>
                     <div className="pred-bar-bg">
-                      <div className="pred-bar-fill" style={{ width: `${Math.min(100, Math.round(p.score * 100))}%` }} />
+                      <div
+                        className="pred-bar-fill"
+                        style={{
+                          width: `${Math.min(100, Math.round(p.score * 100))}%`,
+                        }}
+                      />
                     </div>
-                    <span className="pred-score">{(p.score * 100).toFixed(1)}%</span>
+                    <span className="pred-score">
+                      {(p.score * 100).toFixed(1)}%
+                    </span>
                   </div>
                 ))}
               </div>

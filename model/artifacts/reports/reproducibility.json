@@ -1,5 +1,5 @@
 {
-  "export_timestamp": "2026-09-28T15:07:38Z",
+  "export_timestamp": "2026-10-14T10:40:11Z",
   "python_version": "3.11.15 (main, Jun  2 2026, 22:36:57) [Clang 22.1.3 ]",
   "dataset_source": "https://huggingface.co/datasets/tshasan/multi-label-web-categorization",
   "dataset_rows": 49399,
@@ -74,7 +74,7 @@
       "go"
     ]
   },
-  "raw_model_sha256": "a02fbcb9d16683d7b5b407fe4ba46532fe5e829f79627d8d999a035063066063",
+  "raw_model_sha256": "bd1846de767fce0cee8f31cebe3e72be7071667a0c9a244ee52b82422bd3bd07",
   "quantized_model_sha256": "bd3a8c9224670b1d02de2b6e48704307995503dc179f7475d83eed3d53089331",
   "pipeline_commands": [
     "python model/training/inspect_dataset.py",

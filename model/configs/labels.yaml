@@ -1,0 +1,52 @@
+# Atentiv Category Taxonomy Labels
+# Authority: src/db/schemas.ts, model/configs/taxonomy.json, public/models/model_manifest.json
+# Both TypeScript runtime and Python offline pipeline must strictly adhere to this exact list.
+
+version: "1.0.0"
+taxonomy_name: "atentiv-web-page-taxonomy"
+num_categories: 13
+
+labels:
+  - Technology
+  - Education
+  - Work
+  - Research
+  - Communication
+  - Chat
+  - News
+  - Entertainment
+  - Shop
+  - Government
+  - Health
+  - Travel
+  - Uncategorized
+
+default_activities:
+  Technology: "Development"
+  Education: "Learning"
+  Work: "Productivity"
+  Research: "Research"
+  Communication: "Communication"
+  Chat: "Communication"
+  News: "General Browsing"
+  Entertainment: "Entertainment"
+  Shop: "Shopping"
+  Government: "Reference Lookup"
+  Health: "Reference Lookup"
+  Travel: "General Browsing"
+  Uncategorized: "General Browsing"
+
+default_productivities:
+  Technology: "productive"
+  Education: "productive"
+  Work: "productive"
+  Research: "productive"
+  Communication: "neutral"
+  Chat: "neutral"
+  News: "neutral"
+  Entertainment: "distracting"
+  Shop: "distracting"
+  Government: "neutral"
+  Health: "neutral"
+  Travel: "neutral"
+  Uncategorized: "neutral"

@@ -1,0 +1,54 @@
+# Atentiv Model Pipeline Configuration
+# Single source of truth for reproducible Python 3.11 training and evaluation.
+
+paths:
+  raw_candidates:
+    - "models/data/raw/cleaned_classified_data.parquet"
+    - "/Users/divya/Downloads/cleaned_classified_data.parquet"
+  raw_dir: "models/data/raw"
+  processed_parquet: "models/data/processed/atentiv_dataset.parquet"
+  splits_dir: "models/data/splits"
+  train_txt: "models/data/splits/train.txt"
+  valid_txt: "models/data/splits/valid.txt"
+  test_txt: "models/data/splits/test.txt"
+  output_trained_model: "model/artifacts/trained/atentiv-classifier.bin"
+  output_quantized_model: "public/models/atentiv-classifier.ftz"
+  output_compat_quantized_model: "model/archive/atentiv-page-category.ftz"
+  manifest_json: "public/models/manifest.json"
+  compat_manifest_json: "public/models/model_manifest.json"
+  metrics_json: "model/artifacts/metrics.json"
+  confusion_matrix_png: "model/artifacts/confusion_matrix.png"
+  golden_fixtures: "tests/fixtures/golden_preprocessing.json"
+  preprocessing_config: "model/configs/preprocessing.json"
+  labels_config: "model/configs/labels.yaml"
+
+dataset:
+  seed: 42
+  split_by: "url_domain"
+  split_ratios:
+    train: 0.8
+    valid: 0.1
+    test: 0.1
+  noise_augmentation:
+    enabled: true
+    title_only_ratio: 0.10
+    title_desc_only_ratio: 0.10
+    missing_headings_ratio: 0.10
+    truncated_text_ratio: 0.10
+
+training:
+  framework: "fastText"
+  loss: "ova"
+  dim: 50
+  ws: 5
+  epoch: 25
+  lr: 0.5
+  minCount: 2
+  wordNgrams: 2
+  bucket: 100000
+  thread: 4
+
+quantization:
+  cutoff: 100000
+  retrain: true
+  qnorm: true

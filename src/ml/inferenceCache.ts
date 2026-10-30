@@ -18,7 +18,11 @@ export class InferenceCache {
   private static cache = new Map<string, CachedClassification>();
   private static MAX_CACHE_ENTRIES = 2000;
 
-  static makeKey(domain: string, title: string, headings: string[] = []): string {
+  static makeKey(
+    domain: string,
+    title: string,
+    headings: string[] = [],
+  ): string {
     const normDomain = domain.toLowerCase().trim();
     const normTitle = title.toLowerCase().trim().substring(0, 100);
     const headingsSample = headings.slice(0, 3).join("|").toLowerCase().trim();
