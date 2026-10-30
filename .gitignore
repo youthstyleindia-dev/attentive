@@ -9,5 +9,10 @@ __pycache__/
 *.mp4
 *.aiff
 *.m4a
+*.webm
+scripts/demo_video/raw_full_walkthrough/
+scripts/demo_video/sample_frames/
+scripts/demo_video/voice_clips/
+scripts/demo_video/final_demo_audio.wav
 archive/
 .pytest_cache/
