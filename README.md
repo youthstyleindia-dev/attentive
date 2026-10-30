@@ -13,7 +13,10 @@
 
 ## 📑 Key Documents & Publications
 
-- 📄 **IEEE Research Paper**: [IEEE_RESEARCH_PAPER.md](IEEE_RESEARCH_PAPER.md) — *Atentiv: A Privacy-Preserving, Decoupled Cognitive Attention Management System with On-Device Multimodal Text-Acoustic Inference and Contextual Workstream Clustering*.
+- 📕 **IEEE Research Paper (PDF)**: [Atentiv_IEEE_Research_Paper.pdf](Atentiv_IEEE_Research_Paper.pdf) — *Publication-grade 2-column camera-ready research paper*.
+- 📄 **IEEE Research Paper (Markdown)**: [IEEE_RESEARCH_PAPER.md](IEEE_RESEARCH_PAPER.md)
+- 📝 **IEEE Research Paper (LaTeX Source)**: [IEEE_RESEARCH_PAPER.tex](IEEE_RESEARCH_PAPER.tex)
+- 🌐 **IEEE Research Paper (Interactive HTML)**: [IEEE_RESEARCH_PAPER.html](IEEE_RESEARCH_PAPER.html)
 - 📢 **LinkedIn Launch Announcement**: [LINKEDIN_POST.md](LINKEDIN_POST.md)
 - 🎥 **Full Product Video Demo**: `Atentiv_Full_Product_Demo_With_Audio_Verification.mp4` (1080p Full HD, 60fps, studio narration, ~98s).
 - 📐 **Detailed Specifications**:
