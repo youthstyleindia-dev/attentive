@@ -3,9 +3,9 @@
 I’m thrilled to open-source **Atentiv** — an AI-powered cognitive attention companion built as a Chromium Manifest V3 extension, featuring **100% on-device FastText WASM machine learning, real-time background audio classification, and semantic tab workstream clustering**.
 
 🔗 **GitHub Repository**: https://github.com/youthstyleindia-dev/attentive  
-📕 **Full IEEE Research Paper (PDF)**: [Atentiv_IEEE_Research_Paper.pdf](https://github.com/youthstyleindia-dev/attentive/blob/main/Atentiv_IEEE_Research_Paper.pdf)  
-📄 **IEEE Research Paper (Markdown & LaTeX)**: [IEEE_RESEARCH_PAPER.md](https://github.com/youthstyleindia-dev/attentive/blob/main/IEEE_RESEARCH_PAPER.md)  
-🎥 **Full Product Demo (1080p 60fps)**: `Atentiv_Full_Product_Demo_With_Audio_Verification.mp4`
+📕 **Full IEEE Research Paper (PDF)**: [docs/research/Atentiv_IEEE_Research_Paper.pdf](https://github.com/youthstyleindia-dev/attentive/blob/main/docs/research/Atentiv_IEEE_Research_Paper.pdf)  
+📄 **IEEE Research Paper (Markdown & LaTeX)**: [docs/research/IEEE_RESEARCH_PAPER.md](https://github.com/youthstyleindia-dev/attentive/blob/main/docs/research/IEEE_RESEARCH_PAPER.md)  
+🎥 **Full Product Demo (1080p 60fps)**: [media/videos/Atentiv_Full_Product_Demo_With_Audio_Verification.mp4](https://github.com/youthstyleindia-dev/attentive/blob/main/media/videos/Atentiv_Full_Product_Demo_With_Audio_Verification.mp4)
 
 ---
 

@@ -3,7 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 const rootDir = process.cwd();
-const outputPdfPath = path.join(rootDir, "Atentiv_IEEE_Research_Paper.pdf");
+const researchDir = path.join(rootDir, "docs/research");
+if (!fs.existsSync(researchDir)) {
+  fs.mkdirSync(researchDir, { recursive: true });
+}
+const outputPdfPath = path.join(researchDir, "Atentiv_IEEE_Research_Paper.pdf");
 
 const paperHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -592,7 +596,7 @@ async function generatePdf() {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
-  const htmlPath = path.join(rootDir, "IEEE_RESEARCH_PAPER.html");
+  const htmlPath = path.join(researchDir, "IEEE_RESEARCH_PAPER.html");
   fs.writeFileSync(htmlPath, paperHtml, "utf-8");
   console.log(`- HTML Target: ${htmlPath}`);
 

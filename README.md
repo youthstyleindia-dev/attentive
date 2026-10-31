@@ -13,17 +13,19 @@
 
 ## 📑 Key Documents & Publications
 
-- 📕 **IEEE Research Paper (PDF)**: [Atentiv_IEEE_Research_Paper.pdf](Atentiv_IEEE_Research_Paper.pdf) — *Publication-grade 2-column camera-ready research paper*.
-- 📄 **IEEE Research Paper (Markdown)**: [IEEE_RESEARCH_PAPER.md](IEEE_RESEARCH_PAPER.md)
-- 📝 **IEEE Research Paper (LaTeX Source)**: [IEEE_RESEARCH_PAPER.tex](IEEE_RESEARCH_PAPER.tex)
-- 🌐 **IEEE Research Paper (Interactive HTML)**: [IEEE_RESEARCH_PAPER.html](IEEE_RESEARCH_PAPER.html)
+- 📕 **IEEE Research Paper (PDF)**: [docs/research/Atentiv_IEEE_Research_Paper.pdf](docs/research/Atentiv_IEEE_Research_Paper.pdf) — *Publication-grade 2-column camera-ready research paper*.
+- 📄 **IEEE Research Paper (Markdown)**: [docs/research/IEEE_RESEARCH_PAPER.md](docs/research/IEEE_RESEARCH_PAPER.md)
+- 📝 **IEEE Research Paper (LaTeX Source)**: [docs/research/IEEE_RESEARCH_PAPER.tex](docs/research/IEEE_RESEARCH_PAPER.tex)
+- 🌐 **IEEE Research Paper (Interactive HTML)**: [docs/research/IEEE_RESEARCH_PAPER.html](docs/research/IEEE_RESEARCH_PAPER.html)
 - 📢 **LinkedIn Launch Announcement**: [LINKEDIN_POST.md](LINKEDIN_POST.md)
-- 🎥 **Full Product Video Demo**: `Atentiv_Full_Product_Demo_With_Audio_Verification.mp4` (1080p Full HD, 60fps, studio narration, ~98s).
+- 🎥 **Full Product Video Demo**: [media/videos/Atentiv_Full_Product_Demo_With_Audio_Verification.mp4](media/videos/Atentiv_Full_Product_Demo_With_Audio_Verification.mp4) (1080p Full HD, 60fps, studio narration, ~98s).
 - 📐 **Detailed Specifications**:
   - [Audio Classification & Distraction Specification](docs/architecture/AUDIO_CLASSIFICATION_SPECIFICATION.md)
   - [UI & Glass HUD Architecture](docs/UI_ARCHITECTURE.md)
   - [ATLAS State Machine & Lifecycle Specification](docs/ATLAS_STATE_MACHINE.md)
   - [Privacy & Zero Egress Verification](docs/PRIVACY.md)
+  - [Complete System Specifications](docs/specifications/)
+  - [Implementation & Audit Reports](docs/reports/)
 
 ---
 
@@ -149,10 +151,21 @@ npm run test:browser
 
 ```
 Atentiv-Variation-3/
-├── IEEE_RESEARCH_PAPER.md         # Full IEEE publication research paper
+├── README.md                      # Project documentation and getting started guide
+├── LICENSE                        # MIT License
 ├── LINKEDIN_POST.md               # LinkedIn announcement & release summary
-├── Atentiv_Full_Product_Demo_With_Audio_Verification.mp4  # 1080p 60fps Walkthrough Video
-├── src/
+├── docs/                          # Comprehensive technical and academic documentation
+│   ├── research/                  # IEEE research paper (PDF, HTML, TeX, Markdown)
+│   ├── specifications/            # Formal architectural & ML pipeline specifications
+│   ├── reports/                   # Testing reports & implementation audits
+│   ├── architecture/              # Core subsystem design specifications
+│   ├── diagrams/                  # System architecture, data flow & class diagrams
+│   ├── user-guide/                # User guide, FAQ & troubleshooting
+│   └── workflows/                 # Detailed functional requirement workflows
+├── media/                         # High-definition video demos and audio assets
+│   ├── videos/                    # 1080p product demos and walkthrough recordings
+│   └── audio/                     # Synthesized narration clips and test audio
+├── src/                           # TypeScript 5.7+ application source code
 │   ├── background.ts              # Chrome MV3 Service Worker & ATLAS state machine
 │   ├── main.tsx                   # Full React Dashboard, Scenic Home & Settings
 │   ├── content/                   # Content scripts, Shadow DOM Glass HUD (#atentiv-v3)
@@ -164,14 +177,17 @@ Atentiv-Variation-3/
 │   │   └── fastTextClassifier.ts  # fastText WASM inference wrapper
 │   └── db/                        # Client-side persistence layer
 │       └── database.ts            # Dexie IndexedDB schemas, models & write buffers
-├── models/
+├── models/                        # Quantized ML weights
 │   └── atentiv-classifier.ftz     # Compressed fastText neural n-gram model
 ├── libraries/                     # fasttext-wasm binaries and helper assets
-├── scripts/
+├── scripts/                       # Automation, build, and test tooling
+│   ├── build_ieee_paper_pdf.mjs   # IEEE research paper PDF compiler
 │   ├── build_demo_audio.py        # Studio voiceover synthesizer (Samantha TTS + ducked BGM)
-│   └── record_product_demo_with_audio.mjs # 8-scene automated Playwright video recorder
+│   ├── record_product_demo_with_audio.mjs # 8-scene automated Playwright video recorder
+│   └── lab_experiments/           # Fuzzy logic controllers & evidence generators
 ├── tests/                         # Unit tests, integration suites, and browser automation
 ├── extension/                     # Manifest V3 metadata & permissions
+├── public/                        # Extension icons and static web assets
 └── vite.config.ts                 # Multi-entry build configuration
 ```
 

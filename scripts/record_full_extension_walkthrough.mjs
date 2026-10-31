@@ -6,7 +6,11 @@ import os from "node:os";
 
 const projectRoot = process.cwd();
 const rawRecordDir = path.join(projectRoot, "scripts/demo_video/raw_full_walkthrough");
-const finalOutputMp4 = path.join(projectRoot, "Atentiv_Full_Extension_Walkthrough.mp4");
+const videoDir = path.join(projectRoot, "media/videos");
+if (!fs.existsSync(videoDir)) {
+  fs.mkdirSync(videoDir, { recursive: true });
+}
+const finalOutputMp4 = path.join(videoDir, "Atentiv_Full_Extension_Walkthrough.mp4");
 
 // Clean and prepare output folder
 if (fs.existsSync(rawRecordDir)) {

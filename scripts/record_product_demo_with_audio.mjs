@@ -7,7 +7,11 @@ import os from "node:os";
 const projectRoot = process.cwd();
 const rawRecordDir = path.join(projectRoot, "scripts/demo_video/raw_full_walkthrough");
 const audioWavPath = path.join(projectRoot, "scripts/demo_video/final_demo_audio.wav");
-const finalOutputMp4 = path.join(projectRoot, "Atentiv_Full_Product_Demo_With_Audio_Verification.mp4");
+const videoDir = path.join(projectRoot, "media/videos");
+if (!fs.existsSync(videoDir)) {
+  fs.mkdirSync(videoDir, { recursive: true });
+}
+const finalOutputMp4 = path.join(videoDir, "Atentiv_Full_Product_Demo_With_Audio_Verification.mp4");
 
 // Clean and prepare output folder
 if (fs.existsSync(rawRecordDir)) {
@@ -674,7 +678,7 @@ async function recordTour() {
 
   execSync(ffmpegCmd, { stdio: "inherit" });
 
-  const walkthroughMp4 = path.join(rootDir, "Atentiv_Full_Extension_Walkthrough.mp4");
+  const walkthroughMp4 = path.join(videoDir, "Atentiv_Full_Extension_Walkthrough.mp4");
   fs.copyFileSync(finalOutputMp4, walkthroughMp4);
 
   try {
